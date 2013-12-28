@@ -47,3 +47,6 @@ You can modify the location for the wallpaper in `~/.dotfiles/awesome/theme.lua`
 Blatant copy of most of this repository from [tmlye] (https://github.com/holman/dotfiles)
 Some of the remaining dotfiles are based on other people's work as well, but modified beyond recognition.
 This repo is heavily inspired by [holman's dotfiles] (https://github.com/holman/dotfiles).
+=======
+dotfiles
+========
