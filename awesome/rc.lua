@@ -16,7 +16,7 @@ local vicious = require("vicious")
 -- You might want to change these values
 
 terminal = "urxvt"
-editor = os.getenv("EDITOR") or "gvim"
+editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Launched with MOD4+e
@@ -26,7 +26,7 @@ filemngr = terminal .. " -e ranger"
 browser = "firefox"
 
 -- Name of wificard for wifi widget
-wificard = "wlp3s0"
+wificard = "wlan0"
 
 -- Which soundcard to use for volumne widget
 soundCard = "1"
@@ -37,7 +37,7 @@ mpdPassword = "\"\""
 mpdPort = "6600"
 
 -- Airportcode for the weather widget
-airportcode = "EDDN"
+airportcode = "NZCH"
 -- Nuernberg: EDDN, Kuala Lumpur: WMKK, Hong Kong: VHHH
 
 home = os.getenv("HOME")

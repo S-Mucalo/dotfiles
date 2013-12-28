@@ -28,6 +28,7 @@ n -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
 # X
 ln -s $HOME/.dotfiles/X/xinitrc $HOME/.xinitrc
 ln -s $HOME/.dotfiles/X/Xresources $HOME/.Xresources
+ln -s $HOME/.dotfiles/X/xbindkeysrc $HOME/.xbindkeysrc
 
 # ncmpcpp
 ln -s $HOME/.dotfiles/ncmpcpp/ $HOME/.ncmpcpp
