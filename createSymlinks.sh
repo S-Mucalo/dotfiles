@@ -5,7 +5,8 @@ if [ ! -d ~/.config ]
   then mkdir ~/.config
 fi
 
-declare -a links=(.config/awesome .Xresources .ncmpcpp .xinitrc .emacs.d/init.el .emacs.d/custom.el .bashrc)
+declare -a links=(.config/awesome .Xresources .ncmpcpp .xinitrc
+    .emacs.d/init.el .emacs.d/custom.el .bashrc .gitconfig)
 
 # If files already exist create backups
 for i in ${links[*]}
@@ -35,5 +36,8 @@ ln -s $HOME/.dotfiles/ncmpcpp/ $HOME/.ncmpcpp
 
 # ranger
 ln -s $HOME/.dotfiles/ranger/ $HOME/.config/ranger
+
+# git
+ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
 
 echo "If you want to setup mail, check the .dotfiles/mail directory."

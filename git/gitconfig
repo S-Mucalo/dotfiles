@@ -1,0 +1,13 @@
+[user]
+	name = Shaun Mucalo
+	email = spm105@uclive.ac.nz
+[core]
+	editor = emacs
+[push]
+	default = simple
+[alias]
+	lol = log --oneline --graph --decorate
+[color]
+	ui = true
+[merge]
+	defaultToUpstream = true

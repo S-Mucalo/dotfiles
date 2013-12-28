@@ -1,56 +1,61 @@
-! ~/.Xresources
-!
-! vim: set filetype=xdefaults :
-*foreground: #D7D0C7
-*background: #151515
+urxvt.font: xft:inconsolata
 
-!black
-*color0:     #101010
-*color8:     #404040
-!red
-*color1:     #E84F4F
-*color9:     #D23D3D
-!green
-*color2:     #B8D68C
-*color10:    #A0CF5D
-!yellow
-*color3:     #E1AA5D
-*color11:    #F39D21
-!blue
-*color4:     #7DC1CF
-*color12:    #4E9FB1
-!magenta
-*color5:     #9B64FB
-*color13:    #8542FF
-!cyan
-*color6:     #6D878D
-*color14:    #42717B
-!white
-*color7:     #dddddd
-*color15:    #dddddd
+URxvt.perl-ext-common: tabbed,clipboard
+URxvt.urgentOnBell: True
+URxvt.iconFile: ~/.config/terminal.svg
+!urxvt.letterSpace:-1.5
 
-URxvt.perl-lib: /usr/lib/urxvt/perl/
+! ! General
+ urxvt*termName:  rxvt-256color
+ urxvt*loginShell:         true
+ urxvt*scrollBar:         false
+ urxvt*secondaryScroll:    true
+ urxvt*saveLines:         65535
+ urxvt*cursorBlink:        true
+ !urxvt*override-redirect:false
+ !urxvt*borderLess:       false
+ !urxvt*internalBorder:       0
+ !urxvt*externalBorder:       0
+ 
+ ! Extensions
+ urxvt*perl-lib:        /usr/lib/urxvt/perl/
+ urxvt*perl-ext-common: default,matcher,searchable-scrollback
+ urxvt*urlLauncher:     /usr/bin/firefox
+ urxvt*matcher.button:  1
+ 
+ ! Appearance
+ !  - cursor
+ urxvt*cursorColor: #DCDCCC
+ !  - color scheme
+ urxvt.background:  #000000
+ urxvt.foreground:  #EBEBFF
+ ! black + red
+ !urxvt*color0:     #3f3f3f
+ urxvt*color0:      #000000
+ urxvt*color1:      #e01010
+ ! green + yellow
+ urxvt*color2:      #00AA00
+ urxvt*color3:      #FFFF00
+ ! blue + purple
+ urxvt*color4:      #112037
+ urxvt*color5:      #A020F0
+ ! cyan + white
+ urxvt*color6:      #5B5BC7
+ urxvt*color7:      #fefefe
+ ! bright-black + bright-red
+ urxvt*color8:      #6a6a6a
+ urxvt*color9:      #FF5555
+ ! bright-green + bright-yellow
+ urxvt*color10:     #90EE90
+ urxvt*color11:     #ffff2f
+ ! bright-blue + bright-purple
+ urxvt*color12:     #5B5BC7
+ urxvt*color13:     #e628ba
+ ! bright-cyan + bright-white
+ urxvt*color14:     #7D7DFB
+ urxvt*color15:     #ffffff
 
-URxvt.borderColor:        #151515
-URxvt.colorBD:            #ffffff
-URxvt.cursorColor:        #E68908
-URxvt.cursorColor2:       #404040
+ URxvt*.transparent: true 
+ !URxvt*.shading: 0 to 99 darkens, 101 to 200 lightens
+ URxvt*.shading: 20
 
-URxvt.perl-ext-common:  default,matcher
-URxvt.url-launcher:      /usr/bin/firefox
-URxvt.matcher.button:   1
-URxvt.keysym.C-l:  perl:matcher:last
-URxvt.keysym.M-l:  perl:matcher:list
-
-URxvt*font:         xft:DejaVuSansMono:pixelsize=11
-URxvt*boldFont:     xft:DejaVuSansMono:pixelsize=11
-URxvt*buffered:     true
-URxvt*cursorBlink:  false
-URxvt*cursorUnderlline:     false
-URxvt*geometry:             80x25
-URxvt*depth:                24
-URxvt*scrollBar:            false
-URxvt*scrollstyle:          plain
-URxvt*scrollWithBuffer:     false
-URxvt*scrollTtyOutput:      true
-URxvt*pointerBlank:         true

@@ -11,36 +11,34 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
+xautolock -time 30 -locker "sudo pm-suspend" &
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
+# dropboxd &
+xbindkeys &
+xcompmgr -cF &
+nm-applet &
+udiskie &
+vboxclient-all &
 
-test -f ~/.XkeymapUS && xkbcomp ~/.XkeymapUS $DISPLAY
+DEFAULT_SESSION=awesome
 
-# Lock screen after 3 mins
-/usr/bin/xautolock -time 3 -locker slock &
-# Turn off screen after 3 mins
-xset +dpms
-xset dpms 0 0 301
-
-synclient RightButtonAreaTop=0
-synclient RightButtonAreaBottom=1500
-synclient RightButtonAreaLeft=3900
-synclient RightButtonAreaRight=0
-
-source /etc/X11/xinit/xinitrc.d/30-dbus
-# Start GNOME Keyring
-eval $(/usr/bin/gnome-keyring-daemon --start --components=gpg,pkcs11,secrets,ssh)
-export GNOME_KEYRING_CONTROL GNOME_KEYRING_PID GPG_AGENT_INFO SSH_AUTH_SOCK
-
-# Export the session for usage with cron
-test -f ~/.dotfiles/mail/bin/export-dbus-session.sh && exec ~/.dotfiles/mail/bin/export-dbus-session.sh &
-
-mpd &
-pidof mpdscribble >& /dev/null
-if [ $? -ne 0 ]; then
-  mpdscribble &
-fi
-
-# Turn off bell
-/usr/bin/xset b off
-
-exec awesome
+case $1 in
+LXDE)
+	exec startlxde
+	;;
+qtile)
+	exec qtile
+	;;
+xmonad)
+	exec xmonad
+	;;
+*)
+	exec $DEFAULT_SESSION
+	;;
+esac
+#exec awesome
+#exec startlxde
+# exec gnome-session
+# exec startkde
+# exec startxfce4
+# ...or the Window Manager of your choice

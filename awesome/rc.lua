@@ -29,7 +29,7 @@ browser = "firefox"
 wificard = "wlan0"
 
 -- Which soundcard to use for volumne widget
-soundCard = "1"
+soundCard = "0"
 
 -- MPD Data
 mpdHost = "0.0.0.0"
