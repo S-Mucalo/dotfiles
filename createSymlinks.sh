@@ -5,8 +5,9 @@ if [ ! -d ~/.config ]
   then mkdir ~/.config
 fi
 
-declare -a links=(.config/awesome .Xresources .ncmpcpp .xinitrc
-    .emacs.d/init.el .emacs.d/custom.el .bashrc .gitconfig .keysnail.js)
+declare -a links=(.config/awesome .Xresources .xbindkeysrc .ncmpcpp
+    .xinitrc .emacs.d/init.el .emacs.d/custom.el .bashrc .gitconfig
+    .keysnail.js .config/ranger .mpd)
 
 # If files already exist create backups
 for i in ${links[*]}
@@ -24,13 +25,16 @@ ln -s $HOME/.dotfiles/emacs/init.el $HOME/.emacs.d/init.el
 ln -s $HOME/.dotfiles/emacs/custom.el $HOME/.emacs.d/custom.el
 
 # bash
-n -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
+ln -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
 
 # X
 ln -s $HOME/.dotfiles/X/xinitrc $HOME/.xinitrc
 ln -s $HOME/.dotfiles/X/Xresources $HOME/.Xresources
 ln -s $HOME/.dotfiles/X/xbindkeysrc $HOME/.xbindkeysrc
 
+# mpd
+ln -s $HOME/.dotfiles/mpd/ $HOME/.mpd
+ 
 # ncmpcpp
 ln -s $HOME/.dotfiles/ncmpcpp/ $HOME/.ncmpcpp
 

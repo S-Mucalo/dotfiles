@@ -32,7 +32,7 @@ wificard = "wlan0"
 soundCard = "0"
 
 -- MPD Data
-mpdHost = "0.0.0.0"
+mpdHost = "127.0.0.1"
 mpdPassword = "\"\""
 mpdPort = "6600"
 
@@ -74,7 +74,7 @@ end
 -- {{{ Tags
 -- Define a tag table which hold all screen tags.
 tags = {
-	names = { 1, 2, 3, 4 },
+	names = { "Main", "Net", "Media", "Random" },
 	layout = { layouts[4], layouts[4], layouts[1], layouts[1] }
 }
 for s = 1, screen.count() do
@@ -147,17 +147,17 @@ setVolIconBasedOnStatus()
 volwidget = wibox.widget.textbox()
 vicious.register(volwidget, vicious.widgets.volume, " $1% ", 3, "-c "..soundCard.." Master")
 -- Keybindings for widget
-volwidget:buttons(awful.util.table.join(
-    awful.button({ }, 1, function () exec(terminal .. " -e alsamixer -c "..soundCard) end),
-    awful.button({ }, 3,
-        function ()
-            exec("amixer -c "..soundCard.." -q sset Speaker toggle")
-            setVolIconBasedOnStatus()
-        end),
-    awful.button({ }, 4, function () exec("amixer -c "..soundCard.." -q sset Master 2dB+", false) end),
-    awful.button({ }, 5, function () exec("amixer -c "..soundCard.." -q sset Master 2dB-", false) end)
- ))
-
+-- volwidget:buttons(awful.util.table.join(
+--     awful.button({ }, 1, function () exec(terminal .. " -e alsamixer -c "..soundCard) end),
+--     awful.button({ }, 3,
+--         function ()
+--             exec("amixer -c "..soundCard.." -q sset Speaker toggle")
+--             setVolIconBasedOnStatus()
+--         end),
+--     awful.button({ }, 4, function () exec("amixer -c "..soundCard.." -q sset Master 2dB+", false) end),
+--     awful.button({ }, 5, function () exec("amixer -c "..soundCard.." -q sset Master 2dB-", false) end)
+--  ))
+ 
 -- Wifiwidget
 wifiwidget = wibox.widget.textbox()
 vicious.register(wifiwidget, vicious.widgets.wifi,
@@ -344,7 +344,8 @@ globalkeys = awful.util.table.join(
 
     -- Standard programs
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
-    awful.key({ modkey,		      }, "e", function () awful.util.spawn(filemngr) end),
+    awful.key({ modkey,		  }, "e", function () awful.util.spawn(filemngr) end),
+    awful.key({ modkey, "Control" }, "r", awesome.restart),
     awful.key({ modkey,           }, "q", function() awful.util.spawn(browser) end),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
