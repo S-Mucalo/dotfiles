@@ -6,7 +6,7 @@ if [ ! -d ~/.config ]
 fi
 
 declare -a links=(.config/awesome .Xresources .ncmpcpp .xinitrc
-    .emacs.d/init.el .emacs.d/custom.el .bashrc .gitconfig)
+    .emacs.d/init.el .emacs.d/custom.el .bashrc .gitconfig .keysnail.js)
 
 # If files already exist create backups
 for i in ${links[*]}
@@ -39,5 +39,8 @@ ln -s $HOME/.dotfiles/ranger/ $HOME/.config/ranger
 
 # git
 ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
+
+# browser
+ln -s $HOME/.dotfiles/browser/keysnail.js $HOME/.keysnail.js
 
 echo "If you want to setup mail, check the .dotfiles/mail directory."
