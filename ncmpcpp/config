@@ -1,6 +1,6 @@
 # ~/.ncmpcpp/config
 
-mpd_music_dir = "/home/sascha/Extern/Musik"
+mpd_music_dir = "/home/shaun/Dropbox/Music"
 mpd_crossfade_time = "5"
 
 # Playlist
@@ -46,5 +46,5 @@ search_engine_display_mode = "columns" (classic/columns)
 follow_now_playing_lyrics = "yes"
 display_screens_numbers_on_start = "no"
 ask_before_clearing_main_playlist = "yes"
-mouse_support = "no"
+mouse_support = "yes"
 playlist_editor_display_mode = "columns"
