@@ -10,7 +10,7 @@
 
 #Mute Audio
 "amixer set Master toggle"
-    m:0x0 + c:202
+    m:0x0 + c:121
     XF86AudioMute
 
 #Increase Brightness

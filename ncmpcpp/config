@@ -17,9 +17,9 @@ playlist_disable_highlight_delay = "1"
 # Bars
 song_status_format = "{$3%t •$1}{$2 %a$1}"
 progressbar_look = "─╼ " # "─╼╌"
-titles_visibility = "no"
-header_visibility = "no"
-statusbar_visibility = "no"
+titles_visibility = "yes"
+header_visibility = "yes"
+statusbar_visibility = "yes"
 
 # Browser
 browser_playlist_prefix = "$2»$9 "
