@@ -20,6 +20,9 @@ done
 # Awesome
 ln -s $HOME/.dotfiles/awesome/ $HOME/.config/awesome
 
+# zsh
+ln -s $HOME/.dotfiles/zsh/zshrc $HOME/.zshrc
+
 # Emacs
 ln -s $HOME/.dotfiles/emacs/init.el $HOME/.emacs.d/init.el
 ln -s $HOME/.dotfiles/emacs/custom.el $HOME/.emacs.d/custom.el

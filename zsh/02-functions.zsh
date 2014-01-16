@@ -27,7 +27,6 @@ d() { ($1 &) }
 zsh_stats() { history | awk '{print $2}' | sort | uniq -c | sort -rn | head }
 du1() { du -h --max-depth=1 "$@" | sort -k 1,1hr -k 2,2f; }
 epoch() { print $(( `echo $1 | cut -b 1-2` * 3600 + `echo $1 | cut -b 4-5` * 60 + `echo $1 | cut -b 7-8` )) }
-horny() { mirage -sR /media/data/Bilder/horny/; }
 # }}}
 
 # {{{ Create ZSH named directory
@@ -38,7 +37,7 @@ namedir() {
 
 # {{{ Most used Commands
 mostused() {
-  sed -n 's/^\([a-z]*\) .*/\1/p' $HOME/.config/zsh/history |
+  sed -n 's/^\([a-z]*\) .*/\1/p' $HOME/.dotfiles/zsh/history.log |
   sort |
   uniq -c |
   sort -n -k1 |
@@ -46,42 +45,6 @@ mostused() {
   tac
 } # }}}
 
-# {{{ FFMPEG stuffs
-
-# Split Video
-ffmpeg_splitvid()
-{
-  local t=$(epoch `ffprobe $1 2>&1 | grep Duration | cut -b 13-20`)
-  local first=$(( $t / 3 ))
-  local second=$(( $first * 2 ))
-  local duration=$(( $first + 30 ))
-
-  ffmpeg -i $1 -ss 0 -t $duration -vcodec copy -sameq -acodec copy -async 100 -threads 0 ${1%.*}.part1.avi
-  ffmpeg -i $1 -ss $first -t $duration -vcodec copy -sameq -acodec copy -async 100 -threads 0 ${1%.*}.part2.avi
-  ffmpeg -i $1 -ss $second -t $duration -vcodec copy -sameq -acodec copy -async 100 -threads 0 ${1%.*}.part3.avi
-}
-
-ffmpeg_bframes()
-{
-  ffmpeg -i $1 -vcodec copy -sameq -acodec libmp3lame -ab 128k -ar 48000 -ac 2 -threads 0 ${1%.*}.fix.avi
-}
-
-# Convert to x264 (stupid railscasts with their stupid .mov that won't play in mplayer)
-ffmpeg_x264() {
-  ffmpeg -i $1 -acodec aac -strict experimental -ab 96k -vcodec libx264 -vpre slow -crf 22 -threads 0 -f matroska ${1%.*}.mkv
-} 
-
-# Rip Audio as MP3
-ffmpeg_mp3() {
-  ffmpeg -i $1 -acodec libmp3lame -sameq -threads 0 ${1%.*}.mp3
-}
-
-# Convert anything to iPhone and move to LAMP for streaming
-ffmpeg_iphone()
-{
-    ffmpeg -i $1 -acodec libfaac -ab 128k -vcodec libx264 -vpre ipod640 -s 480x320 -r 29 -threads 0 ${1%.*}.mp4
-    mv ${1%.*}.mp4 ~/www/iphone/
-} # }}}
 
 # {{{ Rip Audio CDs to MP3
 ripdatshit()
@@ -120,7 +83,7 @@ mkgit() {
   touch README.markdown
   git add README.markdown
   git commit -m 'inital setup - automated'
-  git remote add origin git@github.com:crshd/$1.git
+  git remote add origin git@github.com:Zaidean/$1.git
   git push origin master
 } # }}}
 
@@ -164,38 +127,6 @@ ark() {
   esac
 } # }}}
 
-# {{{ cat, sed, awk, grep, less syntax highlighting
-cat sed awk grep() {
-  syntax=""
-  type highlight > /dev/null 2>&1
-  if [[ $? -eq 0 ]]; then
-    for file in $@; do
-      if [ -f $file ]; then
-        case $file in
-          *.java) syntax="java";;
-          *.php) syntax="php";;
-          *.py) syntax="python";;
-          *.diff) syntax="diff";;
-          *.awk) syntax="awk";;
-          *.c) syntax="c";;
-          *.css) syntax="css";;
-          *.js) syntax="js";;
-          *.jsp) syntax="jsp";;
-          *.xml) syntax="xml";;
-          *.sql) syntax="sql";;
-          *.pl) syntax="pl";;
-          *.rb) syntax="rb";;
-          /etc/apache*/*) syntax="httpd";;
-        esac
-      fi
-    done
-  fi
-  if [[ $syntax != "" ]]; then
-    command $0 $@ | highlight -O ansi --syntax=$syntax
-  else
-    command $0 $@
-  fi
-}
 
 lessr() { cat $1 | less -R }
 # }}}

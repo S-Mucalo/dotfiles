@@ -8,9 +8,35 @@ require("awful.autofocus")
 local beautiful = require("beautiful")
 -- Notifications
 local naughty = require("naughty")
+local menubar = require("menubar")
 -- Widgets and Layout
 local wibox = require("wibox")
 local vicious = require("vicious")
+
+-- {{{ Error handling
+-- Check if awesome encountered an error during startup and fell back to
+-- another config (This code will only ever execute for the fallback config)
+if awesome.startup_errors then
+    naughty.notify({ preset = naughty.config.presets.critical,
+                     title = "Oops, there were errors during startup!",
+                     text = awesome.startup_errors })
+end
+
+-- Handle runtime errors after startup
+do
+    local in_error = false
+    awesome.connect_signal("debug::error", function (err)
+        -- Make sure we don't go into an endless error loop
+        if in_error then return end
+        in_error = true
+
+        naughty.notify({ preset = naughty.config.presets.critical,
+                         title = "Oops, an error happened!",
+                         text = err })
+        in_error = false
+    end)
+end
+-- }}}
 
 -- {{{ Variable definitions
 -- You might want to change these values
@@ -44,7 +70,7 @@ home = os.getenv("HOME")
 exec = awful.util.spawn
 
 -- Themes define colours, icons, and wallpapers
-beautiful.init(home .. "/.config/awesome/theme.lua")
+beautiful.init(home .. "/.config/awesome/theme/theme.lua")
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -83,6 +109,37 @@ for s = 1, screen.count() do
 end
 -- }}}
 
+
+-- {{{ Menu
+-- Create a laucher widget and a main menu
+myawesomemenu = {
+   { "manual", terminal .. " -e man awesome" },
+   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "restart", awesome.restart },
+   { "quit", awesome.quit }
+}
+
+mycommaps = {
+   { "Firefox", "firefox" },
+   { "Emacs", "emacs" },
+   { "PDF Viewer", "evince" },
+   { "libre-office", "libreoffice" }   			
+}
+
+mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+                                    { "open terminal", terminal },
+				    { "File Manager", "pcmanfm" },
+				    { "Common Applications", mycommaps }
+                                  }
+                        })
+
+mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = mymainmenu })
+
+-- Menubar configuration
+menubar.utils.terminal = terminal -- Set the terminal for applications that require it
+-- }}}
+
 -- {{{ Wibox
 
 -- Seperators
@@ -97,7 +154,7 @@ dash:set_markup("-")
 -- Icon is updated according to the current MPD status
 -- see MPD textwidget below
 mpdicon = wibox.widget.imagebox()
-mpdicon:set_image(home .. "/.config/awesome/icons/note.png")
+mpdicon:set_image(beautiful.mpd_play)
 
 -- MPD textwidget
 -- Initialize widget
@@ -107,17 +164,17 @@ wargs = { mpdPassword, mpdHost, mpdPort }
 vicious.register(mpdwidget, vicious.widgets.mpd,
     function (widget, args)
         if args["{state}"] == "Stop" then
-            --mpdicon:set_image(home .. "/.config/awesome/icons/stop.png")
+            --mpdicon:set_image(beautiful.mpd_stop)
             mpdicon:set_image(nil)
             return " "
         elseif args["{state}"] == "Pause" then
-            mpdicon:set_image(home .. "/.config/awesome/icons/pause.png")
+            mpdicon:set_image(beautiful.mpd_pause)
             return args["{Artist}"]..' - '.. args["{Title}"]
         elseif args["{state}"] == "Play" then
-            mpdicon:set_image(home .. "/.config/awesome/icons/play.png")
+            mpdicon:set_image(beautiful.mpd_play)
             return args["{Artist}"]..' - '.. args["{Title}"]
         else
-            mpdicon:set_image(home .. "/.config/awesome/icons/note.png")
+            mpdicon:set_image(beautiful.mpd_stop)
             return "MPD status unknown"
         end
     end, 5, wargs)
@@ -135,9 +192,9 @@ function setVolIconBasedOnStatus ()
     f:close()
     if(string.match(speaker, "values=(%a+)") == "off") then
         -- Speaker is muted
-        volicon:set_image(home .. "/.config/awesome/icons/mute.png")
+        volicon:set_image(beautiful.mute)
     else
-        volicon:set_image(home .. "/.config/awesome/icons/vol.png")
+        volicon:set_image(beautiful.vol)
     end
 end
 
@@ -173,9 +230,20 @@ vicious.register(wifiwidget, vicious.widgets.wifi,
         end
     end, 7, wificard)
 
+-- Network usage widget
+-- Initialise widget
+netwidget = wibox.widget.textbox()
+-- Register widget
+vicious.register(netwidget, vicious.widgets.net, '<span color="#CC9393">${wlan0 down_kb}</span> <span color="#7F9F7F">${wlan0 up_kb}</span>', 3)
+dnicon = wibox.widget.imagebox()
+upicon = wibox.widget.imagebox()
+dnicon:set_image(beautiful.widget_net)
+upicon:set_image(beautiful.widget_netup)
+
 -- Create a battery widget
 baticon = wibox.widget.imagebox()
-baticon:set_image(home .. "/.config/awesome/icons/bat.png")
+baticon:set_image(beautiful.bat) 
+--TODO: change icon depending on charge remaining and charge state
 --Initialize widget
 batwidget = wibox.widget.textbox()
 --Register widget
@@ -255,6 +323,7 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the left, order matters
     local left_layout = wibox.layout.fixed.horizontal()
+    left_layout:add(mylauncher)
     left_layout:add(mytaglist[s])
     left_layout:add(mypromptbox[s])
     left_layout:add(mpdicon)
@@ -263,6 +332,12 @@ for s = 1, screen.count() do
 
     -- Widgets that are aligned to the right, order matters
     local right_layout = wibox.layout.fixed.horizontal()
+    -- Systray
+    if s == 1 then 
+       right_layout:add(wibox.widget.systray())
+       right_layout:add(spacer)
+       right_layout:add(seperator)
+    end
     -- Weather
     right_layout:add(weatherwidget)
     right_layout:add(spacer)
@@ -275,6 +350,11 @@ for s = 1, screen.count() do
     right_layout:add(spacer)
     -- Wifi
     right_layout:add(wifiwidget)
+    right_layout:add(spacer)
+    right_layout:add(seperator)
+    right_layout:add(dnicon)
+    right_layout:add(netwidget)
+    right_layout:add(upicon)
     right_layout:add(spacer)
     right_layout:add(seperator)
     -- Battery
@@ -298,8 +378,6 @@ for s = 1, screen.count() do
     right_layout:add(spacer)
     -- Clock
     right_layout:add(mytextclock)
-    -- Systray
-    --if s == 1 then right_layout:add(wibox.widget.systray()) end
 
     -- Now bring it all together
     local layout = wibox.layout.align.horizontal()
@@ -309,6 +387,14 @@ for s = 1, screen.count() do
 
     mywibox[s]:set_widget(layout)
 end
+-- }}}
+
+-- {{{ Mouse bindings
+root.buttons(awful.util.table.join(
+    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({ }, 4, awful.tag.viewnext),
+    awful.button({ }, 5, awful.tag.viewprev)
+))
 -- }}}
 
 -- {{{ Key bindings
@@ -344,9 +430,10 @@ globalkeys = awful.util.table.join(
 
     -- Standard programs
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
-    awful.key({ modkey,		  }, "e", function () awful.util.spawn(filemngr) end),
+    awful.key({ modkey,		  }, "f", function () awful.util.spawn(filemngr) end),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
-    awful.key({ modkey,           }, "q", function() awful.util.spawn(browser) end),
+    awful.key({ modkey,           }, "w", function() awful.util.spawn(browser) end),
+    awful.key({ modkey,		  }, "e", function () awful.util.spawn(editor_cmd) end),
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
 
     awful.key({ modkey,           }, "l",     function () awful.tag.incmwfact( 0.05)    end),
@@ -528,6 +615,14 @@ client.connect_signal("manage", function (c, startup)
     end
 end)
 
-client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.connect_signal("focus", 
+		      function(c) 
+			 c.border_color = beautiful.border_focus 
+			 c.opacity = 1 
+		      end)
+client.connect_signal("unfocus", 
+		      function(c) 
+			 c.border_color = beautiful.border_normal 
+			 c.opacity = 0.8
+		      end)
 -- }}}

@@ -8,23 +8,18 @@ export DISPLAY=:0
 
 export SHELL='/bin/zsh'
 
-export EDITOR='gvim'
+export EDITOR='emacs'
 
-export PATH="/usr/local/bin:\
+export PATH="/usr/local/sbin:\
+/usr/local/bin:\
 /usr/bin:\
-/bin:\
-/usr/local/sbin:\
-/usr/sbin:\
-/sbin:\
-/opt/java/jre/bin:\
-$HOME/.gem/ruby/1.9.1/bin:\
-/usr/bin/site_perl:\
+/opt/opencascade/bin:\
 /usr/bin/vendor_perl:\
 /usr/bin/core_perl:\
 $HOME/.dotfiles/bin:"
 
 # Less
-export LESSOPEN='| /usr/bin/highlight -0 ansi %s'
+export LESSOPEN='| /usr/bin/highlight -O ansi %s'
 export LESS='-A$-R$-g$-i$-m$-s'
 
 # vim: set ft=zsh

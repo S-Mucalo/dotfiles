@@ -16,26 +16,28 @@ xautolock -time 30 -locker "sudo pm-suspend" &
 # dropboxd &
 xbindkeys &
 xcompmgr -cF &
-nm-applet &
+nm-applet --sm-disable &
 udiskie &
 vboxclient-all &
 
-DEFAULT_SESSION=awesome
+exec $1
 
-case $1 in
-LXDE)
-	exec startlxde
-	;;
-qtile)
-	exec qtile
-	;;
-xmonad)
-	exec xmonad
-	;;
-*)
-	exec $DEFAULT_SESSION
-	;;
-esac
+# DEFAULT_SESSION=awesome
+
+# case $1 in
+# LXDE)
+# 	exec startlxde
+# 	;;
+# qtile)
+# 	exec qtile
+# 	;;
+# xmonad)
+# 	exec xmonad
+# 	;;
+# *)
+# 	exec $DEFAULT_SESSION
+# 	;;
+# esac
 #exec awesome
 #exec startlxde
 # exec gnome-session

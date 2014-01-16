@@ -1,3 +1,4 @@
+#! /usr/bin/zsh
 # ~/.zshrc
 #
 #==============================================================
@@ -21,9 +22,11 @@ setopt \
   autocd \
   extendedglob \
   prompt_subst \
-  inc_append_history
+  inc_append_history \
+  completealiases \
+  HIST_IGNORE_DUPS
 
-bindkey -v
+bindkey -e
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Import seperate config files
@@ -39,5 +42,5 @@ done
 eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
 export LS_COLORS
 
-source ~/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-source ~/.dotfiles/zsh/zsh-syntax-highlighting/06-syntax-rules.zsh
+# source ~/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+# source ~/.dotfiles/zsh/zsh-syntax-highlighting/06-syntax-rules.zsh
