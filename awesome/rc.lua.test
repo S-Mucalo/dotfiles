@@ -87,8 +87,8 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    --tags[s] = awful.tag({ "  一⇋ Main   ", "  二⇋ Devel.   ", "  三⇋  Admin.  ", "  四⇋  www/Web  ", "  五⇋ Misc  ", "  六  " }, s, layouts[1])
-    tags[s] = awful.tag({ " [[ ⇋  Main ]]", " [[ ⇋  Devel. ]]", " [[ ⇋  Admin. ]]", " [[ ⇋  www/Web ]]", " [[ ⇋ Misc ]] "}, s, layouts[1])
+    tags[s] = awful.tag({ "  一⇋ Main   ", "  二⇋ Devel.   ", "  三⇋  Admin.  ", "  四⇋  www/Web  ", "  五⇋ Misc  ", "  六  " }, s, layouts[1])
+    --tags[s] = awful.tag({ " [[ ⇋  Main ]]", " [[ ⇋ 四 Devel. ]]", " [[ ⇋  Admin. ]]", " [[ ⇋  www/Web ]]", " [[ ⇋ Misc ]] "}, s, layouts[1])
 end
 -- }}}
 
@@ -243,7 +243,7 @@ mytasklist.buttons = awful.util.table.join(
 	logout=blingbling.system.logoutmenu()
 	mytag={}
 	--test = blingbling.text_box()
-for s = 1, ( screen.count() ) do
+for s = 1, ( screen.count() - 1) do
 	mytag[s]=blingbling.tagslist(s,  awful.widget.taglist.filter.all, mytaglist.buttons)
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt()
