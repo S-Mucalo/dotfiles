@@ -166,7 +166,9 @@ theme.layout_spiral  = theme_dir.."/layouts/spiral.png"
 theme.layout_dwindle = theme_dir.."/layouts/dwindle.png"
 
 theme.awesome_icon = theme_dir .. "/awesome.png"
-
+theme.shutdown_icon = theme_dir .. "/shutdown.png"
+theme.reboot_icon = theme_dir .. "/reboot.png"
+theme.logout_icon = theme_dir .. "/logout.png"
 -- Define the icon theme for application icons. If not set then the icons 
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = "/home/cedlemo/.icons/AwOkenDark" 

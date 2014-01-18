@@ -109,6 +109,16 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
 
+-- Create launcher widget and power menu
+mypowermenu = awful.menu({ items = { 
+			      { "Shutdown", terminal .. " -e systemctl poweroff", beautiful.shutdown_icon },
+			      { "Reboot" , terminal .. " -e systemctl reboot", beautiful.reboot_icon },
+			      { "Logout", function() awesome.quit() end, beautiful.logout_icon },
+			      -- { "Lock",  }
+				   }
+			 })
+mypowerlauncher = awful.widget.launcher({ image = beautiful.shutdown_icon,
+					  menu = mypowermenu })
 -- Menubar configuration
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
@@ -116,13 +126,22 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- {{{ Wibox
 
 -- Net Widget
-my_net=blingbling.net.new()-- {width = 100, height = 20, interface = "wlan0"})
-my_net:set_height(18)
-my_net:set_interface("wlan0")
---activate popup with ip informations on the net widget
--- my_net:set_ippopup()
-my_net:set_show_text(true)
-my_net:set_v_margin(3)
+mynet=blingbling.net.new({ width = 100, height = 20, interface = "wlan0", show_text=true, v_margin = 3})
+-- mynet:set_height(18)
+-- mynet:set_interface("wlan0")
+-- --activate popup with ip informations on the net widget
+-- -- mynet:set_ippopup()
+-- mynet:set_show_text(true)
+-- mynet:set_v_margin(3)
+mynet:set_ippopup()
+
+
+-- mynet:connect_signal("mouse::enter", function()
+-- 			blingbling.net.show_ippopup_infos(mynet)
+-- 				     end)
+-- mynet:connect_signal("mouse::leave", function()
+-- 			blingbling.net.hide_ippopup_infos(mynet)
+-- 				     end)
 
 -- Memory Graph widget
 
@@ -130,30 +149,70 @@ my_net:set_v_margin(3)
 -- Create a textclock widget
 
 -- local blingbling = require("blingbling")
-local cur_day_month =" <span color=\""..beautiful.bright_magenta ..
+local cur_day =" <span color=\""..beautiful.bright_yellow..
+                                        "\">%a、</span>"
+local cur_month = " <span color=\""..beautiful.bright_magenta..
+                                        "\">%b、</span>"
+local cur_date =" <span color=\""..beautiful.bright_green..
                                         "\">%d、</span>"
-local cur_month = " <span color=\""..beautiful.bright_yellow ..
-                                        "\">%m、</span>"
-local cur_day_week =" <span color=\""..beautiful.bright_green ..
-                                        "\">%w、</span>"
-local cur_hour = "<span font_weight=\"bold\">%H<span color=\""..
-                 beautiful.red.."\" font_weight=\"normal\">時</span>%M"..
+local cur_time = "<span font_weight=\"bold\">%H<span color=\""..
+                 beautiful.red.."\" font_weight=\"normal\">:</span>%M"..
                  "<span color=\""..
-                 beautiful.red.."\" font_weight=\"normal\">分</span></span>" 
-mytextclock = blingbling.clock.japanese(  cur_month .. cur_day_month .. 
-                                          cur_day_week ..
-                                          cur_hour,
-                                          { h_margin = 2,
-                                            v_margin = 2,
-                                          text_background_color = beautiful.widget_background,
-                                          rounded_size = 0.3})
---mytextclock = blingbling.clock.japanese()
+                 beautiful.red.."\" font_weight=\"normal\">.</span></span>" 
+
+mytextclock = awful.widget.textclock(  cur_day .. cur_month .. 
+                                          cur_date ..
+                                          cur_time
+				    )
 calendar = blingbling.calendar({ widget = mytextclock})
 calendar:set_link_to_external_calendar(true)
---calendar:set_default_info(function() 
---  blingbling.clock.get_current_time_in_japanese() .. 'test'
---  blingbling.clock.get_current_day_of_week_in_kanas()
---end)
+
+-- Top widgets:
+				  
+cpu_graph = blingbling.line_graph({ height = 25,
+				    width = 160,
+				    show_text = true,
+				    label = "Cpu: $percent %",
+				  })
+vicious.register(cpu_graph, vicious.widgets.cpu,'$1',2)
+
+mem_graph = blingbling.line_graph.new({ height = 25,
+				    width = 160,
+				    show_text = true,
+				    label = "Mem: $percent %",
+				  })
+blingbling.popups.htop(mem_graph)
+vicious.register(mem_graph, vicious.widgets.mem, '$1', 2)
+
+local colors_stops =  { {beautiful.green , 0},
+			{beautiful.yellow, 0.5},
+			{beautiful.cyan, 0.7},
+			{beautiful.magenta, 0.8},
+			{beautiful.red, 0.95}
+}
+volume_bar = blingbling.volume({height = 18, width = 30, bar =true, show_text = true, label ="Vol"})
+volume_bar:update_master()
+volume_bar:set_master_control()
+
+home_fs_usage=blingbling.value_text_box({height = 25, width = 60, v_margin = 3})
+home_fs_usage:set_text_background_color(beautiful.widget_background)
+home_fs_usage:set_values_text_color(colors_stops)
+home_fs_usage:set_font_size(10)
+home_fs_usage:set_background_color("#00000000")
+home_fs_usage:set_label("home: $percent %")
+
+vicious.register(home_fs_usage, vicious.widgets.fs, "${/home used_p}", 120 )
+	
+root_fs_usage=blingbling.value_text_box({height = 25, width = 60, v_margin = 3})
+root_fs_usage:set_text_background_color(beautiful.widget_background)
+root_fs_usage:set_values_text_color(colors_stops)
+--root_fs_usage:set_rounded_size(0.4)
+root_fs_usage:set_font_size(10)
+root_fs_usage:set_background_color("#00000000")
+root_fs_usage:set_label("root: $percent %")
+
+vicious.register(root_fs_usage, vicious.widgets.fs, "${/ used_p}", 120 )
+
 -- Create a wibox for each screen and add it
 mywibox = {}
 mylowerwibox = {}
@@ -203,57 +262,8 @@ mytasklist.buttons = awful.util.table.join(
                                               if client.focus then client.focus:raise() end
                                           end))
 
-  -- Top widgets:
-				  
-  cpu_graph = blingbling.line_graph({ height = 18,
-                                      width = 160,
-                                      show_text = true,
-                                      label = "Cpu: $percent %",
-                                     })
-  vicious.register(cpu_graph, vicious.widgets.cpu,'$1',2)
+mytag={}
 
-  mem_graph = blingbling.line_graph({ height = 18,
-                                      width = 160,
-                                      show_text = true,
-                                      label = "Mem: $percent %",
-                                     })
-
-	vicious.register(mem_graph, vicious.widgets.mem, '$1', 2)
-	
-	local colors_stops =  { {beautiful.green , 0},
-                          {beautiful.yellow, 0.5},
-                          {beautiful.cyan, 0.70},
-                          {beautiful.magenta, 0.79},
-                          {beautiful.red, 0.90}
-                        }
-  volume_bar = blingbling.volume({height = 18, width = 40, bar =true, show_text = true, label ="Vol"})
-	volume_bar:update_master()
-	volume_bar:set_master_control()
-
-	home_fs_usage=blingbling.value_text_box({height = 14, width = 40, v_margin = 3})
-	home_fs_usage:set_text_background_color(beautiful.widget_background)
-	home_fs_usage:set_values_text_color(colors_stops)
-	home_fs_usage:set_font_size(8)
-	home_fs_usage:set_background_color("#00000000")
-	home_fs_usage:set_label("home: $percent %")
-
-	vicious.register(home_fs_usage, vicious.widgets.fs, "${/home used_p}", 120 )
-	
-	root_fs_usage=blingbling.value_text_box({height = 14, width = 40, v_margin = 3})
-	root_fs_usage:set_text_background_color(beautiful.widget_background)
-	root_fs_usage:set_values_text_color(colors_stops)
-	--root_fs_usage:set_rounded_size(0.4)
-	root_fs_usage:set_font_size(8)
-	root_fs_usage:set_background_color("#00000000")
-	root_fs_usage:set_label("root: $percent %")
-
-	vicious.register(root_fs_usage, vicious.widgets.fs, "${/ used_p}", 120 )
-	
-  
-	powermenu=blingbling.system.mainmenu("/home/shaun/.config/awesome/blingbling/config_example/japanese2/shutdown.png") --icons have been set in theme
-
-	mytag={}
-	--test = blingbling.text_box()
 for s = 1, ( screen.count() ) do
     mytag[s]=blingbling.tagslist(s,  awful.widget.taglist.filter.all, mytaglist.buttons)
     -- Create a promptbox for each screen
@@ -283,12 +293,11 @@ for s = 1, ( screen.count() ) do
     --left_layout:add(mytags)
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    		right_layout:add(volume_bar)
-		--right_layout:add(mytextclock)
-		right_layout:add(calendar)
-		right_layout:add(mylayoutbox[s])
-		right_layout:add(powermenu)
-		right_layout:add(my_net)
+    right_layout:add(mynet)
+    right_layout:add(volume_bar)
+    --right_layout:add(mytextclock)
+    right_layout:add(calendar)
+    right_layout:add(mylayoutbox[s])
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
@@ -309,11 +318,12 @@ for s = 1, ( screen.count() ) do
 				      mylowerwibox[s]:geometry({ height = 1, width = 1 })				      
 						   end)
     local lower_left_layout = wibox.layout.fixed.horizontal()
+    lower_left_layout:add(mypowerlauncher)
     lower_left_layout:add(cpu_graph)
     lower_left_layout:add(mem_graph)
     lower_left_layout:add(home_fs_usage)
     lower_left_layout:add(root_fs_usage)
-    
+
     local lower_right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then lower_right_layout:add(wibox.widget.systray()) end
     
