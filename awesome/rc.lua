@@ -5,6 +5,7 @@ awful.rules = require("awful.rules")
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
+local vicious = require("vicious")
 -- Theme handling library
 local beautiful = require("beautiful")
 -- Notification library
@@ -42,12 +43,11 @@ local home_dir   = os.getenv("HOME")
 local themes_dir = home_dir .. "/.config/awesome/blingbling/config_example"
 local theme_dir = themes_dir .. "/japanese2"
 beautiful.init(theme_dir .. "/theme.lua")
-
+local blingbling = require("blingbling")
 -- This is used later as the default terminal and editor to run.
---terminal = "tortosa -c \"" .. home_dir .. "/.config/tortosa/tortosa_awesome.rc\""
 terminal = "urxvt"
-editor = os.getenv("EDITOR") or "nano"
-editor_cmd = terminal .. " -e " 
+editor = os.getenv("EDITOR") or "emacs"
+editor_cmd = editor 
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -59,18 +59,18 @@ modkey = "Mod4"
 -- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
---    awful.layout.suit.floating,
+    awful.layout.suit.floating,
     awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
+    -- awful.layout.suit.tile.left,
+    -- awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.fair,
+    -- awful.layout.suit.fair.horizontal,
+    -- awful.layout.suit.spiral,
+    -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier
+    -- awful.layout.suit.magnifier
 }
 -- }}}
 
@@ -87,7 +87,6 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    --tags[s] = awful.tag({ "  一⇋ Main   ", "  二⇋ Devel.   ", "  三⇋  Admin.  ", "  四⇋  www/Web  ", "  五⇋ Misc  ", "  六  " }, s, layouts[1])
     tags[s] = awful.tag({ " [[ ⇋  Main ]]", " [[ ⇋  Devel. ]]", " [[ ⇋  Admin. ]]", " [[ ⇋  www/Web ]]", " [[ ⇋ Misc ]] "}, s, layouts[1])
 end
 -- }}}
@@ -96,9 +95,9 @@ end
 -- Create a laucher widget and a main menu
 myawesomemenu = {
    { "manual", terminal .. " -e \"man awesome\"" },
-   { "edit config", terminal .. " -e \"vim " .. awesome.conffile .."\"" },
-   { "edit theme", terminal .. " -e \"vim ".. theme_dir .. "/theme.lua" .."\"" },
-	 { "restart", awesome.restart },
+   { "edit config", editor_cmd .. " " .. awesome.conffile },
+   { "edit theme", editor_cmd .. " " .. theme_dir .. "/theme.lua" },
+   { "restart", awesome.restart },
    { "quit", awesome.quit }
 }
 
@@ -115,9 +114,22 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- {{{ Wibox
+
+-- Net Widget
+my_net=blingbling.net.new()-- {width = 100, height = 20, interface = "wlan0"})
+my_net:set_height(18)
+my_net:set_interface("wlan0")
+--activate popup with ip informations on the net widget
+-- my_net:set_ippopup()
+my_net:set_show_text(true)
+my_net:set_v_margin(3)
+
+-- Memory Graph widget
+
+
 -- Create a textclock widget
 
-local blingbling = require("blingbling")
+-- local blingbling = require("blingbling")
 local cur_day_month =" <span color=\""..beautiful.bright_magenta ..
                                         "\">%d、</span>"
 local cur_month = " <span color=\""..beautiful.bright_yellow ..
@@ -144,6 +156,7 @@ calendar:set_link_to_external_calendar(true)
 --end)
 -- Create a wibox for each screen and add it
 mywibox = {}
+mylowerwibox = {}
 mypromptbox = {}
 mylayoutbox = {}
 mytaglist = {}
@@ -189,7 +202,7 @@ mytasklist.buttons = awful.util.table.join(
                                               awful.client.focus.byidx(-1)
                                               if client.focus then client.focus:raise() end
                                           end))
-  local vicious = require("vicious")
+
   -- Top widgets:
 				  
   cpu_graph = blingbling.line_graph({ height = 18,
@@ -237,14 +250,12 @@ mytasklist.buttons = awful.util.table.join(
 	vicious.register(root_fs_usage, vicious.widgets.fs, "${/ used_p}", 120 )
 	
   
-  shutdown=blingbling.system.shutdownmenu() --icons have been set in theme
-	reboot=blingbling.system.rebootmenu() --icons have been set in theme
-	lock=blingbling.system.lockmenu() --icons have been set in theme
-	logout=blingbling.system.logoutmenu()
+	powermenu=blingbling.system.mainmenu("/home/shaun/.config/awesome/blingbling/config_example/japanese2/shutdown.png") --icons have been set in theme
+
 	mytag={}
 	--test = blingbling.text_box()
 for s = 1, ( screen.count() ) do
-	mytag[s]=blingbling.tagslist(s,  awful.widget.taglist.filter.all, mytaglist.buttons)
+    mytag[s]=blingbling.tagslist(s,  awful.widget.taglist.filter.all, mytaglist.buttons)
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -262,29 +273,22 @@ for s = 1, ( screen.count() ) do
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ height = 18, position = "top", screen = s })
-
+    
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
     left_layout:add(mylauncher)
     left_layout:add(wibox.layout.margin(mytag[s],0,0,2,2))
     --left_layout:add(wibox.layout.margin(mytaglist[s],0,0,1,1))
     left_layout:add(mypromptbox[s])
-    left_layout:add(cpu_graph)
-    left_layout:add(mem_graph)
-    left_layout:add(home_fs_usage)
-    left_layout:add(root_fs_usage)
     --left_layout:add(mytags)
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
-		right_layout:add(volume_bar)
+    		right_layout:add(volume_bar)
 		--right_layout:add(mytextclock)
 		right_layout:add(calendar)
 		right_layout:add(mylayoutbox[s])
-		right_layout:add(reboot)
-		right_layout:add(shutdown)
-		right_layout:add(logout)
-		right_layout:add(lock)
+		right_layout:add(powermenu)
+		right_layout:add(my_net)
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
@@ -292,6 +296,36 @@ for s = 1, ( screen.count() ) do
     layout:set_right(right_layout)
 
     mywibox[s]:set_widget(layout)
+        
+    -- Create the lower wibox
+    mylowerwibox[s] = awful.wibox({ height = 1, width = 1, position = "bottom", screen = s })
+    
+    -- expand wibox when mouse is in lower left corner
+    -- does not work well with maximised/floating clients
+    mylowerwibox[s]:connect_signal("mouse::enter", function ()
+				      mylowerwibox[s]:geometry({ height = 25, width = 1366 })
+				       		   end)
+    mylowerwibox[s]:connect_signal("mouse::leave", function ()
+				      mylowerwibox[s]:geometry({ height = 1, width = 1 })				      
+						   end)
+    local lower_left_layout = wibox.layout.fixed.horizontal()
+    lower_left_layout:add(cpu_graph)
+    lower_left_layout:add(mem_graph)
+    lower_left_layout:add(home_fs_usage)
+    lower_left_layout:add(root_fs_usage)
+    
+    local lower_right_layout = wibox.layout.fixed.horizontal()
+    if s == 1 then lower_right_layout:add(wibox.widget.systray()) end
+    
+    local lower_middle_layout = wibox.layout.margin()
+    
+    local lower_layout = wibox.layout.align.horizontal()
+    lower_layout:set_left(lower_left_layout)
+    lower_layout:set_middle(lower_middle_layout)
+    lower_layout:set_right(lower_right_layout)
+    
+    mylowerwibox[s]:set_widget(lower_layout)
+
 end
 -- }}}
 

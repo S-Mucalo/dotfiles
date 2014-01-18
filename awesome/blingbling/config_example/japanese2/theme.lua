@@ -2,7 +2,8 @@
 -- japanese2 awesome theme --
 ---------------------------
 
-local theme_dir="/home/shaun/.config/awesome/blingbling/config_example/japanese2"
+local home = os.getenv("HOME")
+local theme_dir = home .. "/.config/awesome/blingbling/config_example/japanese2"
 
 local function rgb(red, green, blue)
   if type(red) == "number" or type(green) == "number" or type(blue) == "number" then
@@ -147,7 +148,8 @@ theme.titlebar_maximized_button_focus_inactive  = theme_dir.."/titlebar/maximize
 theme.titlebar_maximized_button_normal_active = theme_dir.."/titlebar/maximize.png"
 theme.titlebar_maximized_button_focus_active  = theme_dir.."/titlebar/maximize.png"
 
-theme.wallpaper = theme_dir.."/wallpaper-なかの-まんが.jpg"
+theme.wallpaper = home .. "/.wallpaper/current.jpg"
+-- theme.wallpaper = theme_dir .. "/wallpaper-なかの-まんが.jpg"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = theme_dir.."/layouts/fairh.png"
@@ -181,8 +183,10 @@ theme.blingbling = {
     accept = theme_dir .. "/ok.png",
     cancel = theme_dir .. "/cancel.png",
     lock = theme_dir .. "/lock.png",
+    main = theme_dir .. "/shutdown.png",
     font = "Droid Sans Mono",
     font_size = 9 
+    
 }
 theme.blingbling.tagslist = {}
 theme.blingbling.tagslist.normal ={ background_color = widget_background,--rgb(26,26,26),
