@@ -29,7 +29,7 @@ local grey = "#444444ff"
 local light_grey = "#555555"
 local white = "#ffffff"
 local light_white = "#999999"
-local light_black = "#232323"
+local light_black = "#101010"
 local red = "#b9214f"
 local bright_red = "#ff5c8d"
 local yellow = "#ff9800"
@@ -50,7 +50,6 @@ local bright_white = "#F7F7F7"
 local transparent = "#00000000"
 --background=#121212
 --foreground=#aeafad
-
 
 theme = {}
 theme.grey = grey
@@ -86,9 +85,9 @@ theme.fg_focus      = white
 theme.fg_urgent     = white
 theme.fg_minimize   = black
 
-theme.border_width  = 0 
-theme.border_normal = "#232323"
-theme.border_focus  = "#999999"
+theme.border_width  = 1
+theme.border_normal = light_black
+theme.border_focus  = white
 theme.border_marked = theme.bg_normal
 
 -- There are other variable sets
@@ -180,7 +179,7 @@ theme.logout_icon = theme_dir .. "/logout.png"
 theme.icon_theme = "/home/cedlemo/.icons/AwOkenDark" 
 theme.blingbling = {
     background_color = transparent,
-    graph_background_color = widget_background,
+    graph_background_color = theme.widget_background,
     graph_color = bright_magenta,
     graph_line_color = bright_blue,
     rounded_size = 0.3,        
@@ -197,12 +196,12 @@ theme.blingbling = {
     
 }
 theme.blingbling.tagslist = {}
-theme.blingbling.tagslist.normal ={ background_color = widget_background,--rgb(26,26,26),
-                                    text_background_color = "#00000000", --no color
-                                    rounded_size = { 0, 0.4,0,0.4 },
+theme.blingbling.tagslist.normal ={ background_color = widget_background,
+                                    text_background_color = light_black,
+                                    rounded_size = { 0, 0.8,0,0.8 },
                                     text_color = theme.fg_normal,
                                     font = "Droid Sans",
-                                    font_size = 7 
+                                    font_size = 8
                                   }
 theme.blingbling.tagslist.focus = { h_margin = 1,
                                     v_margin = 1,
@@ -211,7 +210,7 @@ theme.blingbling.tagslist.focus = { h_margin = 1,
                                     text_color = theme.fg_normal,
                                     rounded_size = { 0, 0.4,0,0.4 },
                                     font = "Droid Sans italic",
-                                    font_size = 8
+                                    font_size = 9
                                   }
 
 theme.blingbling.tagslist.urgent = theme.blingbling.tagslist.focus
@@ -221,7 +220,7 @@ local cal_common_style = {  h_margin = 0,
                             v_margin = 0, 
                             rounded_size = 0.3, 
                             background_color = widget_background, 
-                            text_background_color = "#00000000",
+                            text_background_color = transparent,
                             text_color = white, 
                             font ="Droid Sans"
                           }
@@ -253,72 +252,6 @@ theme.blingbling.calendar.focus_widget_style.rounded_size = {0,0.5,0,0.5}
 theme.blingbling.calendar.days_of_week_widget_style.text_color = light_grey
 theme.blingbling.calendar.corner_widget_style.text_color = light_grey
 theme.blingbling.calendar.weeks_number_widget_style.text_color = light_grey 
---[[theme.blingbling.calendar = {
-        prev_next_widget_style = {  h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0.4, 
-                                    background_color = red, --"#330033", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#ffffff", 
-                                    font ="Droid Sans"},
-	current_date_widget_style = { h_margin = 0, 
-                                    v_margin = 0,
-                                    rounded_size = 0.4,  
-                                    background_color = red, --"#330033", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#ffffff", 
-                                    font ="Droid Sans"},
-	days_of_week_widget_style = { h_margin = 0, 
-                                    v_margin = 0,
-                                    rounded_size = 0.4,  
-                                    background_color = "#666666", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#333333", 
-                                    font ="Droid Sans"},
-	days_of_month_widget_style = { h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0.4, 
-                                    background_color = red,--"#330033", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#ffffff", 
-                                    font ="Droid Sans"},
-	weeks_number_widget_style = { h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0.4, 
-                                    background_color = "#111111", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#ffffff", 
-                                    font ="Droid Sans"},
-	corner_widget_style =       { h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0.4, 
-                                    text_background_color = "#00000000",
-                                    background_color = "#111111", 
-                                    text_color = "#ffffff", 
-                                    font ="Droid Sans"},
-	current_day_widget_style =  { h_margin = 0, 
-                                    v_margin = 0,
-                                    rounded_size = {0.5,0,0.5,0},  
-                                    background_color = "#338833", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#999999", 
-                                    font ="Droid Sans"},
-	focus_widget_style =        { h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0, 
-                                    background_color = "#999999", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#330033", 
-                                    font ="Droid Sans"},
-	info_cell_style =           { h_margin = 0, 
-                                    v_margin = 0, 
-                                    rounded_size = 0, 
-                                    background_color = "#66666600", 
-                                    text_background_color = "#00000000",
-                                    text_color = "#888888", 
-                                    font ="Droid Sans"},
-        }
---]]
 
 return theme
 -- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80
