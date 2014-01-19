@@ -104,6 +104,12 @@ theme.tasklist_fg_focus = yellow
 theme.titlebar_bg_normal = light_black
 theme.titlebar_bg_focus  = light_black 
 
+theme.tooltip_fg_color = light_black
+theme.tooltip_bg_color = transparent
+theme.tooltip_opacity = 0.95
+theme.tooltip_border_width = 1
+theme.tooltip_border_color = cyan
+
 --theme.taglist_bg_normal= "#333333"
 --theme.titlebar_bg_normal =
 --theme.titlebar_bg_focus =
@@ -173,10 +179,10 @@ theme.logout_icon = theme_dir .. "/logout.png"
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = "/home/cedlemo/.icons/AwOkenDark" 
 theme.blingbling = {
-    background_color = "#00000000",
+    background_color = transparent,
     graph_background_color = widget_background,
     graph_color = bright_magenta,
-    graph_line_color = magenta,
+    graph_line_color = bright_blue,
     rounded_size = 0.3,        
     text_color = light_white,
     reboot = theme_dir .. "/reboot.png",

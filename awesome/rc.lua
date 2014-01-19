@@ -44,6 +44,7 @@ local themes_dir = home_dir .. "/.config/awesome/blingbling/config_example"
 local theme_dir = themes_dir .. "/japanese2"
 beautiful.init(theme_dir .. "/theme.lua")
 local blingbling = require("blingbling")
+local wificard = "wlan0"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or "emacs"
@@ -56,20 +57,20 @@ editor_cmd = editor
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
--- Table of layouts to cover with awful.layout.inc, order matters.
+-- Table of layouts to cover with awful.layout.inc, order matters.\
 local layouts =
 {
-    awful.layout.suit.floating,
+    awful.layout.suit.fair,
+    -- awful.layout.suit.floating,
     awful.layout.suit.tile,
     -- awful.layout.suit.tile.left,
-    -- awful.layout.suit.tile.bottom,
+    awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
     -- awful.layout.suit.fair.horizontal,
     -- awful.layout.suit.spiral,
     -- awful.layout.suit.spiral.dwindle,
-    awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
+    -- awful.layout.suit.max,
+    -- awful.layout.suit.max.fullscreen,
     -- awful.layout.suit.magnifier
 }
 -- }}}
@@ -125,26 +126,18 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- {{{ Wibox
 
+-- Spacer widget
+spacer = wibox.widget.textbox()
+spacer:set_markup("  ")
+
 -- Net Widget
-mynet=blingbling.net.new({ width = 100, height = 20, interface = "wlan0", show_text=true, v_margin = 3})
--- mynet:set_height(18)
--- mynet:set_interface("wlan0")
--- --activate popup with ip informations on the net widget
--- -- mynet:set_ippopup()
--- mynet:set_show_text(true)
--- mynet:set_v_margin(3)
+mynet=blingbling.net.new({ width = 100, 
+			   height = 20, 
+			   interface = "wlan0", 
+			   show_text=true, 
+			   v_margin = 3
+			 })
 mynet:set_ippopup()
-
-
--- mynet:connect_signal("mouse::enter", function()
--- 			blingbling.net.show_ippopup_infos(mynet)
--- 				     end)
--- mynet:connect_signal("mouse::leave", function()
--- 			blingbling.net.hide_ippopup_infos(mynet)
--- 				     end)
-
--- Memory Graph widget
-
 
 -- Create a textclock widget
 
@@ -155,25 +148,37 @@ local cur_month = " <span color=\""..beautiful.bright_magenta..
                                         "\">%b、</span>"
 local cur_date =" <span color=\""..beautiful.bright_green..
                                         "\">%d、</span>"
-local cur_time = "<span font_weight=\"bold\">%H<span color=\""..
+local cur_time = "<span font_weight=\"bold\">%I<span color=\""..
                  beautiful.red.."\" font_weight=\"normal\">:</span>%M"..
                  "<span color=\""..
-                 beautiful.red.."\" font_weight=\"normal\">.</span></span>" 
+                 beautiful.red.."\" font_weight=\"normal\">%p</span></span>" 
 
-mytextclock = awful.widget.textclock(  cur_day .. cur_month .. 
-                                          cur_date ..
-                                          cur_time
+mytextclock = awful.widget.textclock(  cur_day .. 
+				       cur_month .. 
+				       cur_date ..
+				       cur_time
 				    )
-calendar = blingbling.calendar({ widget = mytextclock})
+calendar = blingbling.calendar({ widget = mytextclock })
 calendar:set_link_to_external_calendar(true)
 
--- Top widgets:
-				  
+-- Volume graph widget
+volume_bar = blingbling.volume({ height = 18, 
+				 width = 30, bar = true, 
+				 show_text = true, 
+				 label ="Vol"
+			       })
+volume_bar:update_master()
+volume_bar:set_master_control()
+
+-- Top widgets:			  
 cpu_graph = blingbling.line_graph({ height = 25,
 				    width = 160,
 				    show_text = true,
 				    label = "Cpu: $percent %",
 				  })
+cpu_graph:set_graph_color(beautiful.magenta)
+cpu_graph:set_graph_line_color(beautiful.bright_magenta)
+
 vicious.register(cpu_graph, vicious.widgets.cpu,'$1',2)
 
 mem_graph = blingbling.line_graph.new({ height = 25,
@@ -181,7 +186,10 @@ mem_graph = blingbling.line_graph.new({ height = 25,
 				    show_text = true,
 				    label = "Mem: $percent %",
 				  })
+mem_graph:set_graph_color(beautiful.transparent)
+mem_graph:set_graph_line_color(beautiful.bright_green)
 blingbling.popups.htop(mem_graph)
+
 vicious.register(mem_graph, vicious.widgets.mem, '$1', 2)
 
 local colors_stops =  { {beautiful.green , 0},
@@ -190,15 +198,15 @@ local colors_stops =  { {beautiful.green , 0},
 			{beautiful.magenta, 0.8},
 			{beautiful.red, 0.95}
 }
-volume_bar = blingbling.volume({height = 18, width = 30, bar =true, show_text = true, label ="Vol"})
-volume_bar:update_master()
-volume_bar:set_master_control()
 
-home_fs_usage=blingbling.value_text_box({height = 25, width = 60, v_margin = 3})
+home_fs_usage = blingbling.value_text_box({height = 25, 
+					   width = 60, 
+					   v_margin = 3
+					  })
 home_fs_usage:set_text_background_color(beautiful.widget_background)
 home_fs_usage:set_values_text_color(colors_stops)
 home_fs_usage:set_font_size(10)
-home_fs_usage:set_background_color("#00000000")
+home_fs_usage:set_background_color(beautiful.transparent)
 home_fs_usage:set_label("home: $percent %")
 
 vicious.register(home_fs_usage, vicious.widgets.fs, "${/home used_p}", 120 )
@@ -206,12 +214,93 @@ vicious.register(home_fs_usage, vicious.widgets.fs, "${/home used_p}", 120 )
 root_fs_usage=blingbling.value_text_box({height = 25, width = 60, v_margin = 3})
 root_fs_usage:set_text_background_color(beautiful.widget_background)
 root_fs_usage:set_values_text_color(colors_stops)
---root_fs_usage:set_rounded_size(0.4)
+root_fs_usage:set_rounded_size(0.4)
 root_fs_usage:set_font_size(10)
-root_fs_usage:set_background_color("#00000000")
+root_fs_usage:set_background_color(beautiful.transparent)
 root_fs_usage:set_label("root: $percent %")
 
 vicious.register(root_fs_usage, vicious.widgets.fs, "${/ used_p}", 120 )
+
+-- MPD widget
+-- Initialize widget
+mpdwidget = wibox.widget.textbox()
+
+vicious.register(mpdwidget, vicious.widgets.mpd,
+    function (mpdwidget, args)
+       
+       local out_string = "<span color='"..  beautiful.red..
+	  "' > ♫ </span><span font_weight='bold'>" ..  
+	  args["{Artist}"] .. "<span color='"..  beautiful.red..
+	  "'font_weight='normal'> : </span>" .. 
+	  "<span font_weight='bold'>" ..  args["{Title}"] ..
+	  "</span></span> "
+       
+       if args["{state}"] == "Stop" then 
+            return "<span color='"..
+	      beautiful.red .."' > ■ </span>"
+       elseif args["{state}"] == "Play" then  
+	   return "<span color='"..
+	      beautiful.blue .."' > ▶ </span>".. out_string
+       elseif args["{state}"] == "Pause" then  
+	   return "<span color='"..
+	      beautiful.red .."' > ❚❚ </span>".. out_string
+       else return ""
+        end
+    end, 10)
+
+-- Wifiwidget
+-- Initialise widget
+wifiwidget = wibox.widget.textbox()
+-- Register widget
+vicious.register(wifiwidget, vicious.widgets.wifi,
+    function (widget, args)
+        local f = assert(io.popen("iwconfig"))
+        local wifi = assert(f:read("*all"))
+        f:close()
+        if(string.match(wifi, "Tx%-Power=(%a+)") == "off") then
+            return "<span color='" .. beautiful.magenta  .. "'>~</span> off"
+        else
+            return "~Signal Strength: <span color='" .. beautiful.cyan .. "'>" .. args["{link}"] .. "%</span>" 
+        end
+    end, 7, wificard)
+
+-- Weather widget and popup
+weatherwidget = wibox.widget.textbox()
+weather_t = awful.tooltip({ objects = { weatherwidget },})
+
+vicious.register(weatherwidget, vicious.widgets.weather,
+                function (widget, args)
+                    weather_t:set_text("City: " .. args["{city}"] ..
+				       "\nWind: " .. args["{windkmh}"] .. 
+				       "km/h " .. args["{wind}"] .. 
+				       "\nSky: " .. args["{sky}"] .. 
+				       "\nHumidity: " .. args["{humid}"] .. 
+				       "%")
+                    return  "<span font_weight='bold'>Temp:</span><span color = '" .. beautiful.red .. "'>" .. args["{tempc}"] .. "</span>°C"
+                end, 1800, "NZCH")
+                --'1800': check every 30 minutes.
+                --'NZCH': Christchurch NZ ICAO code.
+
+-- Battery widget
+
+-- pkg widget
+pacwidget =  wibox.widget.textbox()
+
+pacwidget_t = awful.tooltip({ objects = { pacwidget},})
+
+vicious.register(pacwidget, vicious.widgets.pkg,
+                function(widget,args)
+                    local io = { popen = io.popen }
+                    local s = io.popen("yaourt -Qua")
+                    local str = ''
+
+                    for line in s:lines() do
+                        str = str .. line .. "\n"
+                    end
+                    pacwidget_t:set_text(str)
+                    s:close()
+                    return "UPDATES: " .. args[1]
+                end, 1800, "Arch")
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -265,7 +354,7 @@ mytasklist.buttons = awful.util.table.join(
 mytag={}
 
 for s = 1, ( screen.count() ) do
-    mytag[s]=blingbling.tagslist(s,  awful.widget.taglist.filter.all, mytaglist.buttons)
+    mytag[s]=blingbling.tagslist(s, awful.widget.taglist.filter.all, mytaglist.buttons)
     -- Create a promptbox for each screen
     mypromptbox[s] = awful.widget.prompt()
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
@@ -282,7 +371,7 @@ for s = 1, ( screen.count() ) do
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons)
 
     -- Create the wibox
-    mywibox[s] = awful.wibox({ height = 18, position = "top", screen = s })
+    mywibox[s] = awful.wibox({ height = 18, position = "top", screen = s , terminal = "urxvt"})
     
     -- Widgets that are aligned to the left
     local left_layout = wibox.layout.fixed.horizontal()
@@ -292,16 +381,25 @@ for s = 1, ( screen.count() ) do
     left_layout:add(mypromptbox[s])
     --left_layout:add(mytags)
     -- Widgets that are aligned to the right
+    local middle_layout = wibox.layout.margin(mytasklist[s],0,0,2,2)
+
     local right_layout = wibox.layout.fixed.horizontal()
+    right_layout:add(mpdwidget)
+    right_layout:add(spacer)
     right_layout:add(mynet)
+    right_layout:add(spacer)
     right_layout:add(volume_bar)
+    right_layout:add(spacer)
+    right_layout:add(weatherwidget)
+    right_layout:add(spacer)
     --right_layout:add(mytextclock)
     right_layout:add(calendar)
     right_layout:add(mylayoutbox[s])
+
     -- Now bring it all together (with the tasklist in the middle)
     local layout = wibox.layout.align.horizontal()
     layout:set_left(left_layout)
-    layout:set_middle(wibox.layout.margin(mytasklist[s],0,0,2,2))
+    layout:set_middle(middle_layout)
     layout:set_right(right_layout)
 
     mywibox[s]:set_widget(layout)
@@ -319,15 +417,25 @@ for s = 1, ( screen.count() ) do
 						   end)
     local lower_left_layout = wibox.layout.fixed.horizontal()
     lower_left_layout:add(mypowerlauncher)
+    lower_left_layout:add(spacer)
     lower_left_layout:add(cpu_graph)
+    lower_left_layout:add(spacer)
     lower_left_layout:add(mem_graph)
+    lower_left_layout:add(spacer)
     lower_left_layout:add(home_fs_usage)
+    lower_left_layout:add(spacer)
     lower_left_layout:add(root_fs_usage)
+    lower_left_layout:add(spacer)
+    lower_left_layout:add(pacwidget)
+
+    local lower_middle_layout = wibox.layout.margin()
 
     local lower_right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then lower_right_layout:add(wibox.widget.systray()) end
-    
-    local lower_middle_layout = wibox.layout.margin()
+    lower_right_layout:add(wifiwidget)
+    if s == 1 then 
+       lower_right_layout:add(spacer)	   
+       lower_right_layout:add(wibox.widget.systray()) 
+    end
     
     local lower_layout = wibox.layout.align.horizontal()
     lower_layout:set_left(lower_left_layout)
@@ -523,7 +631,7 @@ client.connect_signal("manage", function (c, startup)
         end
     end
 
-    local titlebars_enabled = true
+    local titlebars_enabled = false
     if titlebars_enabled and (c.type == "normal" or c.type == "dialog") then
         -- buttons for the titlebar
         local buttons = awful.util.table.join(
@@ -537,8 +645,7 @@ client.connect_signal("manage", function (c, startup)
                     c:raise()
                     awful.mouse.client.resize(c)
                 end)
-                )
-
+					     )
         -- Widgets that are aligned to the left
         local left_layout = wibox.layout.fixed.horizontal()
         left_layout:add(awful.titlebar.widget.iconwidget(c))
@@ -582,6 +689,5 @@ function run_once(cmd)
 	end
 	awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
 end
---run_once("qjackctl")
 run_once("volti")
 -- }}}
