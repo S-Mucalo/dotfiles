@@ -2,6 +2,9 @@
 *log
 *database
 *.db
+history
+pid
+state
 
 tags
 __pycache__

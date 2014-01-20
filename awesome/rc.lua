@@ -40,8 +40,8 @@ end
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 local home_dir   = os.getenv("HOME")
-local themes_dir = home_dir .. "/.config/awesome/blingbling/config_example"
-local theme_dir = themes_dir .. "/japanese2"
+local themes_dir = home_dir .. "/.config/awesome/themes"
+local theme_dir = themes_dir .. "/dark_bling"
 beautiful.init(theme_dir .. "/theme.lua")
 local blingbling = require("blingbling")
 local wificard = "wlan0"
@@ -49,7 +49,8 @@ local wificard = "wlan0"
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or "emacs"
 editor_cmd = editor 
-
+browser = "firefox"
+filemngr = terminal .. " -e ranger" 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
 -- If you do not like this or do not have such a key,
@@ -57,12 +58,12 @@ editor_cmd = editor
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
--- Table of layouts to cover with awful.layout.inc, order matters.\
+-- Table of layouts to cover with awful.layout.inc, order matters.
 local layouts =
 {
+    awful.layout.suit.tile,
     awful.layout.suit.fair,
     -- awful.layout.suit.floating,
-    awful.layout.suit.tile,
     -- awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
@@ -88,7 +89,8 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ " [[ ⇋  Main ]]", " [[ ⇋  Devel. ]]", " [[ ⇋  Admin. ]]", " [[ ⇋  www/Web ]]", " [[ ⇋ Misc ]] "}, s, layouts[1])
+    tags[s] = awful.tag({ " [[ ⇋  Main ]]", " [[ ⇋  Net ]]", " [[ ⇋  Work ]]", 
+			  " [[ ⇋  School ]]", " [[ ⇋ Media ]] ", " [[ ⇋ Misc ]] "}, s, layouts[1])
 end
 -- }}}
 
@@ -102,7 +104,17 @@ myawesomemenu = {
    { "quit", awesome.quit }
 }
 
+mycommaps = {
+   { "Firefox", "firefox" },
+   { "Ranger", filemngr },
+   { "Emacs", "emacs" },
+   { "PDF Viewer", "evince" },
+   { "libre-office", "libreoffice" }, 
+   { "image viewer", "gpicview" }
+}
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
+				    { "Applications", mycommaps},
                                     { "open terminal", terminal }
                                   }
                         })
@@ -282,6 +294,53 @@ vicious.register(weatherwidget, vicious.widgets.weather,
                 --'NZCH': Christchurch NZ ICAO code.
 
 -- Battery widget
+batlabel = wibox.widget.textbox()
+-- batlabel:set_markup("Bat: ")
+batwidget_t = awful.tooltip({ objects = { batlabel },})
+
+vicious.register(batlabel, vicious.widgets.bat, function(widget, args)
+		    batwidget_t:set_text("State: " ..  args[1] .. "\n" ..
+					 "Percent remaining: " .. args[2] .. "%\n" ..
+					 "Time remaining: " .. args[3] .. "\n"  .. 
+					 "Battery Wear: " .. args[4] .. "%")
+		    return "<span font_weight='bold'>Bat:</span>".."<span size ='x-large'>" .. args[1] .. "</span>" 
+						end, 
+		 50, "BAT0")
+
+batgraph = blingbling.progress_graph({height = 18, 
+ 				       width = 40, 
+ 				       v_margin = 1
+ 				      })
+batgraph:set_show_text(true)
+batgraph:set_horizontal(true)
+batgraph:set_text_background_color(beautiful.transparent)
+batgraph:set_text_color(beautiful.black)
+batgraph:set_font_size(12)
+batgraph:set_background_color(beautiful.light_black)
+batgraph:set_graph_color(beautiful.bright_black)
+batgraph:set_graph_line_color(beautiful.white)
+
+vicious.register(batgraph, vicious.widgets.bat, 
+		 function (widget, args)
+		    if args[2] > 90 then
+		       widget:set_graph_color(beautiful.bright_green)
+		    elseif args[2] > 60 then
+		       widget:set_graph_color(beautiful.green)
+		    elseif args[2] > 40 then
+		       widget:set_graph_color(beautiful.yellow)
+		    elseif args[2] < 10 then
+		       widget:set_graph_color(beautiful.red)
+		       naughty.notify({
+					 title = "Battery Warning!",
+					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
+					 timeout = 60,
+					 position = "top_right",
+					 fg = beautiful.fg_focus,
+					 bg = beautiful.bg_focus, })
+		    end
+		    return  args[2] 
+		 end, 
+		 30, "BAT0")
 
 -- pkg widget
 pacwidget =  wibox.widget.textbox()
@@ -389,6 +448,10 @@ for s = 1, ( screen.count() ) do
     right_layout:add(mynet)
     right_layout:add(spacer)
     right_layout:add(volume_bar)
+    right_layout:add(spacer)
+    right_layout:add(batlabel)
+--    right_layout:add(batwidget)
+    right_layout:add(batgraph)
     right_layout:add(spacer)
     right_layout:add(weatherwidget)
     right_layout:add(spacer)
@@ -514,7 +577,12 @@ globalkeys = awful.util.table.join(
                   awful.util.getdir("cache") .. "/history_eval")
               end),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end)
+    awful.key({ modkey }, "p", function() menubar.show() end),
+
+    -- Custom 
+    awful.key({ modkey,           }, "q", function() awful.util.spawn(browser) end),
+    awful.key({ modkey,           }, "w", function() awful.util.spawn(filemngr) end),
+    awful.key({ modkey,           }, "e", function() awful.util.spawn(editor) end)
 )
 
 clientkeys = awful.util.table.join(
@@ -598,13 +666,13 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    -- Set Firefox to always map on tags number 2 of screen 1.
+    -- Set Firefox to always map on tags number 2 [Net tag] of screen 1.
      { rule_any = { class = {"Navigator","Firefox", "Chromium" },
        properties = { tag = tags[1][2] } }},
-     { rule = { class = "Thunderbird" },
-       properties = { tag = tags[1][3] } },
      { rule = { class = "Tuxguitar" },
        properties = { tag = tags[1][6] } },
+     { rule = { class = "Plugin-container" },
+       properties = { floating = true } }
 }
 -- }}}
 
@@ -681,13 +749,13 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 -- {{{
-function run_once(cmd)
-  local findme = cmd
-  local firstspace = cmd:find(" ")
-  if firstspace then
-		findme = cmd:sub(0, firstspace-1)
-	end
-	awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
-end
-run_once("volti")
+-- function run_once(cmd)
+--   local findme = cmd
+--   local firstspace = cmd:find(" ")
+--   if firstspace then
+-- 		findme = cmd:sub(0, firstspace-1)
+-- 	end
+-- 	awful.util.spawn_with_shell("pgrep -u $USER -x " .. findme .. " > /dev/null || (" .. cmd .. ")")
+-- end
+-- run_once("volti")
 -- }}}

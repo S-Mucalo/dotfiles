@@ -19,14 +19,37 @@ zmodload zsh/terminfo
 
 # setopt
 setopt \
-  autocd \
-  extendedglob \
-  prompt_subst \
-  inc_append_history \
-  completealiases \
-  HIST_IGNORE_DUPS
+    autocd \
+    extendedglob \
+    prompt_subst \
+    inc_append_history \
+    completealiases \
+    hist_ignore_dups
 
+
+# key bindings
 bindkey -e
+autoload zkbd
+source ~/.zkbd/$TERM-:0.0
+
+[[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
+[[ -n ${key[Insert]} ]] && bindkey "${key[Insert]}" overwrite-mode
+[[ -n ${key[Home]} ]] && bindkey "${key[Home]}" beginning-of-line
+[[ -n ${key[PageUp]} ]] && bindkey "${key[PageUp]}" history-beginning-search-backward
+[[ -n ${key[Delete]} ]] && bindkey "${key[Delete]}" delete-char
+[[ -n ${key[End]} ]] && bindkey "${key[End]}" end-of-line
+[[ -n ${key[PageDown]} ]] && bindkey "${key[PageDown]}" history-beginning-search-forward
+[[ -n ${key[Up]} ]] && bindkey "${key[Up]}" up-line-or-search
+[[ -n ${key[Left]} ]] && bindkey "${key[Left]}" backward-char
+[[ -n ${key[Down]} ]] && bindkey "${key[Down]}" down-line-or-search
+[[ -n ${key[Right]} ]] && bindkey "${key[Right]}" forward-char
+
+
+source $HOME/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+
+eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
+export LS_COLORS
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Import seperate config files
@@ -39,8 +62,5 @@ for r in $HOME/.dotfiles/zsh/*.zsh; do
   source $r
 done
 
-eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
-export LS_COLORS
 
-# source ~/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-# source ~/.dotfiles/zsh/zsh-syntax-highlighting/06-syntax-rules.zsh
+

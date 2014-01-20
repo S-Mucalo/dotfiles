@@ -1,9 +1,9 @@
----------------------------
--- japanese2 awesome theme --
----------------------------
+------------------------------
+-- dark_bling awesome theme --
+------------------------------
 
 local home = os.getenv("HOME")
-local theme_dir = home .. "/.config/awesome/blingbling/config_example/japanese2"
+local theme_dir = home .. "/.config/awesome/themes/dark_bling"
 
 local function rgb(red, green, blue)
   if type(red) == "number" or type(green) == "number" or type(blue) == "number" then
