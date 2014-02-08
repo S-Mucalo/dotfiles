@@ -473,7 +473,7 @@ for s = 1, ( screen.count() ) do
     -- expand wibox when mouse is in lower left corner
     -- does not work well with maximised/floating clients
     mylowerwibox[s]:connect_signal("mouse::enter", function ()
-				      mylowerwibox[s]:geometry({ height = 25, width = 1366 })
+				      mylowerwibox[s]:geometry({ height = 25, width = 1920 })
 				       		   end)
     mylowerwibox[s]:connect_signal("mouse::leave", function ()
 				      mylowerwibox[s]:geometry({ height = 1, width = 1 })				      
