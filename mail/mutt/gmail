@@ -8,10 +8,10 @@ unset signature
 # see ~/.msmtp for configuration
 set sendmail="/usr/bin/msmtp -a gmail"
 
-set from="sascha.eglau@gmail.com"
+set from="shaunmucalo@gmail.com"
 
 # Thread yourself
-my_hdr bcc: sascha.eglau@gmail.com
+my_hdr bcc: shaunmucalo@gmail.com
 
 # pgp settings
 #unmy_hdr X-PGP-Key

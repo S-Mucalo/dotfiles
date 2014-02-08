@@ -47,8 +47,8 @@ local blingbling = require("blingbling")
 local netiface = "enp0s3"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
-editor = os.getenv("EDITOR") or "emacs"
-editor_cmd = editor 
+editor = os.getenv("EDITOR") or 'emacsclient -t -a ""'
+editor_cmd = terminal .. " -e " ..  editor 
 browser = "firefox"
 filemngr = terminal .. " -e ranger" 
 -- Default modkey.
@@ -107,7 +107,7 @@ myawesomemenu = {
 mycommaps = {
    { "Firefox", "firefox" },
    { "Ranger", filemngr },
-   { "Emacs", "emacs" },
+   { "Emacs", editor_cmd },
    { "PDF Viewer", "evince" },
    { "libre-office", "libreoffice" }, 
    { "image viewer", "gpicview" }
@@ -292,6 +292,7 @@ vicious.register(weatherwidget, vicious.widgets.weather,
                 end, 1800, "NZCH")
                 --'1800': check every 30 minutes.
                 --'NZCH': Christchurch NZ ICAO code.
+
 
 -- -- Battery widget
 -- batlabel = wibox.widget.textbox()
@@ -580,9 +581,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
 
     -- Custom 
-    awful.key({ modkey,           }, "q", function() awful.util.spawn(browser) end),
-    awful.key({ modkey,           }, "w", function() awful.util.spawn(filemngr) end),
-    awful.key({ modkey,           }, "e", function() awful.util.spawn(editor) end)
+    awful.key({ modkey,           }, "a", function() awful.util.spawn(browser) end),
+    awful.key({ modkey,           }, "s", function() awful.util.spawn(filemngr) end),
+    awful.key({ modkey,           }, "d", function() awful.util.spawn(editor_cmd) end)
 )
 
 clientkeys = awful.util.table.join(
