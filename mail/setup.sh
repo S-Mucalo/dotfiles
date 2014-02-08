@@ -16,7 +16,7 @@ function notes {
 	echo "as well as the python bindings for gnome-keyring"
 	echo ""
 	echo "On Debian based systems, this can be done through..."
-	echo "(sudo) apt-get install mutt offlineimap imapfilter archivemail mairix lbdb msmtp-mta msmtp-gnome python-gnomekeyring"
+	echo "(sudo) yaourt -S mutt offlineimap imapfilter archivemail mairix lbdb msmtp-mta msmtp-gnome python-gnomekeyring"
 	echo ""
 	echo "Also, to let offlineimap/imapfilter be run through cron,"
 	echo "add export_x_info.sh to your startup scripts."

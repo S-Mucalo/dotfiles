@@ -1,8 +1,6 @@
 [user]
 	name = Shaun Mucalo
 	email = spm105@uclive.ac.nz
-[core]
-	editor = emacs
 [push]
 	default = simple
 [alias]

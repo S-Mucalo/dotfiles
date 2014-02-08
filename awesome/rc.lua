@@ -47,8 +47,8 @@ local blingbling = require("blingbling")
 local wificard = "wlan0"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
-editor = os.getenv("EDITOR") or "emacs"
-editor_cmd = editor 
+editor = os.getenv("EDITOR") or 'emacsclient -t -a ""'
+editor_cmd = terminal .. " -e " ..  editor 
 browser = "firefox"
 filemngr = terminal .. " -e ranger" 
 -- Default modkey.
@@ -107,7 +107,7 @@ myawesomemenu = {
 mycommaps = {
    { "Firefox", "firefox" },
    { "Ranger", filemngr },
-   { "Emacs", "emacs" },
+   { "Emacs", editor_cmd },
    { "PDF Viewer", "evince" },
    { "libre-office", "libreoffice" }, 
    { "image viewer", "gpicview" }
@@ -330,13 +330,16 @@ vicious.register(batgraph, vicious.widgets.bat,
 		       widget:set_graph_color(beautiful.yellow)
 		    elseif args[2] < 10 then
 		       widget:set_graph_color(beautiful.red)
-		       naughty.notify({
-					 title = "Battery Warning!",
-					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
-					 timeout = 60,
-					 position = "top_right",
-					 fg = beautiful.fg_focus,
-					 bg = beautiful.bg_focus, })
+		       -- notify if battery is nearly dead, but not charging
+		       if args[1] ~= '+' then
+			  naughty.notify({
+					    title = "Battery Warning!",
+					    text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
+					    timeout = 60,
+					    position = "top_right",
+					    fg = beautiful.fg_focus,
+					    bg = beautiful.bg_focus, })
+		       end
 		    end
 		    return  args[2] 
 		 end, 
@@ -580,9 +583,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "p", function() menubar.show() end),
 
     -- Custom 
-    awful.key({ modkey,           }, "q", function() awful.util.spawn(browser) end),
-    awful.key({ modkey,           }, "w", function() awful.util.spawn(filemngr) end),
-    awful.key({ modkey,           }, "e", function() awful.util.spawn(editor) end)
+    awful.key({ modkey,           }, "a", function() awful.util.spawn(browser) end),
+    awful.key({ modkey,           }, "s", function() awful.util.spawn(filemngr) end),
+    awful.key({ modkey,           }, "d", function() awful.util.spawn(editor_cmd) end)
 )
 
 clientkeys = awful.util.table.join(

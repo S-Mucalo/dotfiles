@@ -62,6 +62,7 @@
 
 (setq global-visual-line-mode t)
 (setq inhibit-startup-screen t)
+(menu-bar-mode -1)
 
 (ido-mode t)
 (setq ido-enable-prefix nil

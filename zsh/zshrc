@@ -13,6 +13,9 @@
 autoload -U colors && colors
 autoload -U compinit && compinit
 autoload -U vcs_info && vcs_info
+autoload -U add-zsh-hook        # Load the zsh hook module. 
+
+
 
 zmodload zsh/complist
 zmodload zsh/terminfo

@@ -57,7 +57,7 @@ set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
 alternative_order text/plain text/enriched text/html
 
 source ~/.dotfiles/mail/mutt/muttmailboxes
-set spoolfile = +"ohm/inbox"
+set spoolfile = +"uni/inbox"
 
 source ~/.dotfiles/mail/mutt/common
 #source ~/.dotfiles/mail/mutt/colors
@@ -70,11 +70,11 @@ set query_command="lbdbq '%s'"
 
 # if we are in any directory starting with the following, pull
 # specific settings from somewhere else
-folder-hook +ohm/.* "source ~/.dotfiles/mail/mutt/ohm"
+folder-hook +uni/.* "source ~/.dotfiles/mail/mutt/uni"
 folder-hook +gmail/.* "source ~/.dotfiles/mail/mutt/gmail"
 
 # Mutt will mark emails from these addresses as having been sent by you
-alternates eglausa45793@th-nuernberg.de sascha.eglau@gmail.com
+alternates spm105@uclive.ac.nz shaun_mucalo@yahoo.co.nz shaunmucalo@gmail.com shaun.mucalo@pg.canterbury.ac.nz
 
 # All the macros we have defined
 source ~/.dotfiles/mail/mutt/macros

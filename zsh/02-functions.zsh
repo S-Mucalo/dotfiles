@@ -22,7 +22,7 @@ goto() { [ -d "$1" ] && cd "$1" || cd "$(dirname "$1")"; }
 cpf() { cp "$@" && goto "$_"; }
 mvf() { mv "$@" && goto "$_"; }
 mkf() { mkdir -p $1; cd $1 }
-cdl() { cd $@; ls++ }
+cdl() { cd $@; ls }
 d() { ($1 &) }
 zsh_stats() { history | awk '{print $2}' | sort | uniq -c | sort -rn | head }
 du1() { du -h --max-depth=1 "$@" | sort -k 1,1hr -k 2,2f; }
@@ -192,5 +192,26 @@ pac() {
 
   esac
 } # }}}
+
+# print the full alias if one is used
+_aliases="$(alias -Lr 2>/dev/null || alias)"
+
+alias_for() {
+  [[ $1 =~ '[[:punct:]]' ]] && return
+  local found="$( echo "$_aliases" | sed -nE "/^alias ${1}='?(.+)/s//\\1/p" )"
+  [[ -n $found ]] && echo "${found%\'}"
+}
+
+expand_command_line() {
+  [[ $# -eq 0 ]] && return         # If there's no input, return. Else... 
+  local found_alias="$(alias_for $1)"    # Check if there's an alias for the comand.
+  if [[ -n $found_alias ]]; then         # If there was
+    echo ${found_alias}                  # Print it. 
+  fi
+}
+add-zsh-hook preexec expand_command_line      # Adds the hook 
+
+# add-zsh-hook -d preexec expand_command_line # Remove it for this hook.
+
 
 # vim: set ft=zsh :
