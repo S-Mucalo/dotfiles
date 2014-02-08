@@ -44,7 +44,7 @@ local themes_dir = home_dir .. "/.config/awesome/themes"
 local theme_dir = themes_dir .. "/dark_bling"
 beautiful.init(theme_dir .. "/theme.lua")
 local blingbling = require("blingbling")
-local wificard = "wlan0"
+local netiface = "enp0s3"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or "emacs"
@@ -145,7 +145,7 @@ spacer:set_markup("  ")
 -- Net Widget
 mynet=blingbling.net.new({ width = 100, 
 			   height = 20, 
-			   interface = "wlan0", 
+			   interface = netiface, 
 			   show_text=true, 
 			   v_margin = 3
 			 })
@@ -260,21 +260,21 @@ vicious.register(mpdwidget, vicious.widgets.mpd,
         end
     end, 10)
 
--- Wifiwidget
--- Initialise widget
-wifiwidget = wibox.widget.textbox()
--- Register widget
-vicious.register(wifiwidget, vicious.widgets.wifi,
-    function (widget, args)
-        local f = assert(io.popen("iwconfig"))
-        local wifi = assert(f:read("*all"))
-        f:close()
-        if(string.match(wifi, "Tx%-Power=(%a+)") == "off") then
-            return "<span color='" .. beautiful.magenta  .. "'>~</span> off"
-        else
-            return "~Signal Strength: <span color='" .. beautiful.cyan .. "'>" .. args["{link}"] .. "%</span>" 
-        end
-    end, 7, wificard)
+-- -- Wifiwidget
+-- -- Initialise widget
+-- wifiwidget = wibox.widget.textbox()
+-- -- Register widget
+-- vicious.register(wifiwidget, vicious.widgets.wifi,
+--     function (widget, args)
+--         local f = assert(io.popen("iwconfig"))
+--         local wifi = assert(f:read("*all"))
+--         f:close()
+--         if(string.match(wifi, "Tx%-Power=(%a+)") == "off") then
+--             return "<span color='" .. beautiful.magenta  .. "'>~</span> off"
+--         else
+--             return "~Signal Strength: <span color='" .. beautiful.cyan .. "'>" .. args["{link}"] .. "%</span>" 
+--         end
+--     end, 7, netiface)
 
 -- Weather widget and popup
 weatherwidget = wibox.widget.textbox()
@@ -293,54 +293,54 @@ vicious.register(weatherwidget, vicious.widgets.weather,
                 --'1800': check every 30 minutes.
                 --'NZCH': Christchurch NZ ICAO code.
 
--- Battery widget
-batlabel = wibox.widget.textbox()
--- batlabel:set_markup("Bat: ")
-batwidget_t = awful.tooltip({ objects = { batlabel },})
+-- -- Battery widget
+-- batlabel = wibox.widget.textbox()
+-- -- batlabel:set_markup("Bat: ")
+-- batwidget_t = awful.tooltip({ objects = { batlabel },})
 
-vicious.register(batlabel, vicious.widgets.bat, function(widget, args)
-		    batwidget_t:set_text("State: " ..  args[1] .. "\n" ..
-					 "Percent remaining: " .. args[2] .. "%\n" ..
-					 "Time remaining: " .. args[3] .. "\n"  .. 
-					 "Battery Wear: " .. args[4] .. "%")
-		    return "<span font_weight='bold'>Bat:</span>".."<span size ='x-large'>" .. args[1] .. "</span>" 
-						end, 
-		 50, "BAT0")
+-- vicious.register(batlabel, vicious.widgets.bat, function(widget, args)
+-- 		    batwidget_t:set_text("State: " ..  args[1] .. "\n" ..
+-- 					 "Percent remaining: " .. args[2] .. "%\n" ..
+-- 					 "Time remaining: " .. args[3] .. "\n"  .. 
+-- 					 "Battery Wear: " .. args[4] .. "%")
+-- 		    return "<span font_weight='bold'>Bat:</span>".."<span size ='x-large'>" .. args[1] .. "</span>" 
+-- 						end, 
+-- 		 50, "BAT0")
 
-batgraph = blingbling.progress_graph({height = 18, 
- 				       width = 40, 
- 				       v_margin = 1
- 				      })
-batgraph:set_show_text(true)
-batgraph:set_horizontal(true)
-batgraph:set_text_background_color(beautiful.transparent)
-batgraph:set_text_color(beautiful.black)
-batgraph:set_font_size(12)
-batgraph:set_background_color(beautiful.light_black)
-batgraph:set_graph_color(beautiful.bright_black)
-batgraph:set_graph_line_color(beautiful.white)
+-- batgraph = blingbling.progress_graph({height = 18, 
+--  				       width = 40, 
+--  				       v_margin = 1
+--  				      })
+-- batgraph:set_show_text(true)
+-- batgraph:set_horizontal(true)
+-- batgraph:set_text_background_color(beautiful.transparent)
+-- batgraph:set_text_color(beautiful.black)
+-- batgraph:set_font_size(12)
+-- batgraph:set_background_color(beautiful.light_black)
+-- batgraph:set_graph_color(beautiful.bright_black)
+-- batgraph:set_graph_line_color(beautiful.white)
 
-vicious.register(batgraph, vicious.widgets.bat, 
-		 function (widget, args)
-		    if args[2] > 90 then
-		       widget:set_graph_color(beautiful.bright_green)
-		    elseif args[2] > 60 then
-		       widget:set_graph_color(beautiful.green)
-		    elseif args[2] > 40 then
-		       widget:set_graph_color(beautiful.yellow)
-		    elseif args[2] < 10 then
-		       widget:set_graph_color(beautiful.red)
-		       naughty.notify({
-					 title = "Battery Warning!",
-					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
-					 timeout = 60,
-					 position = "top_right",
-					 fg = beautiful.fg_focus,
-					 bg = beautiful.bg_focus, })
-		    end
-		    return  args[2] 
-		 end, 
-		 30, "BAT0")
+-- vicious.register(batgraph, vicious.widgets.bat, 
+-- 		 function (widget, args)
+-- 		    if args[2] > 90 then
+-- 		       widget:set_graph_color(beautiful.bright_green)
+-- 		    elseif args[2] > 60 then
+-- 		       widget:set_graph_color(beautiful.green)
+-- 		    elseif args[2] > 40 then
+-- 		       widget:set_graph_color(beautiful.yellow)
+-- 		    elseif args[2] < 10 then
+-- 		       widget:set_graph_color(beautiful.red)
+-- 		       naughty.notify({
+-- 					 title = "Battery Warning!",
+-- 					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
+-- 					 timeout = 60,
+-- 					 position = "top_right",
+-- 					 fg = beautiful.fg_focus,
+-- 					 bg = beautiful.bg_focus, })
+-- 		    end
+-- 		    return  args[2] 
+-- 		 end, 
+-- 		 30, "BAT0")
 
 -- pkg widget
 pacwidget =  wibox.widget.textbox()
@@ -449,9 +449,9 @@ for s = 1, ( screen.count() ) do
     right_layout:add(spacer)
     right_layout:add(volume_bar)
     right_layout:add(spacer)
-    right_layout:add(batlabel)
---    right_layout:add(batwidget)
-    right_layout:add(batgraph)
+    -- right_layout:add(batlabel)
+    -- right_layout:add(batwidget)
+    -- right_layout:add(batgraph)
     right_layout:add(spacer)
     right_layout:add(weatherwidget)
     right_layout:add(spacer)
@@ -494,7 +494,7 @@ for s = 1, ( screen.count() ) do
     local lower_middle_layout = wibox.layout.margin()
 
     local lower_right_layout = wibox.layout.fixed.horizontal()
-    lower_right_layout:add(wifiwidget)
+    -- lower_right_layout:add(wifiwidget)
     if s == 1 then 
        lower_right_layout:add(spacer)	   
        lower_right_layout:add(wibox.widget.systray()) 
