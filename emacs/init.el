@@ -169,3 +169,28 @@
 
 (add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 (el-get 'sync)
+
+
+;; load color theme only if frame started as x window
+
+;; last t is for NO-ENABLE
+(load-theme 'wheatgrass t t)
+;; (load-theme 'terminal-theme t t)
+
+(defun mb/pick-color-theme (frame)
+  (select-frame frame)
+  (if (window-system frame)
+      (progn 
+	;; (disable-theme 'terminal-theme) ; in case it was active
+	(enable-theme 'wheatgrass) 
+	)
+    (progn
+      ;; (enable-theme 'terminal-theme) ; in case it was active
+      (disable-theme 'wheatgrass))))
+(add-hook 'after-make-frame-functions 'mb/pick-color-theme)
+
+;; For when emacs or emacs -nw rather than emacs --daemon
+(if window-system
+    (enable-theme 'wheatgrass)
+  ; (enable-theme 'terminal-theme)
+  )
