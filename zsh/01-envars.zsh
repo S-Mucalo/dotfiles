@@ -8,7 +8,8 @@ export DISPLAY=:0
 
 export SHELL='/bin/zsh'
 
-export EDITOR='emacsclient -t -a ""'
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient"
 
 export PATH="/usr/local/sbin:\
 /usr/local/bin:\
