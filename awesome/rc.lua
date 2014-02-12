@@ -47,8 +47,8 @@ local blingbling = require("blingbling")
 local netiface = "enp0s3"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
-editor = os.getenv("EDITOR") or 'emacsclient -t -a ""'
-editor_cmd = terminal .. " -e " ..  editor 
+editor = os.getenv("EDITOR") or 'emacsclient -nc -a ""'
+editor_cmd = editor -- terminal .. " -e " ..  editor 
 browser = "firefox"
 filemngr = terminal .. " -e ranger" 
 -- Default modkey.

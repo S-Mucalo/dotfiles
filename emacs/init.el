@@ -27,12 +27,10 @@
 (setq TeX-source-correlate-start-server t)
 (setq reftex-plug-into-auctex t)
 
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
-
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/auto-complete")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "/usr/share/emacs/site-lisp/auto-complete/ac-dict")
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
 (recentf-mode 1)
@@ -62,7 +60,7 @@
 
 (setq global-visual-line-mode t)
 (setq inhibit-startup-screen t)
-(menu-bar-mode -1)
+;; (menu-bar-mode -1)
 
 (ido-mode t)
 (setq ido-enable-prefix nil
@@ -98,13 +96,23 @@
 			     "~/org/school.org"
 			     "~/org/home.org"))
 
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+(setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
+
+;; (setq auto-save-file-name-transforms
+;;       '((".*" , temporary-file-directory t)))
+
+;; (setq auto-save-file-name-transforms 
+;;       '((".*", "~/.emacs.d/autosaves)))
+;; (make-directory "~/.emacs.d/autosaves/" t)
+
+
 (setq custom-file "~/.emacs.d/custom.el")
 
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
-
-;; (require 'pymacs)
-;; (pymacs-load "ropemacs" "rope-")
 
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "<prior>"))
@@ -114,12 +122,35 @@
 (global-set-key "\M-l" 'goto-line)
 
 (setq column-number-mode t)
+(require 'cc-mode)
+
+(c-toggle-hungry-state)
+
+(setq c-default-style "linux"
+      c-basic-offset 4)
+(require 'flymake)
+(add-hook 'c-mode-common-hook
+	  (lambda()
+	    (flymake-mode t)
+	    (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
+	    (global-set-key [f4] 'flymake-goto-next-error)))
+
+(eval-after-load "autopair-autoloads"
+  '(progn
+     (require 'autopair)
+     (autopair-global-mode 1)))
+
+(require 'pymacs)
+(eval-after-load "python"
+  '(progn
+     (pymacs-load "ropemacs" "rope-")))
 
 ;; Python Hook
-(add-hook 'python-mode-hook
-          (function (lambda ()
-                      (setq indent-tabs-mode nil
-                            default-tab-width 4))))
+(add-hook 'python-hook
+          #'(lambda ()
+	      (setq indent-tabs-mode nil
+		    default-tab-width 4)))
+
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:setup-keys t)
 
@@ -194,3 +225,5 @@
     (enable-theme 'wheatgrass)
   ; (enable-theme 'terminal-theme)
   )
+
+
