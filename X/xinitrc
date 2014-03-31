@@ -18,7 +18,7 @@ xbindkeys &
 xcompmgr -cF &
 nm-applet --sm-disable &
 udiskie &
-vboxclient-all &
+# vboxclient-all &
 
 exec $1
 

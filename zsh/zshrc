@@ -27,7 +27,7 @@ setopt \
     prompt_subst \
     inc_append_history \
     completealiases \
-    hist_ignore_dups
+    hist_ignore_all_dups
 
 
 # key bindings

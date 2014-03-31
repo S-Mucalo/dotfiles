@@ -126,14 +126,14 @@
 
 (c-toggle-hungry-state)
 
-(setq c-default-style "linux"
+(setq c-default-style "ellemtel"
       c-basic-offset 4)
 (require 'flymake)
 (add-hook 'c-mode-common-hook
 	  (lambda()
 	    (flymake-mode t)
-	    (global-set-key [f3] 'flymake-display-err-menu-for-current-line)
-	    (global-set-key [f4] 'flymake-goto-next-error)))
+	    (global-set-key [f5] 'flymake-display-err-menu-for-current-line)
+	    (global-set-key [f6] 'flymake-goto-next-error)))
 
 (eval-after-load "autopair-autoloads"
   '(progn
