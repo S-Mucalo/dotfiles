@@ -44,7 +44,7 @@ local themes_dir = home_dir .. "/.config/awesome/themes"
 local theme_dir = themes_dir .. "/dark_bling"
 beautiful.init(theme_dir .. "/theme.lua")
 local blingbling = require("blingbling")
-local netiface = "enp0s3"
+local netiface = "eno1"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or 'emacsclient -nc -a ""'

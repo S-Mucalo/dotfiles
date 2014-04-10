@@ -22,7 +22,7 @@
                                    (output-pdf "Evince")
                                    (output-html "xdg-open")))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'TeX-correlate-mode)
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 
 (setq TeX-source-correlate-start-server t)
 (setq reftex-plug-into-auctex t)
@@ -165,7 +165,9 @@
 '(setq TeX-command-list
 (append TeX-command-list
 (list
-(list "sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE on the SAGE file corresponding to this LaTeX file (run latex first).")))))
+ (list "Sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE on the SAGE file corresponding to this LaTeX file (run latex first).")
+ (list "Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount on the file.")
+ (list "Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex on the latex file corresponding to this LaTeX file.")))))
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
