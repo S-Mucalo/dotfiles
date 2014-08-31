@@ -57,7 +57,7 @@ export LS_COLORS
 # Import seperate config files
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-for r in $HOME/.dotfiles/zsh/*.zsh; do
+for r in $HOME/.dotfiles/zsh/*_zsh; do
   if [[ $DEBUG > 0 ]]; then
     echo "zsh: sourcing $r"
   fi
