@@ -49,7 +49,8 @@ ln -s $HOME/.dotfiles/ranger/ $HOME/.config/ranger
 # git
 ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
 
-# browser
-ln -s $HOME/.dotfiles/browser/keysnail.js $HOME/.keysnail.js
+# ssh
+ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh/
+
 
 echo "If you want to setup mail, check the .dotfiles/mail directory."

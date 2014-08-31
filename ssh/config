@@ -1,0 +1,34 @@
+Host * 
+     ForwardX11 yes
+     Port 22
+     User spm105
+
+Host uni_win
+     HostName mech1342.canterbury.ac.nz
+
+Host uni_lin
+     HostName mech1145.canterbury.ac.nz
+
+Host beatrice
+     HostName beatrice.canterbury.ac.nz
+
+Host foster
+     HostName foster.canterbury.ac.nz
+
+Host kerr
+     HostName kerr.canterbury.ac.nz
+
+Host popper
+     HostName popper.canterbury.ac.nz
+
+Host bgfen
+     HostName bgfen1.canterbury.ac.nz
+
+Host p7_teach
+     HostName hpclogin1.canterbury.ac.nz
+
+Host inertia
+     HostName inertia.canterbury.ac.nz
+
+Host momentum
+     HostName momentum.canterbury.ac.nz
