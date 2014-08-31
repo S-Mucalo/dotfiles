@@ -146,6 +146,9 @@
 (setq smartparens-init "~/.emacs.d/smartparens-init.el")
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
+(define-key global-map [(insert)] nil)
+(define-key global-map [(control insert)] 'overwrite-mode)
+(put 'overwrite-mode 'disabled t)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "<prior>"))
 (global-unset-key (kbd "<next>")) 
@@ -201,6 +204,7 @@
 ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
 ))))
 
+(require 'ein)
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
@@ -262,4 +266,5 @@
   )
 
 (load smartparens-init 'noerror)
+
 

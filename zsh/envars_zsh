@@ -1,10 +1,12 @@
+#! /usr/bin/zsh
+
 ## ZSH Environment Variables
 ## ~/.config/zsh
 
 export HISTSIZE=10000
 export SAVEHIST=10000
 export HISTFILE=~/.dotfiles/zsh/history.log
-export DISPLAY=:0
+# export DISPLAY=:0
 
 export SHELL='/bin/zsh'
 
@@ -22,5 +24,13 @@ $HOME/.dotfiles/bin:"
 # Less
 export LESSOPEN='| /usr/bin/highlight -O ansi %s'
 export LESS='-A$-R$-g$-i$-m$-s'
+
+# PETSc
+export PETSC_DIR=$HOME/petsc-3.5.1
+export PETSC_ARCH=arch-linux2-gcc-real
+
+# Python virtualenv
+export WORKON_HOME=$HOME/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
 
 # vim: set ft=zsh

@@ -50,7 +50,6 @@ source ~/.zkbd/$TERM-:0
 
 source $HOME/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-
 eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
 export LS_COLORS
 
@@ -64,6 +63,4 @@ for r in $HOME/.dotfiles/zsh/*.zsh; do
   fi
   source $r
 done
-
-
 

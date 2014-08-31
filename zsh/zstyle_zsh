@@ -1,3 +1,5 @@
+#! /usr/bin/zsh
+
 ## COMPLETION
 # ignore completion to commands we don't have
 zstyle ':completion:*:functions'          ignored-patterns '_*'
