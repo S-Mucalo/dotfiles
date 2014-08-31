@@ -26,7 +26,7 @@ export LESSOPEN='| /usr/bin/highlight -O ansi %s'
 export LESS='-A$-R$-g$-i$-m$-s'
 
 # PETSc
-export PETSC_DIR=$HOME/petsc-3.5.1
+export PETSC_DIR=$HOME/petsc
 export PETSC_ARCH=arch-linux2-gcc-real
 
 # Python virtualenv
