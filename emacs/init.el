@@ -2,10 +2,29 @@
   "Return the full path of a file in the user's emacs directory."
   (expand-file-name (concat user-emacs-directory relative-path)))
 
+; list the packages you want
+(setq package-list '(lua-mode 
+		     pkgbuild-mode 
+		     smartparens 
+		     window-number 
+		     yasnippet 
+		     magit))
+
+
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
 			 ("org" . "http://orgmode.org/elpa/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
+(package-initialize)
+
+; fetch the list of packages available 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
 
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
@@ -15,24 +34,35 @@
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-PDF-mode t)
-(setq TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o")))
-(setq TeX-view-program-selection '(((output-dvi style-pstricks)
-                                    "dvips and gv")
-                                   (output-dvi "xdvi")
-                                   (output-pdf "Evince")
-                                   (output-html "xdg-open")))
+;; (setq TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o")))
+;; (setq TeX-view-program-list '(("Zathura" "zathura --page-index=%(outpage) %o")))
+
+
+;; (setq TeX-view-program-list
+;;       '(("zathura" "zathura"
+;; 		   (mode-io-correlate "--page %(outpage)")
+;; 		   " %o")))
+;; (setq TeX-view-program-list '(("Zathura" "zathura %o")))
+;; (setq TeX-view-program-selection '(((output-dvi style-pstricks)
+;;                                     "dvips and gv")
+;;                                    (output-dvi "xdvi")
+;;                                    (output-pdf "zathura")
+;;                                    (output-html "xdg-open")))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'TeX-correlate-mode)
+(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 
 (setq TeX-source-correlate-start-server t)
 (setq reftex-plug-into-auctex t)
 
-(require 'pymacs)
-(pymacs-load "ropemacs" "rope-")
+;; So that RefTeX finds my bibliography
+(setq reftex-default-bibliography '("~/projects/Reference_Library/references.bib"))
+;; So that RefTeX also recognizes \addbibresource. not reliable.
+(setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
 
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/auto-complete")
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "/usr/share/emacs/site-lisp/auto-complete/ac-dict")
+;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
 
 (recentf-mode 1)
@@ -62,7 +92,7 @@
 
 (setq global-visual-line-mode t)
 (setq inhibit-startup-screen t)
-(menu-bar-mode -1)
+;; (menu-bar-mode -1)
 
 (ido-mode t)
 (setq ido-enable-prefix nil
@@ -83,10 +113,10 @@
 
 
 ;; PDFs visited in Org-mode are opened in Evince (and not in the default choice) http://stackoverflow.com/a/8836108/789593
-(add-hook 'org-mode-hook
-      '(lambda ()
-         (delete '("\\.pdf\\'" . default) org-file-apps)
-         (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))
+;; (add-hook 'org-mode-hook
+;;       '(lambda ()
+;;          (delete '("\\.pdf\\'" . default) org-file-apps)
+;;          (add-to-list 'org-file-apps '("\\.pdf\\'" . "evince %s"))))
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
@@ -98,14 +128,27 @@
 			     "~/org/school.org"
 			     "~/org/home.org"))
 
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-(setq custom-file "~/.emacs.d/custom.el")
+(setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
+;; (setq auto-save-file-name-transforms
+;;       '((".*" , temporary-file-directory t)))
+
+;; (setq auto-save-file-name-transforms 
+;;       '((".*", "~/.emacs.d/autosaves)))
+;; (make-directory "~/.emacs.d/autosaves/" t)
+
+
+(setq custom-file "~/.emacs.d/custom.el")
+(setq smartparens-init "~/.emacs.d/smartparens-init.el")
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
-;; (require 'pymacs)
-;; (pymacs-load "ropemacs" "rope-")
-
+(define-key global-map [(insert)] nil)
+(define-key global-map [(control insert)] 'overwrite-mode)
+(put 'overwrite-mode 'disabled t)
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "<prior>"))
 (global-unset-key (kbd "<next>")) 
@@ -114,14 +157,34 @@
 (global-set-key "\M-l" 'goto-line)
 
 (setq column-number-mode t)
+(require 'cc-mode)
+
+(c-toggle-hungry-state)
+
+(setq c-default-style "ellemtel"
+      c-basic-offset 4)
+(require 'flymake)
+(add-hook 'c-mode-common-hook
+	  (lambda()
+	    (flymake-mode t)
+	    (global-set-key [f5] 'flymake-display-err-menu-for-current-line)
+	    (global-set-key [f6] 'flymake-goto-next-error)))
+
+
+(require 'pymacs)
+(eval-after-load "python"
+  '(progn
+     (pymacs-load "ropemacs" "rope-")))
 
 ;; Python Hook
-(add-hook 'python-mode-hook
-          (function (lambda ()
-                      (setq indent-tabs-mode nil
-                            default-tab-width 4))))
-(add-hook 'python-mode-hook 'jedi:setup)
-(setq jedi:setup-keys t)
+(add-hook 'python-hook
+          #'(lambda ()
+	      (setq indent-tabs-mode nil
+		    default-tab-width 4)))
+
+;; (add-hook 'python-mode-hook 'jedi:setup)
+;; (setq jedi:setup-keys t)
+;; (setq jedi:complete-on-dot t)
 
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
@@ -134,7 +197,14 @@
 '(setq TeX-command-list
 (append TeX-command-list
 (list
-(list "sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE on the SAGE file corresponding to this LaTeX file (run latex first).")))))
+ (list "Sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE.")
+ (list "Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount.")
+ (list "Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex.")
+ (list "Depythontex" "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t" 'TeX-run-shell nil t :help "Run depythontex.")
+;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
+))))
+
+(require 'ein)
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
@@ -194,3 +264,5 @@
     (enable-theme 'wheatgrass)
   ; (enable-theme 'terminal-theme)
   )
+
+(load smartparens-init 'noerror)

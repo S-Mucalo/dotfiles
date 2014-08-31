@@ -26,6 +26,8 @@ ln -s $HOME/.dotfiles/zsh/zshrc $HOME/.zshrc
 # Emacs
 ln -s $HOME/.dotfiles/emacs/init.el $HOME/.emacs.d/init.el
 ln -s $HOME/.dotfiles/emacs/custom.el $HOME/.emacs.d/custom.el
+ln -s $HOME/.dotfiles/emacs/smartparens-init.el $HOME/.emacs.d/smartparens-init.el
+ln -s $HOME/.dotfiles/emacs/snippets/ $HOME/.emacs.d/snippets
 
 # bash
 ln -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
@@ -47,7 +49,8 @@ ln -s $HOME/.dotfiles/ranger/ $HOME/.config/ranger
 # git
 ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
 
-# browser
-ln -s $HOME/.dotfiles/browser/keysnail.js $HOME/.keysnail.js
+# ssh
+ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh/
+
 
 echo "If you want to setup mail, check the .dotfiles/mail directory."

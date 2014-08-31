@@ -22,3 +22,9 @@ man() {
 
 EDITOR=emacs
 PS1='[\u@\h \W]\$ '
+export WORKON_HOME=~/.virtualenvs
+source /usr/bin/virtualenvwrapper.sh
+
+# PETSc
+export PETSC_DIR='~/petsc-3.5.1'
+export PETSC_ARCH=arch-linux2-gcc-real

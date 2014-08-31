@@ -17,8 +17,8 @@ xautolock -time 30 -locker "sudo pm-suspend" &
 xbindkeys &
 xcompmgr -cF &
 nm-applet --sm-disable &
-udiskie &
-vboxclient-all &
+udiskie --tray &
+# vboxclient-all &
 
 exec $1
 

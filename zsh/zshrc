@@ -27,13 +27,13 @@ setopt \
     prompt_subst \
     inc_append_history \
     completealiases \
-    hist_ignore_dups
+    hist_ignore_all_dups
 
 
 # key bindings
 bindkey -e
 autoload zkbd
-source ~/.zkbd/$TERM-:0.0
+source ~/.zkbd/$TERM-:0
 
 [[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
 [[ -n ${key[Insert]} ]] && bindkey "${key[Insert]}" overwrite-mode
@@ -50,7 +50,6 @@ source ~/.zkbd/$TERM-:0.0
 
 source $HOME/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-
 eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
 export LS_COLORS
 
@@ -58,12 +57,10 @@ export LS_COLORS
 # Import seperate config files
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-for r in $HOME/.dotfiles/zsh/*.zsh; do
+for r in $HOME/.dotfiles/zsh/*_zsh; do
   if [[ $DEBUG > 0 ]]; then
     echo "zsh: sourcing $r"
   fi
   source $r
 done
-
-
 
