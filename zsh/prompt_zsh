@@ -10,7 +10,7 @@ setprompt() {
   local PWD="$(pwd | sed  's:/home/[A-Za-z0-9]*:~:' | sed 's:/:%F{green}/%F{white}:g')%F{green}/%f"
   local EXIT="%(?..%F{202}%?%f)"
   local PRMPT="${USER}@$HOST ${PWD}"
-  local PRMPT2="${EXIT} %F{202}›%f "
+  local PRMPT2="${EXIT} %F{202}>%f" # ›
 
   local _newline=$'\n'
   local _lineup=$'\e[1A'
