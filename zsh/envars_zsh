@@ -28,6 +28,8 @@ export LESS='-A$-R$-g$-i$-m$-s'
 # PETSc
 export PETSC_DIR=$HOME/petsc
 export PETSC_ARCH=arch-linux2-gcc-real
+export PYTHONPATH=$PYTHONPATH:$PETSC_DIR/$PETSC_ARCH/lib
+export PYTHON2PATH=$PYTHON2PATH:$PETSC_DIR/$PETSC_ARCH/lib
 
 # Python virtualenv
 export WORKON_HOME=$HOME/.virtualenvs

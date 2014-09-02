@@ -18,6 +18,7 @@ alias uninstall='yaourt -Rns'
 alias search='yaourt -Ss'
 alias clean='sudo pacman -Rns $(pkg-list_true_orphans)'
 # alias ps='ps -a -c -o pid,command -x'
+alias gen_ctags='find . -name "*.[chCH]" -print | etags -'
 
 # grep
 grephistory()
