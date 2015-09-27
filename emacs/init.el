@@ -171,10 +171,10 @@
 	    (global-set-key [f6] 'flymake-goto-next-error)))
 
 
-(require 'pymacs)
-(eval-after-load "python"
-  '(progn
-     (pymacs-load "ropemacs" "rope-")))
+;; (require 'pymacs)
+;; (eval-after-load "python"
+;;   '(progn
+;;      (pymacs-load "ropemacs" "rope-")))
 
 ;; Python Hook
 (add-hook 'python-hook
