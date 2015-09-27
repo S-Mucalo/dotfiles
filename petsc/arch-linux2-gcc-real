@@ -8,6 +8,8 @@ if __name__ == '__main__':
     # '--with-cc=gcc',
     # '--with-clanguage=c',
     # '--with-dynamic-loading=1',
+    # '--download-mpi'
+    '--with-c2html=0',
     '--with-shared-libraries=1',
     '--with-python=1',
     '--download-ptscotch=yes',
@@ -20,14 +22,12 @@ if __name__ == '__main__':
     '--download-hypre=yes',
     '--download-suitesparse=yes',
     '--PETSC_ARCH=arch-linux2-gcc-real',
-    '--PETSC_DIR=/home/spm105/petsc',
+    '--PETSC_DIR=/home/shaun/petsc',
     '--with-boost=1',
     '--with-boost-dir=/usr',
     '--download-exodusii=yes',
     '--download-netcdf=yes',
     '--with-hdf5-dir=/usr',
     '--with-mpi-dir=/usr',
-    '--with-c2html=0'
-    # '--download-openmpi=yes'
-    ]
+  ]
   configure.petsc_configure(configure_options)

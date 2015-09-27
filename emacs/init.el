@@ -204,7 +204,7 @@
 ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
 ))))
 
-(require 'ein)
+;; (require 'ein)
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
