@@ -171,10 +171,10 @@
 	    (global-set-key [f6] 'flymake-goto-next-error)))
 
 
-(require 'pymacs)
-(eval-after-load "python"
-  '(progn
-     (pymacs-load "ropemacs" "rope-")))
+;; (require 'pymacs)
+;; (eval-after-load "python"
+;;   '(progn
+;;      (pymacs-load "ropemacs" "rope-")))
 
 ;; Python Hook
 (add-hook 'python-hook
@@ -204,7 +204,7 @@
 ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
 ))))
 
-(require 'ein)
+;; (require 'ein)
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
