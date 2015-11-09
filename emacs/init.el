@@ -266,7 +266,16 @@
 (setq send-mail-function (quote sendmail-send-it))
 
 
-(autoload 'notmuch "notmuch" "notmuch mail" t)
+(require 'notmuch)
+;; (autoload 'notmuch "notmuch" "notmuch mail" t)
+
+(define-key notmuch-show-mode-map "d"
+  (lambda ()
+    (interactive)
+    (notmuch-show-tag-message "+deleted")))
+
+
+
 
 (require 'mu4e)
 
@@ -276,10 +285,6 @@
        mu4e-trash-folder "/UC_mail/Deleted Items"
        user-mail-address "shaun.mucalo@pg.canterbury.ac.nz")
 
-(define-key notmuch-show-mode-map "d"
-  (lambda ()
-    (interactive)
-    (notmuch-show-tag-message "+deleted")))
 
 
 
