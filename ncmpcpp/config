@@ -13,6 +13,7 @@ autocenter_mode = "yes"
 centered_cursor = "yes"
 cyclic_scrolling = "no"
 playlist_disable_highlight_delay = "1"
+ignore_leading_the = "yes"
 
 # Bars
 song_status_format = "{$3%t •$1}{$2 %a$1}"
@@ -46,6 +47,8 @@ search_engine_display_mode = "columns" (classic/columns)
 follow_now_playing_lyrics = "yes"
 mouse_support = "yes"
 playlist_editor_display_mode = "columns"
+allow_for_physical_item_deletion = "yes"
+
 
 visualizer_fifo_path = "/home/shaun/.mpd/mpd.fifo"
 visualizer_output_name = "My fifo"
