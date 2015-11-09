@@ -13,8 +13,8 @@
 autoload -U colors && colors
 autoload -U compinit && compinit
 autoload -U vcs_info && vcs_info
-autoload -U add-zsh-hook        # Load the zsh hook module. 
-
+autoload -U add-zsh-hook  #Adds precmd preexec etc. hooks  
+autoload -U promptinit && promptinit
 
 
 zmodload zsh/complist
@@ -27,7 +27,9 @@ setopt \
     prompt_subst \
     inc_append_history \
     completealiases \
-    hist_ignore_all_dups
+    hist_ignore_all_dups \
+    correctall \
+    prompt_subst
 
 
 # key bindings

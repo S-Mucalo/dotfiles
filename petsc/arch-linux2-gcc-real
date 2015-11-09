@@ -5,29 +5,17 @@ if __name__ == '__main__':
   sys.path.insert(0, os.path.abspath('config'))
   import configure
   configure_options = [
-    # '--with-cc=gcc',
-    # '--with-clanguage=c',
-    # '--with-dynamic-loading=1',
-    # '--download-mpi'
     '--with-c2html=0',
     '--with-shared-libraries=1',
-    '--with-python=1',
-    '--download-ptscotch=yes',
-    '--download-scalapack=yes',
-    '--download-metis=yes',
-    '--download-parmetis=yes',
-    '--download-superlu=yes',
-    '--download-mumps=yes',
-    '--download-pastix=yes',
-    '--download-hypre=yes',
     '--download-suitesparse=yes',
     '--PETSC_ARCH=arch-linux2-gcc-real',
-    '--PETSC_DIR=/home/shaun/petsc',
-    '--with-boost=1',
+    '--PETSC_DIR=/home/spm105/petsc',
+    '--with-boost=yes',
     '--with-boost-dir=/usr',
-    '--download-exodusii=yes',
-    '--download-netcdf=yes',
     '--with-hdf5-dir=/usr',
     '--with-mpi-dir=/usr',
-  ]
+    '--with-petsc4py=yes',
+    '--with-python=1',
+    '--download-petsc4py=yes',
+    ]
   configure.petsc_configure(configure_options)

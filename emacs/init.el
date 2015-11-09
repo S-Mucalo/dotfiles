@@ -1,3 +1,6 @@
+
+
+
 (defun dot-emacs (relative-path)
   "Return the full path of a file in the user's emacs directory."
   (expand-file-name (concat user-emacs-directory relative-path)))
@@ -5,7 +8,6 @@
 ; list the packages you want
 (setq package-list '(lua-mode 
 		     pkgbuild-mode 
-		     smartparens 
 		     window-number 
 		     yasnippet 
 		     magit))
@@ -34,27 +36,14 @@
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
 (setq TeX-PDF-mode t)
-;; (setq TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o")))
-;; (setq TeX-view-program-list '(("Zathura" "zathura --page-index=%(outpage) %o")))
 
-
-;; (setq TeX-view-program-list
-;;       '(("zathura" "zathura"
-;; 		   (mode-io-correlate "--page %(outpage)")
-;; 		   " %o")))
-;; (setq TeX-view-program-list '(("Zathura" "zathura %o")))
-;; (setq TeX-view-program-selection '(((output-dvi style-pstricks)
-;;                                     "dvips and gv")
-;;                                    (output-dvi "xdvi")
-;;                                    (output-pdf "zathura")
-;;                                    (output-html "xdg-open")))
 (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
 (add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
 
 (setq TeX-source-correlate-start-server t)
 (setq reftex-plug-into-auctex t)
 
-;; So that RefTeX finds my bibliography
+;; So that RefTeX finds my bibliography - doesn't seem to be reliable
 (setq reftex-default-bibliography '("~/projects/Reference_Library/references.bib"))
 ;; So that RefTeX also recognizes \addbibresource. not reliable.
 (setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
@@ -64,6 +53,8 @@
 (add-to-list 'ac-dictionary-directories "/usr/share/emacs/site-lisp/auto-complete/ac-dict")
 ;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
+(ac-linum-workaround)
+
 
 (recentf-mode 1)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
@@ -87,7 +78,7 @@
   (add-hook hook (lambda () (flyspell-mode -1))))
 (setq-default ispell-program-name "aspell")
 (setq ispell-list-command "list")
-(setq ispell-extra-args '("--sug-mode=ultra")) ;; --sug-mode=fast,normal
+(setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
 (setq ispell-local-dictionary "en_GB")
 
 (setq global-visual-line-mode t)
@@ -143,7 +134,6 @@
 
 
 (setq custom-file "~/.emacs.d/custom.el")
-(setq smartparens-init "~/.emacs.d/smartparens-init.el")
 (add-to-list 'auto-mode-alist '("\\.m\\'" . octave-mode))
 
 (define-key global-map [(insert)] nil)
@@ -265,4 +255,78 @@
   ; (enable-theme 'terminal-theme)
   )
 
-(load smartparens-init 'noerror)
+(add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
+
+
+(setq message-kill-buffer-on-exit t)
+(setq mail-envelope-from (quote header))
+(setq mail-specify-envelope-from t)
+(setq message-sendmail-envelope-from (quote header))
+(setq send-mail-function (quote sendmail-send-it))
+
+
+(require 'notmuch)
+;; (autoload 'notmuch "notmuch" "notmuch mail" t)
+
+(define-key notmuch-show-mode-map "d"
+  (lambda ()
+    (interactive)
+    (notmuch-show-tag-message "+deleted")))
+
+
+
+
+(require 'mu4e)
+
+(setq  mu4e-maildir "~/.mail"
+       mu4e-sent-folder "/UC_mail/Sent Items"
+       mu4e-drafts-folder "/UC_mail/Drafts"
+       mu4e-trash-folder "/UC_mail/Deleted Items"
+       user-mail-address "shaun.mucalo@pg.canterbury.ac.nz")
+
+
+
+
+
+;; (setq mu4e-sent-messages-behavior 'delete)
+
+
+(defvar my-mu4e-account-alist
+  '(
+    ("UC_mail"
+     (mu4e-sent-folder "/UC_mail/Sent Items")
+     (mu4e-drafts-folder "/UC_mail/Drafts")
+     (mu4e-trash-folder "/UC_mail/Deleted Items")
+     (user-mail-address "shaun.mucalo@pg.canterbury.ac.nz"))
+    ("gmail"
+     (mu4e-sent-folder "/gmail_mail/[Gmail].Sent Mail")
+     (mu4e-trash-folder "/gmail_mail/[Gmail].Trash")
+     (mu4e-drafts-folder "/gmail_mail/[Gmail].Drafts")
+     (user-mail-address "shaunmucalo@gmail.com"))
+    ("yahoo"
+     (mu4e-sent-folder "/yahoo_mail/Sent")
+     (mu4e-drafts-folder "/yahoo_mail/Drafts")
+     (mu4e-trash-folder "/yahoo_mail/Trash")
+     (user-mail-address "s_mucalo@yahoo.co.nz"))
+    ))
+
+(defun my-mu4e-set-account ()
+  "Set the account for composing a message."
+  (let* ((account
+          (if mu4e-compose-parent-message
+              (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                (string-match "/\\(.*?\\)/" maildir)
+                (match-string 1 maildir))
+            (completing-read (format "Compose with account: (%s) "
+                                     (mapconcat #'(lambda (var) (car var))
+                                                my-mu4e-account-alist "/"))
+                             (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                             nil t nil nil (caar my-mu4e-account-alist))))
+         (account-vars (cdr (assoc account my-mu4e-account-alist))))
+    (if account-vars
+        (mapc #'(lambda (var)
+                  (set (car var) (cadr var)))
+              account-vars)
+      (error "No email account found"))))
+
+(add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
