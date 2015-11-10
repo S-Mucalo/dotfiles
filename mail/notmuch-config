@@ -48,8 +48,7 @@ other_email=s_mucalo@yahoo.co.nz;shaunmucalo@gmail.com;
 #		in the mail store.
 #
 [new]
-tags=new
-# unread;inbox;
+tags=new;unread;
 ignore=
 
 # Search configuration

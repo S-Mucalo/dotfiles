@@ -268,11 +268,77 @@
 (require 'notmuch)
 ;; (autoload 'notmuch "notmuch" "notmuch mail" t)
 
+
 (define-key notmuch-show-mode-map "d"
   (lambda ()
+    "toggle deleted tag for message"
     (interactive)
-    (notmuch-show-tag-message "+deleted")))
+    (if (member "deleted" (notmuch-show-get-tags))
+	(notmuch-show-tag (list "-deleted"))
+      (notmuch-show-tag (list "+deleted")))))
 
+(define-key notmuch-search-mode-map "d"
+  (lambda ()
+    "toggle deleted tag for message"
+    (interactive)
+    (if (member "deleted" (notmuch-show-get-tags))
+	(notmuch-show-tag (list "-deleted"))
+      (notmuch-show-tag (list "+deleted")))))
+
+
+ (setq notmuch-saved-searches
+       (quote
+	((:name "UC_mail-inbox" :query "tag:UC_mail-inbox" :key "i")
+	 (:name "UC_mail-sent" :query "tag:UC_mail-sent" :key "s")
+	 (:name "UC_mail-drafts" :query "tag:UC_mail-drafts" :key "d")
+	 (:name "unread" :query "tag:unread" :key "u")
+	 (:name "gmail" :query "tag:gmail-inbox")
+	 (:name "gmail-sent" :query "tag:gmail-sent")
+	 (:name "yahoo" :query "tag:yahoo-inbox")
+	 (:name "Yahoo-sent" :query "tag:yahoo-sent")
+	 (:name "Petsc" :query "tag:petsc-users")
+	 (:name "fipy" :query "tag:fipy-users")
+	 (:name "all mail" :query "*" :key "a")
+	 )))
+
+
+
+
+
+(autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
+(add-hook 'message-setup-hook 'gnus-alias-determine-identity)
+
+;; Define two identities, "home" and "work"
+(setq gnus-alias-identity-alist
+      '(("UC_mail"
+	 nil ;; Does not refer to any other identity
+	 "Shaun Mucalo <shaun.mucalo@pg.canterbury.ac.nz>" ;; Sender address
+	 nil ;; No organization header
+	 nil ;; No extra headers
+	 nil ;; No extra body text
+	 nil) ;; "~/.signature")
+	("gmail"
+	 nil
+	 "Shaun Mucalo <shaunmucalo@gmail.com>"
+	 nil ;; "Example Corp."
+	 nil ;; (("Bcc" . "john.doe@example.com"))
+	 nil
+	 nil) ;; "~/.signature.work")
+	("yahoo"
+	 nil
+	 "Shaun Mucalo <s_mucalo@yahoo.co.nz>"
+	 nil ;; "Example Corp."
+	 nil ;; (("Bcc" . "john.doe@example.com"))
+	 nil
+	 nil) ;; "~/.signature.work")
+	))
+;; Use "UC_mail" identity by default
+(setq gnus-alias-default-identity "UC_mail")
+;; Define rules to match work identity
+; (setq gnus-alias-identity-rules)
+; '(("UC_mail" ("any" "shaun.mucalo@\\(example\\.com\\|help\\.example.com\\)" both) "gmail"))
+;; Determine identity when message-mode loads
+(add-hook 'message-setup-hook 'gnus-alias-determine-identity)
 
 
 
