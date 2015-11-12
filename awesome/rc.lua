@@ -44,7 +44,7 @@ local themes_dir = home_dir .. "/.config/awesome/themes"
 local theme_dir = themes_dir .. "/dark_bling"
 beautiful.init(theme_dir .. "/theme.lua")
 local blingbling = require("blingbling")
-local netiface = "wlan0"
+local netiface = "eno1"
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or 'emacsclient -nc -a ""'
@@ -308,40 +308,40 @@ vicious.register(weatherwidget, vicious.widgets.weather,
 -- 						end, 
 -- 		 50, "BAT0")
 
-batgraph = blingbling.progress_graph({height = 18, 
- 				       width = 40, 
- 				       v_margin = 1
- 				      })
-batgraph:set_show_text(true)
-batgraph:set_horizontal(true)
-batgraph:set_text_background_color(beautiful.transparent)
-batgraph:set_text_color(beautiful.black)
-batgraph:set_font_size(12)
-batgraph:set_background_color(beautiful.light_black)
-batgraph:set_graph_color(beautiful.bright_black)
-batgraph:set_graph_line_color(beautiful.white)
+-- batgraph = blingbling.progress_graph({height = 18, 
+--  				       width = 40, 
+--  				       v_margin = 1
+--  				      })
+-- batgraph:set_show_text(true)
+-- batgraph:set_horizontal(true)
+-- batgraph:set_text_background_color(beautiful.transparent)
+-- batgraph:set_text_color(beautiful.black)
+-- batgraph:set_font_size(12)
+-- batgraph:set_background_color(beautiful.light_black)
+-- batgraph:set_graph_color(beautiful.bright_black)
+-- batgraph:set_graph_line_color(beautiful.white)
 
-vicious.register(batgraph, vicious.widgets.bat, 
-		 function (widget, args)
-		    if args[2] > 90 then
-		       widget:set_graph_color(beautiful.bright_green)
-		    elseif args[2] > 60 then
-		       widget:set_graph_color(beautiful.green)
-		    elseif args[2] > 40 then
-		       widget:set_graph_color(beautiful.yellow)
-		    elseif args[2] < 10 then
-		       widget:set_graph_color(beautiful.red)
-		       naughty.notify({
-					 title = "Battery Warning!",
-					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
-					 timeout = 60,
-					 position = "top_right",
-					 fg = beautiful.fg_focus,
-					 bg = beautiful.bg_focus, })
-		    end
-		    return  args[2] 
-		 end, 
-		 30, "BAT0")
+-- vicious.register(batgraph, vicious.widgets.bat, 
+-- 		 function (widget, args)
+-- 		    if args[2] > 90 then
+-- 		       widget:set_graph_color(beautiful.bright_green)
+-- 		    elseif args[2] > 60 then
+-- 		       widget:set_graph_color(beautiful.green)
+-- 		    elseif args[2] > 40 then
+-- 		       widget:set_graph_color(beautiful.yellow)
+-- 		    elseif args[2] < 10 then
+-- 		       widget:set_graph_color(beautiful.red)
+-- 		       naughty.notify({
+-- 					 title = "Battery Warning!",
+-- 					 text = "<span color='" .. beautiful.black .. "'>Battery low! "..args[2].."% left!</span>",
+-- 					 timeout = 60,
+-- 					 position = "top_right",
+-- 					 fg = beautiful.fg_focus,
+-- 					 bg = beautiful.bg_focus, })
+-- 		    end
+-- 		    return  args[2] 
+-- 		 end, 
+-- 		 30, "BAT0")
 
 -- pkg widget
 pacwidget =  wibox.widget.textbox()
@@ -452,7 +452,7 @@ for s = 1, ( screen.count() ) do
     right_layout:add(spacer)
     -- right_layout:add(batlabel)
     -- right_layout:add(batwidget)
-    right_layout:add(batgraph)
+    -- right_layout:add(batgraph)
     right_layout:add(spacer)
     right_layout:add(weatherwidget)
     right_layout:add(spacer)

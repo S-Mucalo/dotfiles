@@ -1,34 +1,18 @@
-+gmail -- 'path:"gmail_mail/**"' and tag:new
-+gmail-inbox -- 'path:"gmail_mail/INBOX/**"' and tag:new
-+gmail-sent -- 'path:"gmail_mail/[Gmail].Sent Mail/**"' and tag:new
-+gmail-drafts -- 'path:"gmail_mail/[Gmail].Drafts/**"' and tag:new
-+UC_mail -- 'path:"UC_mail/**"' and tag:new
-+UC_mail-inbox -- 'path:"UC_mail/INBOX/**"' and tag:new
-+UC_mail-sent -- 'path:"UC_mail/Sent Items/**"' and tag:new
-+UC_mail-drafts -- 'path:"UC_mail/Drafts/**"' and tag:new
-+deleted -- 'path:"UC_mail/Deleted Items/**"' and tag:new
-+yahoo -- 'path:"yahoo_mail/**"' and tag:new
-+yahoo-inbox -- 'path:"yahoo_mail/Inbox/**"' and tag:new
-+yahoo-sent -- 'path:"yahoo_mail/Sent/**"' and tag:new
-+yahoo-drafts -- 'path:"yahoo_mail/Drafts/**"' and tag:new
-+deleted -- 'path:"yahoo_mail/Trash/**"' and tag:new
-+petsc-users +lists -inbox -new -unread -UC_mail -- 'to:"petsc-users@mcs.anl.gov"' and tag:new
-+fipy +lists -inbox -new -unread -UC_mail -- 'to:"fipy@nist.gov"' and tag:new
-# +gmail -- 'path:"gmail_mail/**"'
-# +gmail-inbox -- 'path:"gmail_mail/INBOX/**"'
-# +gmail-sent -- 'path:"gmail_mail/[Gmail].Sent Mail/**"'
-# +gmail-drafts -- 'path:"gmail_mail/[Gmail].Drafts/**"' 
-# +UC_mail -- 'path:"UC_mail/**"'
-# +UC_mail-inbox -- 'path:"UC_mail/INBOX/**"' 
-# +UC_mail-sent -- 'path:"UC_mail/Sent Items/**"'
-# +UC_mail-drafts -- 'path:"UC_mail/Drafts/**"' 
-# +deleted -- 'path:"UC_mail/Deleted Items/**"'
-# +yahoo -- 'path:"yahoo_mail/**"' 
-# +yahoo-inbox -- 'path:"yahoo_mail/Inbox/**"' 
-# +yahoo-sent -- 'path:"yahoo_mail/Sent/**"' 
-# +yahoo-drafts -- 'path:"yahoo_mail/Drafts/**"' 
-# +deleted -- 'path:"yahoo_mail/Trash/**"' 
-# +petsc-users +lists -inbox -new -unread -UC_mail -- 'to:"petsc-users@mcs.anl.gov"'
-# +fipy +lists -inbox -new -unread -UC_mail -- 'to:"fipy@nist.gov"'
++UC_mail-inbox -new -- 'path:"UC_mail/INBOX/**"' and tag:new
++UC_mail-sent -new -- 'path:"UC_mail/Sent Items/**"' and tag:new
++UC_mail-drafts -new -- 'path:"UC_mail/Drafts/**"' and tag:new
++deleted -new -- 'path:"UC_mail/Deleted Items/**"' and tag:new
++UC_mail -new -- 'path:"UC_mail/**"' and tag:new
++gmail-inbox -new -- 'path:"gmail_mail/INBOX/**"' and tag:new
++gmail-sent -new -- 'path:"gmail_mail/[Gmail].Sent Mail/**"' and tag:new
++gmail-drafts -new -- 'path:"gmail_mail/[Gmail].Drafts/**"' and tag:new
++gmail -- 'path:"gmail_mail/**"' and tag:unread
++yahoo-inbox -new -- 'path:"yahoo_mail/Inbox/**"' and tag:new
++yahoo-sent -new -- 'path:"yahoo_mail/Sent/**"' and tag:new
++yahoo-drafts -new -- 'path:"yahoo_mail/Drafts/**"' and tag:new
++deleted -new -- 'path:"yahoo_mail/Trash/**"' and tag:new
++yahoo -new -- 'path:"yahoo_mail/**"' and tag:new
++petsc-users +lists -inbox -new -unread -UC_mail -- 'to:"petsc-users@mcs.anl.gov"' and tag:unread
++fipy +lists -inbox -new -unread -UC_mail -- 'to:"fipy@nist.gov"' and tag:unread
 
 
