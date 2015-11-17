@@ -6,12 +6,21 @@
   "Return the full path of a file in the user's emacs directory."
   (expand-file-name (concat user-emacs-directory relative-path)))
 
-                                        ; list the packages you want
+;; list the packages you want
 (setq package-list '(lua-mode
                      pkgbuild-mode
                      window-number
                      yasnippet
-                     magit))
+                     magit
+                     monokai-theme
+                     grandshell-theme
+                     cyberpunk-theme
+                     company
+                     ido-vertical-mode
+                     visual-regexp
+                     smex
+                     ))
+
 
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
@@ -19,17 +28,33 @@
                          ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
-                                        ; fetch the list of packages available
+;; fetch the list of packages available
 (unless package-archive-contents
   (package-refresh-contents))
 
-                                        ; install the missing packages
+;; install the missing packages
 (dolist (package package-list)
   (unless (package-installed-p package)
     (package-install package)))
 
-;; (global-linum-mode)
-                                        ; LaTeX
+
+
+(setq custom-file (dot-emacs "custom.el"))
+(load custom-file 'noerror)
+
+;; load color theme only early
+(load-theme 'monokai t t); last t is for NO-ENABLE
+(load-theme 'grandshell t t)
+(load-theme 'wheatgrass t t)
+(load-theme 'cyberpunk)
+;; (enable-theme 'monokai)
+
+;; Auto-completion COMPlete-ANY
+(add-hook 'after-init-hook 'global-company-mode)
+
+(global-set-key (kbd "C-x g") 'magit-status)
+
+;; LaTeX
 (load "auctex.el" nil t t)
 (load "preview-latex.el" nil t t)
 
@@ -48,23 +73,6 @@
 ;; So that RefTeX also recognizes \addbibresource. not reliable.
 (setq reftex-bibliography-commands '("bibliography" "nobibliography" "addbibresource"))
 
-
-                                        ; Autocomplete
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/auto-complete")
-(require 'auto-complete-config)
-(add-to-list 'ac-dictionary-directories "/usr/share/emacs/site-lisp/auto-complete/ac-dict")
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(ac-config-default)
-(ac-linum-workaround)
-
-(define-globalized-minor-mode real-global-auto-complete-mode
-  auto-complete-mode (lambda ()
-                       (if (not (minibufferp (current-buffer)))
-                           (auto-complete-mode 1))
-                       ))
-(real-global-auto-complete-mode t)
-(define-key ac-complete-mode-map [tab] 'ac-expand)
-(ac-flyspell-workaround)
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 
@@ -105,8 +113,24 @@
       ido-use-filename-at-point 'guess
       ido-max-prospects 10)
 
+(require 'ido-vertical-mode)
+(ido-vertical-mode t)
+(setq ido-vertical-define-keys 'C-n-and-C-p-only)
+
+(require 'visual-regexp)
+(define-key global-map (kbd "M-%") 'vr/query-replace)
+
+(require 'smex)
+(smex-initialize)
+(global-set-key (kbd "M-x") 'smex)
+(global-set-key (kbd "M-X") 'smex-major-mode-commands)
+;; Old M-x
+(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+
 (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
 (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
+
+
 
 (require 'org-install)
 (require 'org-src) ;; edit src inline
@@ -114,6 +138,7 @@
 (add-hook 'org-mode-hook
           (lambda()
             (toggle-truncate-lines)))
+
 
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
 (define-key global-map "\C-cl" 'org-store-link)
@@ -134,7 +159,7 @@
 
 
 
-                                        ; Stop doing bad things
+;; Stop doing bad things
 (define-key global-map [(insert)] nil)
 (define-key global-map [(control insert)] 'overwrite-mode)
 (put 'overwrite-mode 'disabled t)
@@ -166,8 +191,6 @@
                    default-tab-width 4)))
 
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
 
 ;; SageTeX setup
 ;; This adds the command sage when in LaTeX mode (to invoke type C-C C-c sage)
@@ -206,27 +229,8 @@
            )
        (warn "window-number not found."))))
 
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
 
 
-;; load color theme only if frame started as x window
-
-;; last t is for NO-ENABLE
-(load-theme 'monokai t t)
-(load-theme 'grandshell t t)
-(load-theme 'wheatgrass t t)
-(load-theme 'cyberpunk)
-;; (enable-theme 'monokai)
 
 (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
 
@@ -262,7 +266,9 @@
 (setq notmuch-fcc-dirs nil)
 (setq notmuch-saved-searches
       (quote
-       ((:name "UC_mail-unread" :query "tag:UC_mail-inbox and tag:unread")
+       (
+        (:name "UC_mail-recent" :query "tag:UC_mail-inbox and date:week.." :key "r")
+        (:name "UC_mail-unread" :query "tag:UC_mail-inbox and tag:unread")
         (:name "UC_mail-inbox" :query "tag:UC_mail-inbox" :key "i" :search-type tree)
         (:name "UC_mail-sent" :query "tag:UC_mail-sent" :key "s")
         (:name "UC_mail-drafts" :query "tag:UC_mail-drafts" :key "d")
