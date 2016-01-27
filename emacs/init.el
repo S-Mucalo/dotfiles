@@ -113,6 +113,19 @@
       ido-use-filename-at-point 'guess
       ido-max-prospects 10)
 
+;; "~" adds the "/" automatically in find file, etc.
+(add-hook 'ido-setup-hook
+          (lambda ()
+            ;; Go straight home
+            (define-key ido-file-completion-map
+              (kbd "~")
+              (lambda ()
+                (interactive)
+                (if (looking-back "/")
+                    (insert "~/")
+                  (call-interactively 'self-insert-command))))))
+
+
 (require 'ido-vertical-mode)
 (ido-vertical-mode t)
 (setq ido-vertical-define-keys 'C-n-and-C-p-only)
@@ -323,7 +336,7 @@
 
 (require 'mu4e)
 
-(setq  mu4e-maildir "~/.mail"
+(setq  mu4e-maildir ".mail"
        mu4e-sent-folder "/UC_mail/Sent Items"
        mu4e-drafts-folder "/UC_mail/Drafts"
        mu4e-trash-folder "/UC_mail/Deleted Items"
@@ -351,6 +364,7 @@
      (user-mail-address "s_mucalo@yahoo.co.nz"))
     ))
 
+
 (defun my-mu4e-set-account ()
   "Set the account for composing a message."
   (let* ((account
@@ -370,19 +384,84 @@
               account-vars)
       (error "No email account found"))))
 
+
+
+
 (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
 
-                                        ; Automatically go home when pressing ~ in find file command
-(add-hook 'ido-setup-hook
-          (lambda ()
-            ;; Go straight home
-            (define-key ido-file-completion-map
-              (kbd "~")
-              (lambda ()
-                (interactive)
-                (if (looking-back "/")
-                    (insert "~/")
-                  (call-interactively 'self-insert-command))))))
+
+(defun mu4e-UC-mail()
+  (interactive)
+  (message "UC-mail account")
+  (setq user-mail-address "shaun.mucalo@pg.canterbury.ac.nz"
+        mu4e-sent-folder "/UC_mail/Sent Items"
+        mu4e-drafts-folder "/UC_mail/Drafts"
+        mu4e-trash-folder "/UC_mail/Deleted Items")
+  (setq  mu4e-maildir-shortcuts
+        '( ("/UC_mail/INBOX"        . ?i)
+           ("/UC_mail/Sent Items"   . ?s)
+           ("/UC_mail/Deleted Items". ?t)
+           ("/UC_mail/Drafts"       . ?d))))
+
+(defun mu4e-gmail-mail()
+  (interactive)
+  (message "gmail-mail account")
+  (setq
+     mu4e-sent-folder "/gmail_mail/[Gmail].Sent Mail"
+     mu4e-trash-folder "/gmail_mail/[Gmail].Trash"
+     mu4e-drafts-folder "/gmail_mail/[Gmail].Drafts"
+     user-mail-address "shaunmucalo@gmail.com"
+     mu4e-maildir-shortcuts
+     '( ("/gmail_mail/INBOX"                . ?i)
+         ("/gmail_mail/[Gmail].Sent Mail"   . ?s)
+         ("/gmail_mail/[Gmail].Trash"       . ?t)
+         ("/gmail_mail/[Gmail].Drafts"      . ?d)
+         )
+))
+
+(defun mu4e-yahoo-mail()
+  (interactive)
+  (message "yahoo-mail account")
+  (setq mu4e-sent-folder "/yahoo_mail/Sent"
+        mu4e-drafts-folder "/yahoo_mail/Drafts"
+        mu4e-trash-folder "/yahoo_mail/Trash"
+        user-mail-address "s_mucalo@yahoo.co.nz"
+        mu4e-maildir-shortcuts
+        '( ("/yahoo_mail/Inbox"  . ?i)
+           ("/yahoo_mail/Sent"   . ?s)
+           ("/yahoo_mail/Trash"  . ?t)
+           ("/yahoo_mail/Drafts" . ?d)
+           ))
+  )
+
+(define-key mu4e-main-mode-map (kbd "<f12>") 'mu4e-UC-mail)
+(define-key mu4e-main-mode-map (kbd "<f11>") 'mu4e-gmail-mail)
+(define-key mu4e-main-mode-map (kbd "<f10>") 'mu4e-yahoo-mail)
+
+
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+
+;; save attachment to my desktop (this can also be a function)
+(setq mu4e-attachment-dir "~/Downloads")
+
+;; attempt to show images when viewing messages
+(setq mu4e-view-show-images t)
+
+(setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
+
+;; Allow org-mode stuff in mu4e
+(require 'org-mu4e)
+
+(autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+(bbdb-initialize 'message 'mu4e)
+(setq bbdb-mail-user-agent (quote message-user-agent))
+(setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
+(setq mu4e-compose-complete-addresses nil)
+(setq bbdb-mua-pop-up t)
+(setq bbdb-mua-pop-up-window-size 5)
+
+
 
 ;; Go to first real file in dired M-<
 (defun dired-back-to-top ()

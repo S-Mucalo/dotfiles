@@ -13,7 +13,7 @@
 autoload -U colors && colors
 autoload -U compinit && compinit
 autoload -U vcs_info && vcs_info
-autoload -U add-zsh-hook  #Adds precmd preexec etc. hooks  
+autoload -U add-zsh-hook  #Adds precmd preexec etc. hooks
 autoload -U promptinit && promptinit
 
 
@@ -28,7 +28,7 @@ setopt \
     inc_append_history \
     completealiases \
     hist_ignore_all_dups \
-    correctall \
+    correct \
     prompt_subst
 
 
@@ -65,4 +65,3 @@ for r in $HOME/.dotfiles/zsh/*_zsh; do
   fi
   source $r
 done
-

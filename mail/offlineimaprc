@@ -10,9 +10,9 @@ localrepository = UC_Local
 remoterepository = UC_Remote
 autorefresh = 5
 quick = 5
-# postsynchook =pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
+postsynchook =pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
 # postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && ./mail/tag_new"
-postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && notmuch tag --batch --input=/home/spm105/.dotfiles/mail/notmuch_tags"
+# postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && notmuch tag --batch --input=/home/spm105/.dotfiles/mail/notmuch_tags"
 
 [Repository UC_Local]
 type = Maildir
@@ -22,11 +22,12 @@ localfolders = ~/.mail/UC_mail
 type = IMAP
 remotehost = exchange.canterbury.ac.nz
 starttls = yes
-remoteuser = spm105
-folderfilter = lambda foldername: foldername not in ['Contacts', 'Calendar', 'Junk E-Mail', 'Notes', 'RSS Feeds', 'Journal', 'Tasks']
-remotepasseval = keyring.get_password("offlineimap", "exchange.canterbury.ac.nz")
+folderfilter = lambda foldername: foldername not in ['Contacts', 'Junk E-Mail', 'Notes', 'RSS Feeds', 'Journal']
+remoteusereval = get_username("exchange.canterbury.ac.nz")
+remotepasseval = get_password("exchange.canterbury.ac.nz")
 keepalive = 60
 holdconnectionopen = yes
+sslcacertfile = /etc/ssl/certs/ca-certificates.crt
 
 [Account gmail]
 localrepository = gmail_Local
@@ -40,9 +41,9 @@ localfolders = ~/.mail/gmail_mail
 
 [Repository gmail_Remote]
 type = Gmail
-remoteuser = shaunmucalo@gmail.com
-remotepasseval = keyring.get_password("offlineimap", "shaunmucalo@gmail.com")
-
+remoteusereval = get_username("gmail")
+remotepasseval = get_password("gmail")
+auth_mechanisms = LOGIN
 
 # nametrans = lambda foldername: re.sub ('^\[gmail\]', '')
 folderfilter = lambda foldername: foldername not in ['[Gmail]/All Mail']
@@ -65,10 +66,10 @@ localfolders = ~/.mail/yahoo_mail
 
 [Repository yahoo_Remote]
 type = IMAP
-remoteuser = s_mucalo@yahoo.co.nz
 remotehost = imap.mail.yahoo.com
 remoteport = 993
-remotepasseval = keyring.get_password("offlineimap", "s_mucalo@yahoo.co.nz")
+remoteusereval = get_username("yahoo")
+remotepasseval = get_password("yahoo")
 starttls = no
 ssl = yes
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
@@ -77,9 +78,8 @@ folderfilter = lambda foldername: foldername in ['Inbox', 'Drafts', 'Sent','Tras
 
 [mbnames]
 enabled = yes
-filename = ~/.mutt/mailboxes
+filename = ~/.mail/mailboxes
 header = "mailboxes "
 peritem = "+%(accountname)s/%(foldername)s"
 sep = " "
 footer = "\n"
-
