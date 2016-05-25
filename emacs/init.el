@@ -1,7 +1,7 @@
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (setq inhibit-startup-screen t)
-
+(setq mouse-yank-at-point t)
 (defun dot-emacs (relative-path)
   "Return the full path of a file in the user's emacs directory."
   (expand-file-name (concat user-emacs-directory relative-path)))
@@ -25,7 +25,8 @@
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 
 ;; fetch the list of packages available
@@ -67,6 +68,7 @@
 
 (setq TeX-source-correlate-start-server t)
 (setq reftex-plug-into-auctex t)
+(setq reftex-extra-bindings t)
 
 ;; So that RefTeX finds my bibliography - doesn't seem to be reliable
 (setq reftex-default-bibliography '("~/projects/Reference_Library/references.bib"))
@@ -147,6 +149,9 @@
 
 (require 'org-install)
 (require 'org-src) ;; edit src inline
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((python . t)))
 
 (add-hook 'org-mode-hook
           (lambda()
@@ -203,7 +208,10 @@
              (setq indent-tabs-mode nil
                    default-tab-width 4)))
 
+(setq python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i")
 
+(elpy-enable)
 
 ;; SageTeX setup
 ;; This adds the command sage when in LaTeX mode (to invoke type C-C C-c sage)
@@ -219,6 +227,45 @@
                   ))))
 
 ;; (require 'ein)
+(define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
+(define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
+
+(setq ess-local-process-name "R")
+(setq ansi-color-for-comint-mode 'filter)
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+(setq comint-move-point-for-output t)
+(defun my-ess-start-R ()
+  (interactive)
+  (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+      (progn
+        (delete-other-windows)
+        (setq w1 (selected-window))
+        (setq w1name (buffer-name))
+        (setq w2 (split-window w1 nil t))
+        (R)
+        (set-window-buffer w2 "*R*")
+        (set-window-buffer w1 w1name))))
+(defun my-ess-eval ()
+  (interactive)
+  (my-ess-start-R)
+  (if (and transient-mark-mode mark-active)
+      (call-interactively 'ess-eval-region)
+    (call-interactively 'ess-eval-line-and-step)))
+(add-hook 'ess-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+(add-hook 'inferior-ess-mode-hook
+          '(lambda()
+             (local-set-key [C-up] 'comint-previous-input)
+             (local-set-key [C-down] 'comint-next-input)))
+(add-hook 'Rnw-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+(require 'ess-site)
+
+
+
 
 (autoload 'pkgbuild-mode "pkgbuild-mode.el" "PKGBUILD mode." t)
 (setq auto-mode-alist (append '(("/PKGBUILD$" . pkgbuild-mode))
@@ -243,7 +290,7 @@
        (warn "window-number not found."))))
 
 
-
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 
 (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
 
@@ -336,7 +383,7 @@
 
 (require 'mu4e)
 
-(setq  mu4e-maildir ".mail"
+(setq  mu4e-maildir "~/.mail"
        mu4e-sent-folder "/UC_mail/Sent Items"
        mu4e-drafts-folder "/UC_mail/Drafts"
        mu4e-trash-folder "/UC_mail/Deleted Items"
@@ -584,22 +631,21 @@ Including indent-buffer, which should not be called automatically on save."
 
 (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
 
-(defun open-line-below ()
-  (interactive)
-  (end-of-line)
-  (newline)
-  (indent-for-tab-command))
+;; (defun open-line-below ()
+;;   (interactive)
+;;   (end-of-line)
+;;   (newline)
+;;   (indent-for-tab-command))
 
-(defun open-line-above ()
-  (interactive)
-  (beginning-of-line)
-  (newline)
-  (forward-line -1)
-  (indent-for-tab-command))
+;; (defun open-line-above ()
+;;   (interactive)
+;;   (beginning-of-line)
+;;   (newline)
+;;   (forward-line -1)
+;;   (indent-for-tab-command))
 
-(global-set-key (kbd "<C-return>") 'open-line-below)
-(global-set-key (kbd "<C-S-return>") 'open-line-above)
-
+;; (global-set-key (kbd "<C-return>") 'open-line-below)
+;; (global-set-key (kbd "<C-S-return>") 'open-line-above)
 
 (defun move-line-down ()
   (interactive)
