@@ -20,181 +20,132 @@
 (setq custom-file (dot-emacs "custom.el"))
 (load custom-file 'noerror)
 
-;; (use-package lua-mode)
+(use-package lua-mode
+    :mode ("\\.lua\\'" . lua-mode))
 
-;; (use-package pkgbuild-mode)
+(use-package pkgbuild-mode)
 
-;; (use-package window-number)
+(use-package window-number
+  :ensure t)
 
-;; (use-package yasnippet)
+(use-package yasnippet
+  :ensure t)
 
-;; (use-package magit)
+(use-package magit
+  :ensure t
+  :bind ("C-x g" . magit-status))
 
-;; (use-package monokai-theme
-;;   :disabled t)
+(use-package monokai-theme
+  :disabled t)
 
-;; (use-package grandshell-theme
-;;   :disabled t)
+(use-package grandshell-theme
+  :disabled t)
 
-;; (use-package cyberpunk-theme)
+(use-package cyberpunk-theme)
 
-;; (use-package company
-;;   :init
-;;   (progn
-;;     (add-hook 'after-init-hook 'global-company-mode)))
+(use-package company
+  :ensure t
+  :init
+  (progn
+    (add-hook 'after-init-hook 'global-company-mode)))
 
-;; (use-package ido-vertical-mode)
+(use-package ido
+  :init (progn
+	  (ido-mode 1)
+	  ;; "~" adds the "/" automatically in find file, etc.
+	  (add-hook 'ido-setup-hook
+		    (lambda ()
+		      ;; Go straight home
+		      (define-key ido-file-completion-map
+			(kbd "~")
+			(lambda ()
+			  (interactive)
+			  (if (looking-back "/")
+			      (insert "~/")
+			    (call-interactively 'self-insert-command)))))))
 
-;; (use-package visual-regexp)
-
-;; (use-package smex)
-
-
-;; list the packages you want
-;; (setq package-list '(lua-mode
-;;                      pkgbuild-mode
-;;                      window-number
-;;                      yasnippet
-;;                      magit
-;;                      monokai-theme
-;;                      grandshell-theme
-;;                      cyberpunk-theme
-;;                      company
-;;                      ido-vertical-mode
-;;                      visual-regexp
-;;                      smex
-;;                      ))
-
-
-
-;; ;; fetch the list of packages available
-;; (unless package-archive-contents
-;;   (package-refresh-contents))
-
-;; ;; install the missing packages
-;; (dolist (package package-list)
-;;   (unless (package-installed-p package)
-;;     (package-install package)))
+  :config
+  (progn (setq ido-enable-prefix nil)
+  	 (setq ido-enable-flex-matching t)
+  	 (setq ido-create-new-buffer 'always)
+  	 (setq ido-use-filename-at-point 'guess)
+  	 (setq ido-max-prospects 10)))
 
 
+(use-package ido-vertical-mode
+  :init
+  (ido-vertical-mode t)
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+  :ensure t)
+
+(use-package visual-regexp
+  :ensure t
+  :bind
+  ("M-%" . vr/query-replace))
+
+(use-package smex
+  :ensure t
+  :init
+  (smex-initialize)
+  :bind
+  ("M-x" . smex)
+  ("M-X" . smex-major-mode-commands)
+  ("C-c C-c M-x" . execute-extended-command))
+
+(use-package tex-site                   ; auctex
+  ;; :defines (latex-help-cmd-alist latex-help-file)
+  :mode ("\\.tex\\'" . TeX-latex-mode)
+  :init
+  (progn
+    (add-hook 'LaTeX-mode-hook 'LaTex-preview-setup)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (add-hook 'LateX-mode-hook 'TeX-source-correlate-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq TeX-save-query nil)
+    (setq TeX-PDF-mode t)
+    (setq reftex-plug-into-AUCTeX  t)
+    (setq-default TeX-master nil))
+  :config
+  (use-package latex
+    :defer t
+    :config
+    (use-package preview)))
 
 
-;; load color theme only early
-;; (load-theme 'monokai t t); last t is for NO-ENABLE
-;; (load-theme 'grandshell t t)
-;; (load-theme 'wheatgrass t t)
-;; (load-theme 'cyberpunk)
-;; (enable-theme 'monokai)
+(add-hook 'text-mode-hook 'turn-on-auto-fill)
 
-;; Auto-completion COMPlete-ANY
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+(dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode -1))))
+(setq-default ispell-program-name "aspell")
+(setq ispell-list-command "list")
+(setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
+(setq ispell-local-dictionary "en_GB")
 
+(setq global-visual-line-mode t)
 
-;; (global-set-key (kbd "C-x g") 'magit-status)
-
-
-;; (use-package tex-site                   ; auctex
-;;   ;; :defines (latex-help-cmd-alist latex-help-file)
-;;   :mode ("\\.tex\\'" . TeX-latex-mode)
-;;   :init
-;;   (progn
-;;     (add-hook 'LaTeX-mode-hook 'LaTex-preview-setup)
-;;     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-;;     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-;;     (add-hook 'LateX-mode-hook 'TeX-source-correlate-mode)
-;;     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-;;     (setq TeX-auto-save t
-;;           TeX-parse-self t
-;;           TeX-save-query nil
-;;           TeX-PDF-mode t
-;;           reftex-plug-into-AUCTeX  t)
-;;     (setq-default TeX-master nil))
-;;   :config
-;;   (use-package latex
-;;     :defer t
-;;     :config
-;;     (use-package preview)))
+(recentf-mode 1)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(setq recentf-max-saved-items 50)
+(add-to-list 'recentf-exclude "/\\.git/.*\\")         ; ignore git contents
+(add-to-list 'recentf-exclude ".*/elpa/.*\\")           ; package files
+(add-to-list 'recentf-exclude "/el-get/.*\\")           ; package files
+(add-to-list 'recentf-exclude "/auto-save-list/.*\\")   ; auto-save junk
+(add-to-list 'recentf-exclude "TAGS")
+(add-to-list 'recentf-exclude ".*-autoloads\\.el\\'")
+(add-to-list 'recentf-exclude ".*\\.gz\\'")
+(add-to-list 'recentf-exclude "ido.last")
+(add-to-list 'recentf-exclude "session\\.[a-f0-9]*$")
+(add-to-list 'recentf-exclude "\\.aux$")
+(add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
+(recentf-cleanup)
 
 
-;; ;; (use-package reftex
-;; ;;   :ensure f
-;; ;;   :commands turn-on-reftex
-;; ;;   :init
-;; ;;   (progn
-;; ;;     (setq reftex-plug-into-AUCTeX t
-;; ;;           reftex-extra-bindings t)))
 
-
-;; (setq TeX-source-correlate-start-server t)
-
-;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
-
-;; (dolist (hook '(text-mode-hook))
-;;   (add-hook hook (lambda () (flyspell-mode 1))))
-;; (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
-;;   (add-hook hook (lambda () (flyspell-mode -1))))
-;; (setq-default ispell-program-name "aspell")
-;; (setq ispell-list-command "list")
-;; (setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
-;; (setq ispell-local-dictionary "en_GB")
-
-;; (setq global-visual-line-mode t)
-
-;; (recentf-mode 1)
-;; (global-set-key (kbd "C-x C-r") 'recentf-open-files)
-;; (setq recentf-max-saved-items 50)
-;; (add-to-list 'recentf-exclude "/\\.git/.*\\")         ; ignore git contents
-;; (add-to-list 'recentf-exclude ".*/elpa/.*\\")           ; package files
-;; (add-to-list 'recentf-exclude "/el-get/.*\\")           ; package files
-;; (add-to-list 'recentf-exclude "/auto-save-list/.*\\")   ; auto-save junk
-;; (add-to-list 'recentf-exclude "TAGS")
-;; (add-to-list 'recentf-exclude ".*-autoloads\\.el\\'")
-;; (add-to-list 'recentf-exclude ".*\\.gz\\'")
-;; (add-to-list 'recentf-exclude "ido.last")
-;; (add-to-list 'recentf-exclude "session\\.[a-f0-9]*$")
-;; (add-to-list 'recentf-exclude "\\.aux$")
-;; (add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
-;; (recentf-cleanup)
-
-
-(ido-mode t)
-(setq ido-enable-prefix nil
-      ido-enable-flex-matching t
-      ido-create-new-buffer 'always
-      ido-use-filename-at-point 'guess
-      ido-max-prospects 10)
-
-;; ;; "~" adds the "/" automatically in find file, etc.
-;; (add-hook 'ido-setup-hook
-;;           (lambda ()
-;;             ;; Go straight home
-;;             (define-key ido-file-completion-map
-;;               (kbd "~")
-;;               (lambda ()
-;;                 (interactive)
-;;                 (if (looking-back "/")
-;;                     (insert "~/")
-;;                   (call-interactively 'self-insert-command))))))
-
-;; ;; (use-package ido-vertical-mode
-;; ;;   :config
-;; ;;   (setq ido-vertical-define-keys 'C-n-and-C-p-only))
-
-;; ;; (require 'ido-vertical-mode)
-;; ;; (ido-vertical-mode t)
-;; ;; (setq ido-vertical-define-keys 'C-n-and-C-p-only)
-
-;; (require 'visual-regexp)
-;; (define-key global-map (kbd "M-%") 'vr/query-replace)
-
-;; (require 'smex)
-;; (smex-initialize)
-;; (global-set-key (kbd "M-x") 'smex)
-;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; ;; Old M-x
-;; (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-
-;; (setq auto-mode-alist (cons '("\.lua$" . lua-mode) auto-mode-alist))
-;; (autoload 'lua-mode "lua-mode" "Lua editing mode." t)
 
 
 
@@ -220,40 +171,76 @@
 ;;                              "~/org/home.org"))
 
 
-;; (setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
-;; (setq delete-old-versions t
-;;       kept-new-versions 6
-;;       kept-old-versions 2
-;;       version-control t)
+(setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(setq delete-old-versions t
+      kept-new-versions 6
+      kept-old-versions 2
+      version-control t)
 
 
 
-;; ;; Stop doing bad things
-;; (define-key global-map [(insert)] nil)
-;; (define-key global-map [(control insert)] 'overwrite-mode)
-;; (put 'overwrite-mode 'disabled t)
-;; (global-unset-key (kbd "C-z"))
-;; (global-unset-key (kbd "<prior>"))
-;; (global-unset-key (kbd "<next>"))
+;; Stop doing bad things
+(define-key global-map [(insert)] nil)
+(define-key global-map [(control insert)] 'overwrite-mode)
+(put 'overwrite-mode 'disabled t)
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "<prior>"))
+(global-unset-key (kbd "<next>"))
 
-;; ;; Goto-line shortcut key
-;; (global-set-key "\M-l" 'goto-line)
+;; Goto-line shortcut key
+(global-set-key "\M-l" 'goto-line)
 
-;; (setq column-number-mode t)
-;; (require 'cc-mode)
+(setq column-number-mode t)
 
-;; (c-toggle-hungry-state)
+(use-package cc-mode
+  :config
+  (setq c-default-style "ellemtel"
+	c-basic-offset 4
+	c-toggle-hungry-state))
 
-;; (setq c-default-style "ellemtel"
-;;       c-basic-offset 4)
-;; (require 'flymake)
-;; (add-hook 'c-mode-common-hook
-;;           (lambda()
-;;             (flymake-mode t)
-;;             (global-set-key [f5] 'flymake-display-err-menu-for-current-line)
-;;             (global-set-key [f6] 'flymake-goto-next-error)))
+(use-package flymake
+  :init
+  (flymake-mode t)
+  :bind
+  ("<f5>" . flymake-display-err-menu-for-current-line)
+  ("<f6>" . flymake-goto-next-error))
 
+(use-package python-mode
+  :mode ("\\.py\\'" . python-mode)
+  :interpreter ("ipython" . python-mode)
+  :config
+  (setq indent-tabs-mode nil)
+  (setq default-tab-width 4))
+;; (use-package python-mode
+;;   :init (progn
+;;           (add-hook 'python-mode-hook 'highlight-indentation-mode)
+;;           (add-hook 'python-mode-hook 'anaconda-mode)
+;;           (add-hook 'python-mode-hook 'eldoc-mode)
+;;           (add-hook 'python-mode-hook 'sphinx-doc-mode))
 
+;;   :config (progn
+;;             (setq-default python-indent 4)
+;;             (setq python-fill-docstring-style 'onetwo)
+
+;;             (when (executable-find "ipython")
+;;               (setq
+;;                python-shell-interpreter "ipython"
+;;                python-shell-interpreter-args ""
+;;                python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+;;                python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+;;                python-shell-completion-setup-code
+;;                "from IPython.core.completerlib import module_completion"
+;;                python-shell-completion-module-string-code
+;;                "';'.join(module_completion('''%s'''))\n"
+;;                python-shell-completion-string-code
+;;                "';'.join(get_ipython().Completer.all_completions('''%s'''))\n"))))
+
+(use-package cython-mode
+  :ensure t
+  :mode (("\\.pyx\\'"  . cython-mode)
+         ("\\.spyx\\'" . cython-mode)
+         ("\\.pxd\\'"  . cython-mode)
+         ("\\.pxi\\'"  . cython-mode)))
 ;; (add-hook 'python-hook
 ;;           '(lambda ()
 ;;              (setq indent-tabs-mode nil
