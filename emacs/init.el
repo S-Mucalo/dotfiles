@@ -13,6 +13,7 @@
 (setq kept-new-versions 6)
 (setq kept-old-versions 2)
 (setq version-control t)
+(setq mouse-autoselect-window t)
 
 ;; Stop doing bad things
 (define-key global-map [(insert)] nil)
@@ -134,6 +135,12 @@
   (window-number-mode 1)
   (window-number-meta-mode 1))
 
+(use-package comint
+  :bind
+  ("<up>" . comint-previous-matching-input-from-input)
+  ("<down>" . comint-next-matching-input-from-input)
+  ("M-p" . comint-previous-matching-input-from-input)
+  ("M-n" . comint-next-matching-input-from-input))
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (dolist (hook '(text-mode-hook))
@@ -234,8 +241,8 @@
                   ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
                   ))))
 
-(define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
-(define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
+;; (define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
+;; (define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
 
 (setq ess-local-process-name "R")
 (setq ansi-color-for-comint-mode 'filter)
