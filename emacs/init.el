@@ -1,3 +1,5 @@
+
+
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
 (setq inhibit-startup-screen t)
@@ -23,38 +25,41 @@
 (global-unset-key (kbd "<prior>"))
 (global-unset-key (kbd "<next>"))
 
-
 (defun dot-emacs (relative-path)
   "Return the full path of a file in the user's emacs directory."
   (expand-file-name (concat user-emacs-directory relative-path)))
 
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ;; ("melpa" . "http://melpa.milkbox.net/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 
+;; Goto-line shortcut key
+(global-set-key "\M-l" 'goto-line)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq-default fill-column 80)
+(global-hl-line-mode t)
+
+;; Highlight current region
+(transient-mark-mode t)
+
+;; Add the system clipboard to the kill ring
+(setq save-interprogram-paste-before-kill t)
+
 
 (setq custom-file (dot-emacs "custom.el"))
 (load custom-file 'noerror)
 
 
-;; Goto-line shortcut key
-(global-set-key "\M-l" 'goto-line)
-
-
-
-
 (use-package lua-mode
     :mode ("\\.lua\\'" . lua-mode))
-
-(use-package pkgbuild-mode)
-
-(use-package window-number
-  :ensure t)
 
 (use-package yasnippet
   :ensure t
@@ -66,12 +71,15 @@
   :bind ("C-x g" . magit-status))
 
 (use-package monokai-theme
+  :ensure t
   :disabled t)
 
 (use-package grandshell-theme
-  :disabled t)
+  :ensure t)
 
-(use-package cyberpunk-theme)
+(use-package cyberpunk-theme
+  :ensure t
+  :disabled t)
 
 (use-package company
   :ensure t
@@ -107,8 +115,9 @@
   :ensure t)
 
 (use-package ace-jump-mode
-    :bind
-    ("C-." . ace-jump-mode))
+  :ensure t
+  :bind
+  ("C-." . ace-jump-mode))
 
 (use-package ido-vertical-mode
   :init
@@ -131,16 +140,27 @@
   ("C-c C-c M-x" . execute-extended-command))
 
 (use-package window-number
-  :init
+  :ensure t
+  :config
   (window-number-mode 1)
   (window-number-meta-mode 1))
 
 (use-package comint
-  :bind
-  ("<up>" . comint-previous-matching-input-from-input)
-  ("<down>" . comint-next-matching-input-from-input)
-  ("M-p" . comint-previous-matching-input-from-input)
-  ("M-n" . comint-next-matching-input-from-input))
+  :bind (:map comint-mode-map
+              ("<up>" . comint-previous-matching-input-from-input) ;; Untested
+              ("<down>" . comint-next-matching-input-from-input)  ;; Untested
+              ("M-p" . comint-previous-matching-input-from-input)
+              ("M-n" . comint-next-matching-input-from-input)
+              ;; ("C-up" . comint-previous-matching-input-from-input)
+              ;; ("C-down" . comint-next-matching-input-from-input)
+              ))
+
+
+;; Remember the last visited line in a file
+(setq-default save-place t)
+(use-package saveplace
+  :config
+  (setq save-place-file "~/.emacs.d/places"))
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (dolist (hook '(text-mode-hook))
@@ -172,7 +192,7 @@
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   :config
   (org-babel-do-load-languages 'org-babel-do-load-languages '((python . t)))
-  (setq orl-log-done t)
+  (setq org-log-done t)
   (setq org-startup-indented t)
   (setq org-agenda-files (list  "~/org/work.org"
                 "~/org/school.org"
@@ -197,7 +217,7 @@
 
 (use-package python
   :mode ("\\.py\\'" . python-mode)
-  :config
+  :init
   (setq indent-tabs-mode nil)
   (setq default-tab-width 4)
   (setq python-shell-interpreter "ipython"
@@ -211,38 +231,69 @@
          ("\\.pxd\\'"  . cython-mode)
          ("\\.pxi\\'"  . cython-mode)))
 
-
-(elpy-enable)
+(use-package elpy
+  :ensure t
+  :init (with-eval-after-load 'python (elpy-enable))
+  )
 
 ;; LaTeX
-(load "auctex.el" nil t t)
-(load "preview-latex.el" nil t t)
-(setq TeX-auto-save t)
-(setq TeX-parse-self t)
-(setq TeX-PDF-mode t)
-(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-(add-hook 'LaTeX-mode-hook 'TeX-source-correlate-mode)
-(setq TeX-source-correlate-start-server t)
-(setq reftex-plug-into-auctex t)
-(setq reftex-extra-bindings t)
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+;; Basic settings
+(use-package latex
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :bind (:map LaTeX-mode-map
+              ("C-c C-r" . reftex-query-replace-document)
+              ("C-c C-g" . reftex-grep-document))
+  :init
+  (progn
+    (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+    (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+    (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
+    (add-hook 'LaTex-mode-hook #'LaTex-math-mode)
+    (add-hook 'text-mode-hook #'turn-on-auto-fill)
+    (setq TeX-auto-save t
+          TeX-save-query nil
+          TeX-show-compilation t
+          TeX-parse-self t
+          TeX-source-correlate-start-server t
+          TeX-save-query nil
+          TeX-PDF-mode t)
+    (setq-default TeX-master nil))
+  :config
+  (add-to-list 'TeX-command-list
+               '("Sage" "sage %s.sagetex.sage" TeX-run-command nil t :help "Run SAGE.") t)
+  (add-to-list 'TeX-command-list
+               '("Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount.") t)
+  (add-to-list 'TeX-command-list
+               '("Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex.") t)
+  (add-to-list 'TeX-command-list
+               '("Depythontex" "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t" 'TeX-run-shell nil t :help "Run depythontex.") t)
+  (add-to-list 'TeX-command-list
+               '("Mk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file") t))
 
-;; SageTeX setup
-;; This adds the command sage when in LaTeX mode (to invoke type C-C C-c sage)
-(eval-after-load "tex"
-  '(setq TeX-command-list
-         (append TeX-command-list
-                 (list
-                  (list "Sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE.")
-                  (list "Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount.")
-                  (list "Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex.")
-                  (list "Depythontex" "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t" 'TeX-run-shell nil t :help "Run depythontex.")
-                  ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")
-                  ))))
+(use-package preview
+  :commands LaTeX-preview-setup
+  :init
+  (progn
+    (setq-default preview-scale 1.4
+          preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
-;; (define-key comint-mode-map [C-up] 'comint-previous-matching-input-from-input)
-;; (define-key comint-mode-map [C-down] 'comint-next-matching-input-from-input)
+(use-package reftex
+  :commands turn-on-reftex
+  :init
+  (progn
+    (setq reftex-plug-into-AUCTeX t
+          reftex-extra-bindings t)))
+
+(use-package bibtex
+  :mode ("\\.bib" . bibtex-mode)
+  :init
+  (progn
+    (setq bibtex-align-at-equal-sign t)
+    (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+
+
 
 (setq ess-local-process-name "R")
 (setq ansi-color-for-comint-mode 'filter)
@@ -276,7 +327,20 @@
 (add-hook 'Rnw-mode-hook
           '(lambda()
              (local-set-key [(shift return)] 'my-ess-eval)))
-(require 'ess-site)
+
+;; (use-package ess
+;;   :ensure t
+;;   :init (use-package 'ess-site)
+;;   :bind (:map ess-mode-map
+;;               ([(shift return)] . my-ess-eval)
+;;               ("C-up"
+
+;;   :config
+;;   (setq ess-local-process-name "R"
+;;         ansi-color-for-comint-mode 'filter
+;;         comint-scroll-to-bottom-on-input t
+;;         comint-scroll-to-bottom-on-output t
+;;         comint-move-point-for-output t))
 
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
@@ -289,8 +353,9 @@
 (setq message-sendmail-envelope-from (quote header))
 (setq send-mail-function (quote sendmail-send-it))
 
-
-(require 'notmuch)
+(use-package notmuch
+  :ensure t)
+;; (require 'notmuch)
 ;; (autoload 'notmuch "notmuch" "notmuch mail" t)
 
 
@@ -368,6 +433,8 @@
 (add-hook 'message-setup-hook 'gnus-alias-determine-identity)
 
 
+;; (use-package mu4e
+;;   :ensure t)
 
 (require 'mu4e)
 
@@ -488,8 +555,13 @@
 ;; Allow org-mode stuff in mu4e
 (require 'org-mu4e)
 
-(autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
-(bbdb-initialize 'message 'mu4e)
+
+;; (use-package bbdb
+;;   :ensure t
+;;   :config
+;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;;   (bbdb-initialize 'message 'mu4e))
+
 (setq bbdb-mail-user-agent (quote message-user-agent))
 (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
 (setq mu4e-compose-complete-addresses nil)
@@ -600,7 +672,10 @@ Including indent-buffer, which should not be called automatically on save."
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 
 ;; Make dired less verbose, toggle with ( )
-(require 'dired-details)
+(use-package dired-details
+  :ensure t
+  )
+;; (require 'dired-details)
 (setq-default dired-details-hidden-string "--- ")
 (dired-details-install)
 
