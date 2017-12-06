@@ -184,6 +184,10 @@
 (add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
 (recentf-cleanup)
 
+(show-paren-mode 1)
+(setq show-paren-delay 0)
+
+
 
 (use-package org
   :mode
