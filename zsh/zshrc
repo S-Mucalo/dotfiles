@@ -35,7 +35,7 @@ setopt \
 # key bindings
 bindkey -e
 autoload zkbd
-source ~/.zkbd/$TERM-:0
+# source ~/.zkbd/$TERM-:0
 
 [[ -n ${key[Backspace]} ]] && bindkey "${key[Backspace]}" backward-delete-char
 [[ -n ${key[Insert]} ]] && bindkey "${key[Insert]}" overwrite-mode

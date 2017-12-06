@@ -11,15 +11,14 @@ export HISTFILE=~/.dotfiles/zsh/history.log
 export SHELL='/bin/zsh'
 
 export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient"
+export EDITOR="emacs"
 
-export PATH="/usr/local/sbin:\
-/usr/local/bin:\
-/usr/bin:\
-/opt/opencascade/bin:\
-/usr/bin/vendor_perl:\
-/usr/bin/core_perl:\
-$HOME/.dotfiles/bin:"
+# export PATH="/usr/local/sbin:\
+# /usr/local/bin:\
+# /usr/bin:\
+# /usr/bin/vendor_perl:\
+# /usr/bin/core_perl:\
+# $HOME/.dotfiles/bin:"
 
 # Less
 export LESSOPEN='| /usr/bin/highlight -O ansi %s'
@@ -33,6 +32,6 @@ export PYTHON2PATH=$PYTHON2PATH:$PETSC_DIR/$PETSC_ARCH/lib
 
 # Python virtualenv
 export WORKON_HOME=$HOME/.virtualenvs
-source /usr/bin/virtualenvwrapper.sh
+source /usr/share/virtualenvwrapper/virtualenvwrapper.sh
 
 # vim: set ft=zsh
