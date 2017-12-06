@@ -7,12 +7,14 @@ mvf() { mv "$@" && goto "$_"; }
 mkf() { mkdir -p $1; cd $1 }
 cdl() { cd $@; ls }
 d() { ($1 &) }
-zsh_stats() { history | awk '{print $2}' | sort | uniq -c | sort -rn | head }
+zsh_stats() { history 0 | awk '{print $2}' | sort | uniq -c | sort -rn | head }
 du1() { du -h --max-depth=1 "$@" | sort -k 1,1hr -k 2,2f; }
 epoch() { print $(( `echo $1 | cut -b 1-2` * 3600 + `echo $1 | cut -b 4-5` * 60 + `echo $1 | cut -b 7-8` )) }
 findem() { find / -name "$1" 2>/dev/null; }
 readem() { find / -name "$1" 2>/dev/null | xargs less; }
 findit() { find . -name "$1" }
+pipup() {pip list --outdated | sed 's/(.*//g' | xargs -n1 pip install -U --user}
+supipup() {sudo pip list --outdated | sed 's/(.*//g' | xargs -n1 pip install -U}
 # }}}
 
 # {{{ Create ZSH named directory
@@ -186,13 +188,13 @@ alias_for() {
 }
 
 expand_command_line() {
-  [[ $# -eq 0 ]] && return         # If there's no input, return. Else... 
+  [[ $# -eq 0 ]] && return         # If there's no input, return. Else...
   local found_alias="$(alias_for $1)"    # Check if there's an alias for the comand.
   if [[ -n $found_alias ]]; then         # If there was
-    echo ${found_alias}                  # Print it. 
+    echo ${found_alias}                  # Print it.
   fi
 }
-add-zsh-hook preexec expand_command_line      # Adds the hook 
+add-zsh-hook preexec expand_command_line      # Adds the hook
 
 # add-zsh-hook -d preexec expand_command_line # Remove it for this hook.
 

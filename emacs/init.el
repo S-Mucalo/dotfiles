@@ -137,8 +137,8 @@
 
 (use-package comint
   :bind
-  ("<up>" . comint-previous-matching-input-from-input)
-  ("<down>" . comint-next-matching-input-from-input)
+  ;; ("<up>" . comint-previous-matching-input-from-input)
+  ;; ("<down>" . comint-next-matching-input-from-input)
   ("M-p" . comint-previous-matching-input-from-input)
   ("M-n" . comint-next-matching-input-from-input))
 
@@ -147,6 +147,8 @@
   (add-hook hook (lambda () (flyspell-mode 1))))
 (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
   (add-hook hook (lambda () (flyspell-mode -1))))
+(setq-default TeX-master nil);
+
 
 (recentf-mode 1)
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
@@ -184,9 +186,10 @@
 
 (use-package cc-mode
   :config
-  (setq c-default-style "ellemtel"
-    c-basic-offset 4
-    c-toggle-hungry-state))
+  (setq c-default-style "ellemtel")
+  (setq c-basic-offset 4)
+  ;; (setq c-toggle-hungry-state)
+  )
 
 (use-package flymake
   :config
@@ -201,7 +204,7 @@
   (setq indent-tabs-mode nil)
   (setq default-tab-width 4)
   (setq python-shell-interpreter "ipython"
-    python-shell-interpreter-args "-i"))
+    python-shell-interpreter-args "--simple-prompt -i"))
 
 
 (use-package cython-mode
@@ -212,7 +215,8 @@
          ("\\.pxi\\'"  . cython-mode)))
 
 
-(elpy-enable)
+(when (require 'elpy nil t)
+  (elpy-enable))
 
 ;; LaTeX
 (load "auctex.el" nil t t)
@@ -235,7 +239,7 @@
          (append TeX-command-list
                  (list
                   (list "Sage" "sage %s.sagetex.sage" 'TeX-run-command nil t :help "Run SAGE.")
-                  (list "Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount.")
+                  (list "Wordcount" "texcount -inc %t" 'TeX-run-shell nil t :help "Run texcount.")
                   (list "Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex.")
                   (list "Depythontex" "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t" 'TeX-run-shell nil t :help "Run depythontex.")
                   ;; (list "Latexmk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file")

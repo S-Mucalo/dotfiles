@@ -5,7 +5,7 @@ if __name__ == '__main__':
   sys.path.insert(0, os.path.abspath('config'))
   import configure
   configure_options = [
-    '--with-c2html=0',
+    # '--with-c2html=0',
     '--with-shared-libraries=1',
     '--download-suitesparse=yes',
     '--PETSC_ARCH=arch-linux2-gcc-real',
@@ -17,5 +17,6 @@ if __name__ == '__main__':
     '--with-petsc4py=yes',
     '--with-python=1',
     '--download-petsc4py=yes',
+    '--with-tags=1',
     ]
   configure.petsc_configure(configure_options)
