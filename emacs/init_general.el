@@ -14,6 +14,7 @@
 (setq mouse-autoselect-window t)
 (setq show-paren-delay 0)
 (setq save-interprogram-paste-before-kill t)
+(setq select-enable-clipboard t)
 (setq auto-revert-verbose nil)
 (setq vc-follow-symlinks t)
 (setq global-auto-revert-non-file-buffers t)
@@ -74,7 +75,7 @@
 (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
 
 (global-set-key (kbd "C-x C-r") 'recentf-open-files)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
 (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
 (global-set-key (kbd "<f5>") 'revert-buffer)
 (global-set-key (kbd "C-x 4") 'toggle-window-split)
@@ -87,7 +88,8 @@
 (global-set-key (kbd "C-c n") 'cleanup-buffer)
 (global-set-key "\M-l" 'goto-line)
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
-
+(global-set-key (kbd "C-a") 'beginning-of-line-dwim)
+(define-key ctl-x-map "n" #'narrow-or-widen-dwim)
 (add-hook 'before-save-hook
           (lambda ()
             (when buffer-file-name
@@ -367,7 +369,6 @@
   (cleanup-buffer-safe)
   (indent-region (point-min) (point-max)))
 
-
 (defun delete-current-buffer-file ()
   "Removes file connected to current buffer and kills buffer."
   (interactive)
@@ -380,8 +381,6 @@
         (delete-file filename)
         (kill-buffer buffer)
         (message "File '%s' successfully removed" filename)))))
-
-
 
 (defun open-line-below ()
   (interactive)
@@ -413,7 +412,6 @@
       (transpose-lines -1))
     (move-to-column col)))
 
-
 (defun comint-delchar-or-eof-or-kill-buffer (arg)
   (interactive "p")
   (if (null (get-buffer-process (current-buffer)))
@@ -424,9 +422,6 @@
           (lambda ()
             (define-key shell-mode-map
               (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
-
-
-
 
 (defun goto-line-with-feedback ()
   "Show line numbers temporarily, while prompting for the line number input"
@@ -462,11 +457,13 @@
                (t (org-narrow-to-subtree))))
         (t (narrow-to-defun))))
 
-;; (define-key endless/toggle-map "n" #'narrow-or-widen-dwim)
-;; This line actually replaces Emacs' entire narrowing keymap, that's
-;; how much I like this command. Only copy it if that's what you want.
-(define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+(defun beginning-of-line-dwim ()
+  "Toggle between moving point to the first non-whitespace character, and the start of the line."
+  (interactive)
+  (let ((start-position (point)))
+    ;; Move to the first non-whitespace character.
+    (back-to-indentation)
 
-;; (use-package avy
-;; :ensure t
-;; :bind ("M-s" . avy-goto-word-1)) ;; changed from char as per jcs
+    ;; If we haven't moved position, go to start of the line.
+    (when (= (point) start-position)
+      (move-beginning-of-line nil))))
