@@ -9,9 +9,15 @@
  '(org-agenda-files
    (quote
     ("~/projects/research_paper/outline.org" "~/org/work.org" "~/org/school.org" "~/org/home.org")))
+ '(org-default-notes-file (concat org-directory "/notes.org"))
+ '(org-directory "~/Dropbox/orgfiles")
+ '(org-export-html-postamble nil)
+ '(org-hide-leading-stars t)
+ '(org-startup-folded (quote overview))
+ '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
+    (mingus simple-mpc smartparens auctex dired+ nodejs-repl tern-auto-complete tern js2-refactor ac-js2 emmet-mode web-mode iedit expand-region hungry-delete beacon undo-tree virtualenvwrapper flycheck powerline avy counsel notmuch window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")
@@ -118,4 +124,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0)))))
