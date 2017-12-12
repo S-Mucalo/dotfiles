@@ -17,7 +17,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (mingus simple-mpc smartparens auctex dired+ nodejs-repl tern-auto-complete tern js2-refactor ac-js2 emmet-mode web-mode iedit expand-region hungry-delete beacon undo-tree virtualenvwrapper flycheck powerline avy counsel notmuch window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
+    (beacon-mode mingus simple-mpc smartparens auctex dired+ nodejs-repl tern-auto-complete tern js2-refactor ac-js2 emmet-mode web-mode iedit expand-region hungry-delete beacon undo-tree virtualenvwrapper flycheck powerline avy counsel notmuch window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")

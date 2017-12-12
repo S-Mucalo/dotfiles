@@ -19,6 +19,9 @@
 (setq vc-follow-symlinks t)
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+(setq mouse-wheel-progressive-speed nil) ; t
+(setq scroll-step 1)
 
 (setq-default ispell-program-name "aspell")
 (setq-default save-place t)
@@ -97,6 +100,14 @@
                 (when (and (not (file-exists-p dir))
                            (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
                   (make-directory dir t))))))
+
+(use-package beacon
+  :ensure t
+  :config
+  (beacon-mode 1)
+  (setq beacon-blink-delay 0.2)
+  (setq beacon-color "red"))
+
 
 (use-package lua-mode
   :mode ("\\.lua\\'" . lua-mode))
@@ -268,14 +279,14 @@
   :bind
   ("M-%" . vr/query-replace))
 
-(use-package smex
-  :ensure t
-  :init
-  (smex-initialize)
-  :bind
-  ("M-x" . smex)
-  ("M-X" . smex-major-mode-commands)
-  ("C-c C-c M-x" . execute-extended-command))
+;; (use-package smex
+;;   :ensure t
+;;   :init
+;;   (smex-initialize)
+;;   :bind
+;;   ("M-x" . smex)
+;;   ("M-X" . smex-major-mode-commands)
+;;   ("C-c C-c M-x" . execute-extended-command))
 
 (use-package window-number
   :ensure t
@@ -284,13 +295,17 @@
   (window-number-meta-mode 1))
 
 (use-package comint
+  :config
+  (setq comint-scroll-to-bottom-on-input t)
+  (setq comint-scroll-to-bottom-on-output t)
+  (setq comint-move-point-for-output t)
   :bind (:map comint-mode-map
               ("<up>" . comint-previous-matching-input-from-input) ;; Untested
               ("<down>" . comint-next-matching-input-from-input)  ;; Untested
               ("M-p" . comint-previous-matching-input-from-input)
               ("M-n" . comint-next-matching-input-from-input)
-              ;; ("C-up" . comint-previous-matching-input-from-input)
-              ;; ("C-down" . comint-next-matching-input-from-input)
+              ("C-<up>" . comint-previous-matching-input-from-input)
+              ("C-<down>" . comint-next-matching-input-from-input)
               ))
 
 (use-package saveplace
