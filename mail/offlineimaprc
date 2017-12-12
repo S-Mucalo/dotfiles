@@ -22,7 +22,7 @@ localfolders = ~/.mail/UC_mail
 type = IMAP
 remotehost = exchange.canterbury.ac.nz
 starttls = yes
-folderfilter = lambda foldername: foldername not in ['Contacts', 'Junk E-Mail', 'Notes', 'RSS Feeds', 'Journal']
+folderfilter = lambda foldername: foldername not in ['Contacts', 'Junk E-Mail', 'Notes', 'RSS Feeds', 'Journal', 'Calendar']
 remoteusereval = get_username("exchange.canterbury.ac.nz")
 remotepasseval = get_password("exchange.canterbury.ac.nz")
 keepalive = 60
@@ -44,11 +44,12 @@ type = Gmail
 remoteusereval = get_username("gmail")
 remotepasseval = get_password("gmail")
 auth_mechanisms = LOGIN
+createfolders = False
 
 # nametrans = lambda foldername: re.sub ('^\[gmail\]', '')
-folderfilter = lambda foldername: foldername not in ['[Gmail]/All Mail']
+# folderfilter = lambda foldername: foldername not in ['[Gmail]/All Mail']
 
-# folderfilter = lambda foldername: foldername in ['Sent', 'INBOX', 'Drafts', 'Trash']
+folderfilter = lambda foldername: foldername in ['Sent', 'INBOX', 'Drafts', 'Trash']
 
 # Necessary as of OfflineIMAP 6.5.4
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt

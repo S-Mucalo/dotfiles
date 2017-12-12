@@ -19,7 +19,7 @@
 (setq vc-follow-symlinks t)
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
-(setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil) ; t
 (setq scroll-step 1)
 (setq visible-bell t)
@@ -70,11 +70,12 @@
       '(".o" ".elc" "~" ".bin" ".class" ".exe" ".ps" ".abs" ".mx"
         ".~jv" ".rbc" ".pyc" ".beam" ".aux" ".out" ".pdf" ".hbc"))
 
-(setq package-archives '(;; ("gnu" . "http://elpa.gnu.org/packages/")
-                         ;; ("marmalade" . "http://marmalade-repo.org/packages/")
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+;; (package-refresh-contents)
 
 (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
 
@@ -94,13 +95,7 @@
 (global-set-key [remap goto-line] 'goto-line-with-feedback)
 (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
 (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
-(add-hook 'before-save-hook
-          (lambda ()
-            (when buffer-file-name
-              (let ((dir (file-name-directory buffer-file-name)))
-                (when (and (not (file-exists-p dir))
-                           (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
-                  (make-directory dir t))))))
+
 
 (use-package beacon
   :ensure t
@@ -114,6 +109,7 @@
   :mode ("\\.lua\\'" . lua-mode))
 
 (use-package yasnippet
+  :defer t
   :ensure t
   :config
   (yas-global-mode 1))
@@ -312,6 +308,14 @@
 (use-package saveplace
   :config
   (setq save-place-file "~/.emacs.d/places"))
+
+(add-hook 'before-save-hook
+          (lambda ()
+            (when buffer-file-name
+              (let ((dir (file-name-directory buffer-file-name)))
+                (when (and (not (file-exists-p dir))
+                           (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
+                  (make-directory dir t))))))
 
 
 ;; defuns
