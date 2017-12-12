@@ -22,6 +22,7 @@
 (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
 (setq mouse-wheel-progressive-speed nil) ; t
 (setq scroll-step 1)
+(setq visible-bell t)
 
 (setq-default ispell-program-name "aspell")
 (setq-default save-place t)

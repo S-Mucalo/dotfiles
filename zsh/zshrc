@@ -33,7 +33,7 @@ setopt \
 
 # unsetopt
 unsetopt \
-    MULTIBYTE
+    multibyte
 
 typeset -g -A key
 
