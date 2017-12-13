@@ -163,15 +163,15 @@
       (interactive)
       (message "gmail-mail account")
       (setq
-         mu4e-sent-folder "/gmail_mail/[Gmail].Sent Mail"
-         mu4e-trash-folder "/gmail_mail/[Gmail].Trash"
-         mu4e-drafts-folder "/gmail_mail/[Gmail].Drafts"
+         mu4e-sent-folder "/gmail_mail/Sent"
+         mu4e-trash-folder "/gmail_mail/Trash"
+         mu4e-drafts-folder "/gmail_mail/Drafts"
          user-mail-address "shaunmucalo@gmail.com"
          mu4e-maildir-shortcuts
          '( ("/gmail_mail/INBOX"                . ?i)
-             ("/gmail_mail/[Gmail].Sent Mail"   . ?s)
-             ("/gmail_mail/[Gmail].Trash"       . ?t)
-             ("/gmail_mail/[Gmail].Drafts"      . ?d)
+             ("/gmail_mail/Sent"   . ?s)
+             ("/gmail_mail/Trash"       . ?t)
+             ("/gmail_mail/Drafts"      . ?d)
              )
     ))
 
@@ -210,14 +210,24 @@
     (require 'org-mu4e)
 
 
-    ;; (use-package bbdb
-    ;;   :ensure t
-    ;;   :config
-    ;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
-    ;;   (bbdb-initialize 'message 'mu4e))
+;; (use-package bbdb
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;;   (bbdb-initialize 'message 'mu4e)
+;;   :config
+;;   (setq bbdb-file "~/Dropbox/bbdb")
+;;   (setq bbdb-north-american-phone-numbers-p nil)
+;;   (setq bbdb-mail-user-agent (quote message-user-agent))
+;;   (setq bbdb-mua-pop-up t)
+;;   (setq bbdb-mua-pop-up-window-size 5)
+;;   (setq bbdb-default-country "New Zealand"))
+;;     ;; (use-package bbdb
+;;     ;;   :ensure t
+;;     ;;   :config
+;;     ;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;;     ;;   (bbdb-initialize 'message 'mu4e))
 
-    (setq bbdb-mail-user-agent (quote message-user-agent))
-    (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
-    (setq mu4e-compose-complete-addresses nil)
-    (setq bbdb-mua-pop-up t)
-    (setq bbdb-mua-pop-up-window-size 5)
+;;     (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
+;;     (setq mu4e-compose-complete-addresses nil)

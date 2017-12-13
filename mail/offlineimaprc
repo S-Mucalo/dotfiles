@@ -38,18 +38,22 @@ quick = 5
 [Repository gmail_Local]
 type = Maildir
 localfolders = ~/.mail/gmail_mail
+nametrans = lambda foldername: re.sub('Spam', "[Google]/Spam",
+                               re.sub('Drafts', "[Google]/Drafts",
+                               re.sub('Sent', "[Google]/Sent Mail",
+                               re.sub('Trash', "[Google]/Trash", foldername))))
 
 [Repository gmail_Remote]
 type = Gmail
 remoteusereval = get_username("gmail")
 remotepasseval = get_password("gmail")
 auth_mechanisms = LOGIN
-createfolders = False
+# createfolders = False
 
-# nametrans = lambda foldername: re.sub ('^\[gmail\]', '')
-# folderfilter = lambda foldername: foldername not in ['[Gmail]/All Mail']
 
-folderfilter = lambda foldername: foldername in ['Sent', 'INBOX', 'Drafts', 'Trash']
+nametrans = lambda foldername: re.sub ('^\[Gmail\]\/', '', re.sub('.*Sent Mail$', 'Sent', foldername))
+folderfilter = lambda foldername: foldername not in ['[Gmail]/All Mail']
+
 
 # Necessary as of OfflineIMAP 6.5.4
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
