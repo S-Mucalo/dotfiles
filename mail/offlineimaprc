@@ -38,10 +38,10 @@ quick = 5
 [Repository gmail_Local]
 type = Maildir
 localfolders = ~/.mail/gmail_mail
-nametrans = lambda foldername: re.sub('Spam', "[Google]/Spam",
-                               re.sub('Drafts', "[Google]/Drafts",
-                               re.sub('Sent', "[Google]/Sent Mail",
-                               re.sub('Trash', "[Google]/Trash", foldername))))
+nametrans = lambda foldername: re.sub('Spam', "[Gmail]/Spam",
+                               re.sub('Drafts', "[Gmail]/Drafts",
+                               re.sub('Sent', "[Gmail]/Sent Mail",
+                               re.sub('Trash', "[Gmail]/Trash", foldername))))
 
 [Repository gmail_Remote]
 type = Gmail
