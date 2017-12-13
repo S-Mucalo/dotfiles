@@ -17,7 +17,7 @@ ignore_leading_the = "yes"
 
 # Bars
 song_status_format = "{$3%t •$1}{$2 %a$1}"
-progressbar_look = "─╼ "# "─╼╌"
+# progressbar_look = "─╼╌" # "─╼ "
 titles_visibility = "yes"
 header_visibility = "yes"
 statusbar_visibility = "yes"
