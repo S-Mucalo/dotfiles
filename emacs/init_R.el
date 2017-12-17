@@ -31,7 +31,9 @@
 (add-hook 'Rnw-mode-hook
           '(lambda()
              (local-set-key [(shift return)] 'my-ess-eval)))
-(require 'ess-site)
+
+(use-package ess-site
+             :defer t)
 
     ;; (use-package ess
     ;;   :ensure t

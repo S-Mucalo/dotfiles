@@ -32,8 +32,8 @@ setopt \
     prompt_subst
 
 # unsetopt
-unsetopt \
-    multibyte
+# unsetopt \
+
 
 typeset -g -A key
 

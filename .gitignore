@@ -3,8 +3,10 @@
 *database
 *.db
 history
-pid
-state
+*pid
+*state
+*.fifo
+*.sql
 
 tags
 __pycache__

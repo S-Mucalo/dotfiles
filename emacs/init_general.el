@@ -143,6 +143,15 @@
   :init
   ;; (add-hook 'prog-mode-hook 'company-mode)
   ;; (add-hook 'comint-mode-hook 'company-mode)
+  :bind (:map company-active-map
+              ("M-n" . nil)
+              ("M-p" . nil)
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("TAB" . company-complete-common-or-cycle)
+              ("<tab>" . company-complete-common-or-cycle)
+              ("S-TAB" . company-select-previous)
+              ("<backtab>" . company-select-previous))
   :config
   (global-company-mode)
   (setq company-tooltip-limit 10)
@@ -153,15 +162,7 @@
   (setq company-selection-wrap-around t)
   (setq company-tooltip-align-annotations t)
   (setq company-tooltip-flip-when-above t)
-  (setq company-transformers '(company-sort-by-occurrence)) ; weight by frequency
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "C-n") 'company-select-next)
-  (define-key company-active-map (kbd "C-p") 'company-select-previous)
-  (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)
-  (define-key company-active-map (kbd "S-TAB") 'company-select-previous)
-  (define-key company-active-map (kbd "<backtab>") 'company-select-previous))
+  (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
 
 (use-package ido
   :init (progn
