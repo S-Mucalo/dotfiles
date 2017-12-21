@@ -19,32 +19,33 @@ urxvt*cursorBlink:        true
 !  - cursor
 ! urxvt*cursorColor: #DCDCCC
 ! !  - color scheme
-urxvt.background:  #000000
-urxvt.foreground:  #EBEBFF
+URxvt*background:  #000000
+URxvt*foreground:  #EBEBFF
 !black
-urxvt*color0: #101010
-urxvt*color8: #404040
+URxvt*color0: #101010
+URxvt*color8: #404040
 !red
-urxvt*color1: #E84F4F
-urxvt*color9: #D23D3D
+URxvt*color1: #E84F4F
+URxvt*color9: #D23D3D
 !green
-urxvt*color2: #B8D68C
-urxvt*color10: #A0CF5D
+URxvt*color2: #B8D68C
+URxvt*color10: #A0CF5D
 !yellow
-urxvt*color3: #E1AA5D
-urxvt*color11: #F39D21
+URxvt*color3: #E1AA5D
+URxvt*color11: #F39D21
 !blue
-urxvt*color4: #7DC1CF
-urxvt*color12: #4E9FB1
+URxvt*color4: #7DC1CF
+URxvt*color12: #4E9FB1
 !magenta
-urxvt*color5: #9B64FB
-urxvt*color13: #8542FF
+URxvt*color5: #9B64FB
+URxvt*color13: #8542FF
 !cyan
-urxvt*color6: #6D878D
-urxvt*color14: #42717B
+URxvt*color6: #6D878D
+URxvt*color14: #42717B
 !white
-urxvt*color7: #dddddd
-urxvt*color15: #dddddd
+URxvt*color7: #dddddd
+URxvt*color15: #dddddd
+
 
 ! ! Black
 ! URxvt*color0:           #4a4b4a
@@ -82,6 +83,10 @@ URxvt.matcher.button:     1
 URxvt.matcher.pattern.1:  \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 URxvt.matcher.pattern.2:  \\B(/\\S+?):(\\d+)(?=:|$)
 URxvt.matcher.launcher.2: emacs +$2 $1
+
+! Turn off insert picture mode; potentially useful for inserting unicode chars
+URxvt.iso14755:           false
+URxvt.iso14755_52:        false
 
 ! URxvt*.transparent: true
 ! ! URxvt*.shading: 0 to 99 darkens, 101 to 200 lightens
@@ -622,3 +627,9 @@ URxvt.matcher.launcher.2: emacs +$2 $1
 
 ! Turn on/off ISO 14755 5.2 mode (default enabled).
 ! URxvt*iso14755_52: boolean
+
+! For i3 scratchpad named "dropdown"
+dropdown*:                urxvt*
+
+dropdown.font:            xft:inconsolata:size=12
+dropdown.saveLines:       0

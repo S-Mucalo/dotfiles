@@ -1,7 +1,7 @@
 [general]
 accounts = UC_mail, gmail, yahoo
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-pythonfile = ~/.offlineimap.py
+pythonfile = ~/.dotfiles/bin/offlineimap.py
 maxsyncaccounts = 3
 socktimeout = 45
 
