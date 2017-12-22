@@ -1,3 +1,5 @@
+backend = 'webkit'
+
 # SHORTCUT START
 config.bind(';h', 'set downloads.location.directory ~ ;; hint links download')
 config.bind(';d', 'set downloads.location.directory ~/Documents ;; hint links download')

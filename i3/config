@@ -48,28 +48,28 @@ set $truemute --no-startup-id pamixer -m
 ###---Dropdown/Scratchpad Windows---###
 #First I have a tmux window used for background scripts.
 #I'll later bind this to mod+u.
-for_window [instance="dropdown"] floating enable
-for_window [instance="dropdown"] resize set 825 450
-for_window [instance="dropdown"] move position center
-for_window [instance="dropdown"] move scratchpad
-exec --no-startup-id $term -name dropdown -e tmux
+for_window [instance="dropdown_tmux"] floating enable
+for_window [instance="dropdown_tmux"] resize set 825 450
+for_window [instance="dropdown_tmux"] move position center
+for_window [instance="dropdown_tmux"] move scratchpad
+exec --no-startup-id $term -name dropdown_tmux -e tmux
 # exec --no-startup-id $term -name dropdown -e tmux
 
 #Then I have a window running R I use for basic arithmetic
 #I'll later bind this to mod+a.
-for_window [instance="math"] floating enable
-for_window [instance="math"] resize set 800 300
-for_window [instance="math"] move position center
-for_window [instance="math"] move scratchpad
-exec --no-startup-id $term -fn "xft:inconsolata:pixelsize=24" -name math -e R -q
+for_window [instance="dropdown_math"] floating enable
+for_window [instance="dropdown_math"] resize set 800 300
+for_window [instance="dropdown_math"] move position center
+for_window [instance="dropdown_math"] move scratchpad
+exec --no-startup-id $term -fn "xft:inconsolata:pixelsize=24" -name dropdown_math -e R -q
 
-#Then I have a window running R I use for basic arithmetic
-#I'll later bind this to mod+a.
-for_window [instance="python"] floating enable
-for_window [instance="python"] resize set 800 300
-for_window [instance="python"] move position center
-for_window [instance="python"] move scratchpad
-exec --no-startup-id $term -fn "xft:inconsolata:pixelsize=15" -name python -e R -q
+#Then I have a window running python.
+#I'll later bind this to mod+i.
+for_window [instance="dropdown_python"] floating enable
+for_window [instance="dropdown_python"] resize set 800 300
+for_window [instance="dropdown_python"] move position center
+for_window [instance="dropdown_python"] move scratchpad
+exec --no-startup-id $term -name dropdown_python -e ipython --pylab --no-banner
 
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -100,15 +100,21 @@ bindsym $mod+Shift+r restart
 bindsym $mod+t          split toggle
 bindsym $mod+Shift+t    gaps inner current set 15; gaps outer current set 15
 
-bindsym $mod+u          [instance="dropdown"] scratchpad show; move position center
+# bindsym $mod+y
+bindsym $mod+Shift+y    resize shrink width 10 px or 10ppt
+
+bindsym $mod+u          [instance="dropdown_tmux"] scratchpad show; move position center
 bindsym $mod+Shift+u    resize shrink height 10 px or 10 ppt
 
-bindsym $mod+i          [instance="python"] scratchpad show; move position center
+bindsym $mod+i          [instance="dropdown_python"] scratchpad show; move position center
 bindsym $mod+Shift+i    resize grow width 10 px or 10 ppt
+
+#bindsym $mod+o         exec --no-startup-id $beg
+bindsym $mod+Shift+o    resize grow width 10 px or 10 ppt
 
 bindsym $mod+p          exec $pause
 
-bindsym $mod+a          [instance="math"] scratchpad show; move position center
+bindsym $mod+a          [instance="dropdown_math"] scratchpad show; move position center
 bindsym $mod+Shift+a    exec pavucontrol
 
 bindsym $mod+s          gaps inner current plus 5
@@ -145,6 +151,7 @@ bindsym $mod+Shift+c reload
 
 bindsym $mod+v          exec $term -e htop
 
+bindsym $mod+n          exec --no-startup-id $BROWSER
 
 bindsym $mod+m          exec $music
 bindsym $mod+Shift+m    exec $mute

@@ -1,22 +1,15 @@
 (use-package dired+
   :ensure t
   :config (require 'dired+)
+  (setq diredp-hide-details-propagate-flag t)
+  (setq diredp-hide-details-initially-flag t)
   )
-
-
-;; Make dired less verbose, toggle with ( )
-(use-package dired-details
-  :ensure t
-  )
-;; (require 'dired-details)
-(setq-default dired-details-hidden-string "--- ")
-(dired-details-install)
 
 ;; Go to first real file in dired M-<
 (defun dired-back-to-top ()
   (interactive)
   (beginning-of-buffer)
-  (dired-next-line 4))
+  (dired-next-line 3))
 
 (define-key dired-mode-map
   (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)

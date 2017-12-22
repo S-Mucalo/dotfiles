@@ -44,9 +44,9 @@ font-1 = unifont:size=6;-3
 font-2 = FontAwesome:size=8;-2
 font-3 = NotoSans-Regular:size=8;-1
 font-4 = MaterialIcons:size=10;-1
-font-5 = Termsynu:size=8:antialias=false;0
+font-5 = MiscTermsynu:size=8:antialias=false;0
 
-modules-left = bspwm
+modules-left = i3
 modules-right = cpu memory
 
 [module/backlight]
@@ -100,14 +100,20 @@ animation-charging-3 = 
 animation-charging-4 = 
 animation-charging-framerate = 750
 
-[module/bspwm]
-type = internal/bspwm
+[module/i3]
+type = internal/i3
 
-ws-icon-0 = term;
-ws-icon-1 = web;
-ws-icon-2 = code;
-ws-icon-3 = music;
-ws-icon-4 = irssi;
+; ws-icon-0 = ter;
+; ws-icon-1 = web;
+; ws-icon-2 = code;
+; ws-icon-3 = music;
+; ws-icon-4 = irssi;
+; ws-icon-default = 
+ws-icon-0 = 1;
+ws-icon-1 = 2;
+ws-icon-2 = 3;
+ws-icon-3 = 4;
+ws-icon-4 = 5;
 ws-icon-default = 
 
 format = <label-state> <label-mode>
@@ -146,21 +152,21 @@ label-monocle-padding = 2
 
 label-locked = 
 label-locked-foreground = #bd2c40
-label-locked-underline = ${module/bspwm.label-monocle-underline}
-label-locked-padding = ${module/bspwm.label-monocle-padding}
+label-locked-underline = ${module/i3.label-monocle-underline}
+label-locked-padding = ${module/i3.label-monocle-padding}
 
 label-sticky = 
 label-sticky-foreground = #fba922
-label-sticky-underline = ${module/bspwm.label-monocle-underline}
-label-sticky-padding = ${module/bspwm.label-monocle-padding}
+label-sticky-underline = ${module/i3.label-monocle-underline}
+label-sticky-padding = ${module/i3.label-monocle-padding}
 
 label-private = 
 label-private-foreground = #bd2c40
-label-private-underline = ${module/bspwm.label-monocle-underline}
-label-private-padding = ${module/bspwm.label-monocle-padding}
+label-private-underline = ${module/i3.label-monocle-underline}
+label-private-padding = ${module/i3.label-monocle-padding}
 
-[module/bspwm-tmp]
-type = internal/bspwm
+[module/i3-tmp]
+type = internal/i3
 format = <label-state>
 
 label-active = 
@@ -254,7 +260,7 @@ bar-progress-empty-foreground = #44
 
 [module/wireless-network]
 type = internal/network
-interface = net1
+interface = wlan0
 interval = 3.0
 ping-interval = 10
 
@@ -277,7 +283,7 @@ animation-packetloss-framerate = 500
 
 [module/wired-network]
 type = internal/network
-interface = net0
+interface = en9ps0
 interval = 3.0
 
 label-connected =    %{T3}%local_ip%%{T-}

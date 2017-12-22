@@ -1,5 +1,8 @@
+#! /usr/bin/env python3
+
 from pathlib import Path
-# import csv
+import os
+import sys
 from re import sub
 from re import compile
 
@@ -55,7 +58,7 @@ for fold in folders:
 #Goes thru the config file file and adds the shortcuts to both zshshortcuts and ranger.
 
 for conf in configs:
-    zshshortcuts+=("alias "+conf[0]+"=\emacsclient -nc -a \\\"\\\" "+conf[1]+"\"\n")
+    zshshortcuts+=("alias "+conf[0]+"=emacsclient -nc -a \\\"\\\" "+conf[1]+"\"\n")
     rangershortcuts+=("map "+conf[0]+" shell emacsclient -nc -a \"\" "+conf[1]+"\n")
 
 
@@ -75,6 +78,27 @@ def writeShortcuts(location, shortcuts):
         input.write(final)
         input.truncate()
 
-writeShortcuts(rangerlocation, rangershortcuts)
-writeShortcuts(zshlocation, zshshortcuts)
-writeShortcuts(qutelocation, quteshortcuts)
+def delShortcuts(location):
+    with open(location, "r+") as input:
+        markers = compile(beg+"(.|\s)*"+end)
+        replacement =beg + end
+        final = input.read()
+        final = sub(markers, replacement, final)
+        input.seek(0)
+        input.write(final)
+        input.truncate()
+
+
+if __name__ == '__main__':
+
+    if len(sys.argv) < 2:
+        writeShortcuts(rangerlocation, rangershortcuts)
+        writeShortcuts(zshlocation, zshshortcuts)
+        writeShortcuts(qutelocation, quteshortcuts)
+    else:
+        if sys.argv[1] == "--remove-shortcuts":
+            delShortcuts(rangerlocation)
+            delShortcuts(zshlocation)
+            delShortcuts(qutelocation)
+        else:
+            print("Usage:\n{0} \t\t\t write shortcuts\n{0} --remove-shortcuts\t remove-shortcuts".format(os.path.basename(sys.argv[0])))

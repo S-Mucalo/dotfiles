@@ -13,6 +13,8 @@ export SHELL='/bin/zsh'
 export ALTERNATE_EDITOR=""
 export EDITOR="emacs"
 
+export BROWSER="qutebrowser"
+
 # Paths
 export PATH=$PATH:$HOME/.dotfiles/bin
 export PYTHONPATH=$PYTHONPATH:$HOME/.dotfiles/bin

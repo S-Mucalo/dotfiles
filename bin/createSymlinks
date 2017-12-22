@@ -1,0 +1,121 @@
+#!/bin/bash
+
+# Create .config directory if needed
+if [ ! -d ~/.config ]
+  then mkdir ~/.config
+fi
+if [ ! -d ~/.emacs.d ]
+  then mkdir ~/.emacs.d
+fi
+if [ ! -d ~/.backup ]
+  then mkdir ~/.backup
+fi
+if [ ! -d ~/.ipython ]
+  then ipython profile create
+fi
+
+
+declare -a links=(.config/awesome \
+                      .bashrc \
+                      .emacs.d/init.el .emacs.d/custom.el \
+                      .gitconfig \
+                      .config/qutebrowser
+                      .config/ranger \
+                      .config/polybar \
+                      .config/i3 \
+                      .config/mpd \
+                      .ncmpcpp \
+                      .Xresources .xbindkeysrc .xinitrc \
+                      .offlineimaprc .msmtprc \
+                      .ipython/profile_default/ipython_config.py \
+                      .ipython/profile_default/ipython_kernel_config.py \
+                      .ssh \
+                      .tmux.conf \
+                      .vimrc \
+                      .zshrc)
+
+# If files already exist create backups
+for filename in ${links[*]}
+do
+    if [[ ! -f $filename && ! -d $filename ]]; then
+        if [[ ! -e ~/.backup/$filename ]]; then
+
+            mv ~/$filename ~/.backup/$filename
+        else
+            j=0
+            while [[ -e $filename-$j ]] ; do
+                let j++
+            done
+            newname=$filename-$j
+            mv ~/$filename ~/.backup/$newname
+        fi
+    fi
+done
+
+# Awesome
+ln -s $HOME/.dotfiles/awesome $HOME/.config/awesome
+
+# bash
+ln -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
+
+# Emacs
+ln -s $HOME/.dotfiles/emacs/init.el $HOME/.emacs.d/init.el
+ln -s $HOME/.dotfiles/emacs/custom.el $HOME/.emacs.d/custom.el
+
+# git
+ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
+
+# qutebrowser
+ln -s $HOME/.dotfiles/qutebrowser $HOME/.config/qutebrowser
+
+# ranger
+ln -s $HOME/.dotfiles/ranger $HOME/.config/ranger
+
+# polybar
+ln -s $HOME/.dotfiles/polybar $HOME/.config/polybar
+
+# i3
+ln -s $HOME/.dotfiles/i3 $HOME/.config/i3
+
+# ipython
+ln -s $HOME/.dotfiles/ipython/ipython_config.py \
+   $HOME/.ipython/profile_default/ipython_config.py
+ln -s $HOME/.dotfiles/ipython/ipython_kernel_config.py \
+   $HOME/.ipython/profile_default/ipython_kernel_config.py
+
+# mpd
+ln -s $HOME/.dotfiles/mpd $HOME/.mpd
+
+declare -a mpd_files=(database log pid sticker.sql)
+for filename in ${mpd_files[*]}
+do
+    if [[ ! -f $HOME/.config/mpd/$filename ]]; then
+        touch $HOME/.config/mpd/$filename
+    fi
+done
+systemctl --user enable mpd.service
+mpc update
+
+# ncmpcpp
+ln -s $HOME/.dotfiles/ncmpcpp $HOME/.ncmpcpp
+
+# X
+ln -s $HOME/.dotfiles/X/xinitrc $HOME/.xinitrc
+ln -s $HOME/.dotfiles/X/Xresources $HOME/.Xresources
+ln -s $HOME/.dotfiles/X/xbindkeysrc $HOME/.xbindkeysrc
+
+# Mail
+ln -s $HOME/.dotfiles/mail/offlineimaprc $HOME/.offlineimaprc
+ln -s $HOME/.dotfiles/mail/msmtprc $HOME/.msmtprc
+
+# ssh
+ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh
+
+# tmux
+ln -s $HOME/.dotfiles/tmux/tmux.conf $HOME/.tmux.conf
+
+# vim
+ln -s $HOME/.dotfiles/vim/vimrc $HOME/.vimrc
+
+# zsh
+ln -s $HOME/.dotfiles/zsh/zshrc $HOME/.zshrc

@@ -628,8 +628,8 @@ URxvt.iso14755_52:        false
 ! Turn on/off ISO 14755 5.2 mode (default enabled).
 ! URxvt*iso14755_52: boolean
 
-! For i3 scratchpad named "dropdown"
+! For i3 scratchpad named "dropdown_{math,tmux,python}"
 dropdown*:                urxvt*
 
-dropdown.font:            xft:inconsolata:size=12
-dropdown.saveLines:       0
+dropdown*.font:            xft:inconsolata:size=12
+dropdown_tmux.saveLines:       0
