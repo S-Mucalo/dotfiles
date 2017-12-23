@@ -13,7 +13,7 @@ folders = (("h", "~"),
            ("vv", "~/Videos"),
            ("m", "~/Music"),
            ("b", "~/Books"),
-           ("s", "~/.dotfiles/"),
+           ("c", "~/.dotfiles/"),
            ("r", "/"),
            ("cf", "~/.config"))
 
@@ -22,7 +22,8 @@ configs = (("cfz", "~/.zshrc"),
            ("cfr", "~/.config/ranger/rc.conf"),
            ("cfq", "~/.config/qutebrowser/config.py"),
            ("cft", "~/.tmux.conf/"),
-           ("cfd", "~/.Xresources"))
+           ("cfd", "~/.Xresources"),
+           ("cfi", "~/.config/i3/config"))
 
 
 
@@ -58,7 +59,7 @@ for fold in folders:
 #Goes thru the config file file and adds the shortcuts to both zshshortcuts and ranger.
 
 for conf in configs:
-    zshshortcuts+=("alias "+conf[0]+"=emacsclient -nc -a \\\"\\\" "+conf[1]+"\"\n")
+    zshshortcuts+=("alias "+conf[0]+"=\"emacsclient -nc -a \\\"\\\" "+conf[1]+"\"\n")
     rangershortcuts+=("map "+conf[0]+" shell emacsclient -nc -a \"\" "+conf[1]+"\n")
 
 
@@ -101,4 +102,5 @@ if __name__ == '__main__':
             delShortcuts(zshlocation)
             delShortcuts(qutelocation)
         else:
-            print("Usage:\n{0} \t\t\t write shortcuts\n{0} --remove-shortcuts\t remove-shortcuts".format(os.path.basename(sys.argv[0])))
+            print("Usage:\n{0} \t\t\t write shortcuts\n{0} --remove-shortcuts\t remove-shortcuts".format(os.path.basename(sys.argv[0]))
+)

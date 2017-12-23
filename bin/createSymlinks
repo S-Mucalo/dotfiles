@@ -97,7 +97,7 @@ systemctl --user enable mpd.service
 mpc update
 
 # ncmpcpp
-ln -s $HOME/.dotfiles/ncmpcpp $HOME/.ncmpcpp
+ln -s $HOME/.dotfiles/ncmpcpp $HOME/.config/ncmpcpp
 
 # X
 ln -s $HOME/.dotfiles/X/xinitrc $HOME/.xinitrc

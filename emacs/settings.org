@@ -1,0 +1,1231 @@
+* Bootstrapping package and use-package
+
+#+begin_src emacs-lisp :tangle yes
+  (require 'package)
+
+  (setq package-enable-at-startup nil)
+  (add-to-list 'package-archives
+               '("melpa" . "https://melpa.org/packages/"))
+  (package-initialize)
+
+  ;; Bootstrap `use-package'
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file 'noerror)
+
+#+end_src
+* Global settings
+
+#+begin_src emacs-lisp :tangle yes
+  (setq inhibit-startup-screen t)         ; Stop the splash screen
+  (setq mouse-yank-at-point t)            ; When copying with the mouse, paste at point
+  (setq ispell-list-command "--list")     ; Required for aspell backend
+  (setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
+  (setq ispell-local-dictionary "en_GB")
+  (setq global-visual-line-mode t)        ; Move to the next row even if it's wrapped
+  (setq column-number-mode t)             ; Display column position in modeline
+  (setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+  (setq delete-old-versions t)            ; Delete old backups
+  (setq kept-new-versions 6)
+  (setq kept-old-versions 2)
+  (setq version-control t)                ; Control version numbers for old files
+  (setq mouse-autoselect-window t)        ; Move window focus with mouse move
+  (setq show-paren-delay 0)               ; Show parens immediately
+  (setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
+  (setq select-enable-clipboard t)             ; Cut/paste from clipboard
+  (setq x-select-enable-primary t)             ; And from selection buffer
+  (setq auto-revert-verbose nil)               ; Don't warn when file changes
+  (setq vc-follow-symlinks t)                  ; Just do it
+  (setq global-auto-revert-non-file-buffers t) ; For all buffer types
+  (setq mouse-drag-copy-region t)              ; Drag stuff
+  ;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ; Really slow mouse scroll
+  (setq mouse-wheel-progressive-speed nil) ; Don't speed up
+  (setq scroll-step 1)                     ; Go slow
+  (setq scroll-conservatively 10000)       ; Don't jump when scrolling
+  (setq auto-window-vscroll nil)           ; Don't jump when scrolling
+  (setq visible-bell t)                    ; Don't beep
+
+  (setq-default ispell-program-name "aspell")
+  (setq-default save-place t)             ; Come back to the same place in buffer next visit
+  (setq-default fill-column 80)
+
+  (show-paren-mode 1)                     ; Show matching parenthesis
+  (global-hl-line-mode t)                 ; highlight line all the time
+  (transient-mark-mode t)                 ; Allow highlighting
+  (global-auto-revert-mode 1)             ; Change buffers if they change on disk
+  (scroll-bar-mode -1)                    ; Turn off scroll
+  (tool-bar-mode -1)                      ; Turn off tool-bar
+  (menu-bar-mode t)                       ; Still show the menubar
+  (delete-selection-mode 1)               ; Selection is deleted
+
+  (defalias 'yes-or-no-p 'y-or-n-p)       ; y
+#+end_src
+* personal
+
+#+begin_src emacs-lisp :tangle yes
+  (defun toggle-window-split()
+    (interactive)
+    (if (= (count-windows) 2)
+        (let* ((this-win-buffer (window-buffer))
+               (next-win-buffer (window-buffer (next-window)))
+               (this-win-edges (window-edges (selected-window)))
+               (next-win-edges (window-edges (next-window)))
+               (this-win-2nd (not (and (<= (car this-win-edges)
+                                           (car next-win-edges))
+                                       (<= (cadr this-win-edges)
+                                           (cadr next-win-edges)))))
+               (splitter
+                (if (= (car this-win-edges)
+                       (car (window-edges (next-window))))
+                    'split-window-horizontally
+                  'split-window-vertically)))
+          (delete-other-windows)
+          (let ((first-win (selected-window)))
+            (funcall splitter)
+            (if this-win-2nd (other-window 1))
+            (set-window-buffer (selected-window) this-win-buffer)
+            (set-window-buffer (next-window) next-win-buffer)
+            (select-window first-win)
+            (if this-win-2nd (other-window 1))))))
+
+  ;; Rotate windows because you opened it in the wrong one
+  (defun rotate-windows ()
+    "Rotate your windows"
+    (interactive)
+    (cond ((not (> (count-windows)1))
+           (message "You can't rotate a single window!"))
+          (t
+           (setq i 1)
+           (setq numWindows (count-windows))
+           (while (< i numWindows)
+             (let* (
+                    (w1 (elt (window-list) i))
+                    (w2 (elt (window-list) (+ (% i numWindows) 1)))
+
+                    (b1 (window-buffer w1))
+                    (b2 (window-buffer w2))
+
+                    (s1 (window-start w1))
+                    (s2 (window-start w2))
+                    )
+               (set-window-buffer w1 b2)
+               (set-window-buffer w2 b1)
+               (set-window-start w1 s2)
+               (set-window-start w2 s1)
+               (setq i (1+ i)))))))
+
+  (defun cleanup-buffer-safe ()
+    "Perform a bunch of safe operations on the whitespace content of a buffer.
+        Does not indent buffer, because it is used for a before-save-hook, and that
+        might be bad."
+    (interactive)
+    (untabify (point-min) (point-max))
+    (delete-trailing-whitespace)
+    (set-buffer-file-coding-system 'utf-8))
+
+  ;; Various superfluous white-space. Just say no.
+  (add-hook 'before-save-hook 'cleanup-buffer-safe)
+
+  (defun cleanup-buffer ()
+    "Perform a bunch of operations on the whitespace content of a buffer.
+        Including indent-buffer, which should not be called automatically on save."
+    (interactive)
+    (cleanup-buffer-safe)
+    (indent-region (point-min) (point-max)))
+
+  (defun delete-current-buffer-file ()
+    "Removes file connected to current buffer and kills buffer."
+    (interactive)
+    (let ((filename (buffer-file-name))
+          (buffer (current-buffer))
+          (name (buffer-name)))
+      (if (not (and filename (file-exists-p filename)))
+          (ido-kill-buffer)
+        (when (yes-or-no-p "Are you sure you want to remove this file? ")
+          (delete-file filename)
+          (kill-buffer buffer)
+          (message "File '%s' successfully removed" filename)))))
+
+  (defun open-line-below ()
+    (interactive)
+    (end-of-line)
+    (newline)
+    (indent-for-tab-command))
+
+  (defun open-line-above ()
+    (interactive)
+    (beginning-of-line)
+    (newline)
+    (forward-line -1)
+    (indent-for-tab-command))
+
+  (defun move-line-down ()
+    (interactive)
+    (let ((col (current-column)))
+      (save-excursion
+        (forward-line)
+        (transpose-lines 1))
+      (forward-line)
+      (move-to-column col)))
+
+  (defun move-line-up ()
+    (interactive)
+    (let ((col (current-column)))
+      (save-excursion
+        (forward-line)
+        (transpose-lines -1))
+      (move-to-column col)))
+
+  (defun comint-delchar-or-eof-or-kill-buffer (arg)
+    (interactive "p")
+    (if (null (get-buffer-process (current-buffer)))
+        (kill-buffer)
+      (comint-delchar-or-maybe-eof arg)))
+
+  (add-hook 'shell-mode-hook
+            (lambda ()
+              (define-key shell-mode-map
+                (kbd "C-d") 'comint-delchar-or-eof-or-kill-buffer)))
+
+  (defun goto-line-with-feedback ()
+    "Show line numbers temporarily, while prompting for the line number input"
+    (interactive)
+    (unwind-protect
+        (progn
+          (linum-mode 1)
+          (goto-line (read-number "Goto line: ")))
+      (linum-mode -1)))
+
+                                          ; if you're windened, narrow to the region, if you're narrowed, widen
+                                          ; bound to C-x n
+  (defun narrow-or-widen-dwim (p)
+    "If the buffer is narrowed, it widens. Otherwise, it narrows intelligently.
+        Intelligently means: region, org-src-block, org-subtree, or defun,
+        whichever applies first.
+        Narrowing to org-src-block actually calls `org-edit-src-code'.
+
+        With prefix P, don't widen, just narrow even if buffer is already
+        narrowed."
+    (interactive "P")
+    (declare (interactive-only))
+    (cond ((and (buffer-narrowed-p) (not p)) (widen))
+          ((region-active-p)
+           (narrow-to-region (region-beginning) (region-end)))
+          ((derived-mode-p 'org-mode)
+           ;; `org-edit-src-code' is not a real narrowing command.
+           ;; Remove this first conditional if you don't want it.
+           (cond ((ignore-errors (org-edit-src-code))
+                  (delete-other-windows))
+                 ((org-at-block-p)
+                  (org-narrow-to-block))
+                 (t (org-narrow-to-subtree))))
+          (t (narrow-to-defun))))
+
+  (defun beginning-of-line-dwim ()
+    "Toggle between moving point to the first non-whitespace character, and the start of the line."
+    (interactive)
+    (let ((start-position (point)))
+      ;; Move to the first non-whitespace character.
+      (back-to-indentation)
+
+      ;; If we haven't moved position, go to start of the line.
+      (when (= (point) start-position)
+        (move-beginning-of-line nil))))
+
+
+
+
+  (defun client-save-kill-emacs(&optional display)
+    " This is a function that can bu used to shutdown save buffers and
+    shutdown the emacs daemon. It should be called using
+    emacsclient -e '(client-save-kill-emacs)'.  This function will
+    check to see if there are any modified buffers or active clients
+    or frame.  If so an x window will be opened and the user will
+    be prompted."
+
+    (let (new-frame modified-buffers active-clients-or-frames)
+
+                                          ; Check if there are modified buffers or active clients or frames.
+      (setq modified-buffers (modified-buffers-exist))
+      (setq active-clients-or-frames ( or (> (length server-clients) 1)
+                                          (> (length (frame-list)) 1)
+                                          ))
+
+                                          ; Create a new frame if prompts are needed.
+      (when (or modified-buffers active-clients-or-frames)
+        (when (not (eq window-system 'x))
+          (message "Initializing x windows system.")
+          (x-initialize-window-system))
+        (when (not display) (setq display (getenv "DISPLAY")))
+        (message "Opening frame on display: %s" display)
+        (select-frame (make-frame-on-display display '((window-system . x)))))
+
+                                          ; Save the current frame.
+      (setq new-frame (selected-frame))
+
+
+                                          ; When displaying the number of clients and frames:
+                                          ; subtract 1 from the clients for this client.
+                                          ; subtract 2 from the frames this frame (that we just created) and the default frame.
+      (when ( or (not active-clients-or-frames)
+                 (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2))))
+
+                                          ; If the user quits during the save dialog then don't exit emacs.
+                                          ; Still close the terminal though.
+        (let((inhibit-quit t))
+                                          ; Save buffers
+          (with-local-quit
+            (save-some-buffers))
+
+          (if quit-flag
+              (setq quit-flag nil)
+                                          ; Kill all remaining clients
+            (progn
+              (dolist (client server-clients)
+                (server-delete-client client))
+                                          ; Exit emacs
+              (kill-emacs)))
+          ))
+
+                                          ; If we made a frame then kill it.
+      (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))
+      )
+    )
+
+
+  (defun modified-buffers-exist()
+    "This function will check to see if there are any buffers
+    that have been modified.  It will return true if there are
+    and nil otherwise. Buffers that have buffer-offer-save set to
+    nil are ignored."
+    (let (modified-found)
+      (dolist (buffer (buffer-list))
+        (when (and (buffer-live-p buffer)
+                   (buffer-modified-p buffer)
+                   (not (buffer-base-buffer buffer))
+                   (or
+                    (buffer-file-name buffer)
+                    (progn
+                      (set-buffer buffer)
+                      (and buffer-offer-save (> (buffer-size) 0))))
+                   )
+          (setq modified-found t)
+          )
+        )
+      modified-found
+      )
+    )
+#+end_src
+
+* More settings
+#+begin_src emacs-lisp :tangle yes
+
+
+  ;; Stop doing bad things
+  (put 'overwrite-mode 'disabled t)
+
+
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (dolist (hook '(text-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode 1))))
+  (dolist (hook '(change-log-mode-hook log-edit-mode-hook))
+    (add-hook hook (lambda () (flyspell-mode -1))))
+
+  (recentf-mode 1)
+  (setq recentf-max-saved-items 50)
+  (add-to-list 'recentf-exclude "/\\.git/.*\\")         ; ignore git contents
+  (add-to-list 'recentf-exclude ".*/elpa/.*\\")           ; package files
+  (add-to-list 'recentf-exclude "/el-get/.*\\")           ; package files
+  (add-to-list 'recentf-exclude "/auto-save-list/.*\\")   ; auto-save junk
+  (add-to-list 'recentf-exclude "TAGS")
+  (add-to-list 'recentf-exclude ".*-autoloads\\.el\\'")
+  (add-to-list 'recentf-exclude ".*\\.gz\\'")
+  (add-to-list 'recentf-exclude "ido.last")
+  (add-to-list 'recentf-exclude "session\\.[a-f0-9]*$")
+  (add-to-list 'recentf-exclude "\\.aux$")
+  (add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
+  (recentf-cleanup)
+
+  (setq completion-ignored-extensions
+        '(".o" ".elc" "~" ".bin" ".class" ".exe" ".ps" ".abs" ".mx"
+          ".~jv" ".rbc" ".pyc" ".beam" ".aux" ".out" ".pdf" ".hbc"))
+
+  (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                           ("marmalade" . "http://marmalade-repo.org/packages/")
+                           ("melpa" . "http://melpa.milkbox.net/packages/")
+                           ("melpa-stable" . "https://stable.melpa.org/packages/")
+                           ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+  ;; (package-refresh-contents)
+
+  (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
+#+end_src
+* Problem area
+
+#+begin_src emacs-lisp :tangle yes
+
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(global-set-key (kbd "C-x 4") 'toggle-window-split)
+(global-set-key (kbd "C-x 5") 'rotate-windows)
+(global-set-key (kbd "<C-S-down>") 'move-line-down)
+(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "<C-return>") 'open-line-below)
+(global-set-key (kbd "<C-S-return>") 'open-line-above)
+(global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+(global-set-key (kbd "C-c n") 'cleanup-buffer)
+(global-set-key "\M-l" 'goto-line)
+(global-set-key [remap goto-line] 'goto-line-with-feedback)
+(global-set-key (kbd "C-a") 'beginning-of-line-dwim)
+(define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+#+end_src
+* Packages
+
+#+begin_src emacs-lisp :tangle yes
+
+
+  (use-package beacon                     ; Flash the line when point moves
+    :ensure t
+    :config
+    (beacon-mode 1)
+    (setq beacon-blink-delay 0.2)
+    (setq beacon-color "red"))
+
+  (use-package lua-mode
+    :ensure t
+    :mode ("\\.lua\\'" . lua-mode))
+
+  (use-package yasnippet
+    :defer t
+    :ensure t
+    :config
+    (yas-global-mode 1))
+
+  (use-package magit
+    :ensure t
+    :defer t
+    :bind ("C-x g" . magit-status))
+
+  (use-package monokai-theme
+    :ensure t
+    :disabled t)
+
+  (use-package grandshell-theme
+    :ensure t)
+
+  (use-package cyberpunk-theme
+    :ensure t
+    :disabled t)
+
+  (use-package auto-complete
+    :ensure t
+    :init
+    (progn
+      (ac-config-default)
+      (global-auto-complete-mode t)
+      ))
+
+  (use-package company
+    :ensure t
+    :diminish ""
+    :init
+    ;; (add-hook 'prog-mode-hook 'company-mode)
+    ;; (add-hook 'comint-mode-hook 'company-mode)
+    :bind (:map company-active-map
+                ("M-n" . nil)
+                ("M-p" . nil)
+                ("C-n" . company-select-next)
+                ("C-p" . company-select-previous)
+                ("TAB" . company-complete-common-or-cycle)
+                ("<tab>" . company-complete-common-or-cycle)
+                ("S-TAB" . company-select-previous)
+                ("<backtab>" . company-select-previous))
+    :config
+    (global-company-mode)
+    (setq company-tooltip-limit 10)
+    (setq company-idle-delay 0.2)
+    (setq company-echo-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-require-match nil)
+    (setq company-selection-wrap-around t)
+    (setq company-tooltip-align-annotations t)
+    (setq company-tooltip-flip-when-above t)
+    (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
+
+  (use-package ido
+    :init (progn
+            (ido-mode 1)
+            ;; "~" adds the "/" automatically in find file, etc.
+            (add-hook 'ido-setup-hook
+                      (lambda ()
+                        ;; Go straight home
+                        (define-key ido-file-completion-map
+                          (kbd "~")
+                          (lambda ()
+                            (interactive)
+                            (if (looking-back "/")
+                                (insert "~/")
+                              (call-interactively 'self-insert-command)))))))
+
+    :config
+    (progn (setq ido-enable-prefix nil)
+           (setq ido-enable-flex-matching t)
+           (setq ido-create-new-buffer 'always)
+           (setq ido-use-filename-at-point 'guess)
+           (setq ido-max-prospects 10)))
+
+  (use-package which-key
+    :config
+    (which-key-mode t)
+    :ensure t)
+
+                                          ; deletes all the whitespace when you hit backspace or delete
+  (use-package hungry-delete
+    :ensure t
+    :config
+    (global-hungry-delete-mode))
+
+  (use-package expand-region
+    :ensure t
+    :config
+    (global-set-key (kbd "C-=") 'er/expand-region))
+
+                                          ; mark and edit all copies of the marked region simultaniously.
+  (use-package iedit
+    :ensure t)
+
+  (use-package counsel
+  :ensure t
+    :bind
+    (("M-y" . counsel-yank-pop)
+     :map ivy-minibuffer-map
+     ("M-y" . ivy-next-line)))
+
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-count-format "%d/%d ")
+    (setq ivy-display-style 'fancy))
+
+  (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+           ("C-r" . swiper)
+           ("C-c C-r" . ivy-resume)
+           ("M-x" . counsel-M-x)
+           ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      ))
+
+  (use-package ace-jump-mode
+    :ensure t
+    :bind
+    ("C-." . ace-jump-mode))
+
+  (use-package smartparens
+    :ensure t
+    :config
+    (use-package smartparens-config)
+    (use-package smartparens-html)
+    (use-package smartparens-python)
+    (use-package smartparens-latex)
+    (smartparens-global-mode t)
+    (show-smartparens-global-mode t)
+    :bind
+    ( ("C-<down>" . sp-down-sexp)
+      ("C-<up>"   . sp-up-sexp)
+      ("M-<down>" . sp-backward-down-sexp)
+      ("M-<up>"   . sp-backward-up-sexp)
+      ("C-M-a" . sp-beginning-of-sexp)
+      ("C-M-e" . sp-end-of-sexp)))
+
+  (use-package simple-mpc
+    :ensure t)
+
+  (use-package mingus
+    :ensure t)
+
+  (use-package ido-vertical-mode
+    :init
+    (ido-vertical-mode t)
+    (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+    :ensure t)
+
+  (use-package visual-regexp
+    :ensure t
+    :bind
+    ("M-%" . vr/query-replace))
+
+  ;; (use-package smex
+  ;;   :ensure t
+  ;;   :init
+  ;;   (smex-initialize)
+  ;;   :bind
+  ;;   ("M-x" . smex)
+  ;;   ("M-X" . smex-major-mode-commands)
+  ;;   ("C-c C-c M-x" . execute-extended-command))
+
+  (use-package window-number
+    :ensure t
+    :config
+    (window-number-mode 1)
+    (window-number-meta-mode 1))
+
+  (use-package comint
+    :config
+    (setq comint-scroll-to-bottom-on-input t)
+    (setq comint-scroll-to-bottom-on-output t)
+    (setq comint-move-point-for-output t)
+    :bind (:map comint-mode-map
+                ("<up>" . comint-previous-matching-input-from-input) ;; Untested
+                ("<down>" . comint-next-matching-input-from-input)  ;; Untested
+                ("M-p" . comint-previous-matching-input-from-input)
+                ("M-n" . comint-next-matching-input-from-input)
+                ("C-<up>" . comint-previous-matching-input-from-input)
+                ("C-<down>" . comint-next-matching-input-from-input)
+                ))
+
+  (use-package saveplace
+    :config
+    (setq save-place-file "~/.emacs.d/places"))
+
+  (add-hook 'before-save-hook
+            (lambda ()
+              (when buffer-file-name
+                (let ((dir (file-name-directory buffer-file-name)))
+                  (when (and (not (file-exists-p dir))
+                             (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
+                    (make-directory dir t))))))
+
+#+end_src
+* Mail
+#+begin_src emacs-lisp :tangle yes
+(setq message-kill-buffer-on-exit t)
+(setq mail-envelope-from (quote header))
+(setq mail-specify-envelope-from t)
+(setq message-sendmail-envelope-from (quote header))
+(setq send-mail-function (quote sendmail-send-it))
+
+
+
+(use-package notmuch
+  :ensure t)
+;; (require 'notmuch)
+;; (autoload 'notmuch "notmuch" "notmuch mail" t)
+
+
+(define-key notmuch-show-mode-map "d"
+  (lambda ()
+    "toggle deleted tag for message"
+    (interactive)
+    (if (member "deleted" (notmuch-show-get-tags))
+        (notmuch-show-tag (list "-deleted"))
+      (notmuch-show-tag (list "+deleted")))))
+
+(define-key notmuch-search-mode-map "d"
+  (lambda ()
+    "toggle deleted tag for message"
+    (interactive)
+    (if (member "deleted" (notmuch-search-get-tags))
+        (notmuch-show-tag (list "-deleted"))
+      (notmuch-show-tag (list "+deleted")))))
+
+(setq message-directory "~/.mail/")
+(setq notmuch-fcc-dirs nil)
+(setq notmuch-saved-searches
+      (quote
+       (
+        (:name "UC_mail-recent" :query "tag:UC_mail-inbox and date:week.." :key "r")
+        (:name "UC_mail-unread" :query "tag:UC_mail-inbox and tag:unread")
+        (:name "UC_mail-inbox" :query "tag:UC_mail-inbox" :key "i" :search-type tree)
+        (:name "UC_mail-sent" :query "tag:UC_mail-sent" :key "s")
+        (:name "UC_mail-drafts" :query "tag:UC_mail-drafts" :key "d")
+        (:name "gmail-unread" :query "tag:gmail-inbox and tag:unread")
+        (:name "gmail-inbox" :query "tag:gmail-inbox" :search-type tree)
+        (:name "gmail-sent" :query "tag:gmail-sent")
+        (:name "yahoo-unread" :query "tag:yahoo-inbox and tag:unread")
+        (:name "yahoo" :query "tag:yahoo-inbox")
+        (:name "Yahoo-sent" :query "tag:yahoo-sent")
+        (:name "Petsc" :query "tag:petsc-users" :search-type tree)
+        (:name "fipy" :query "tag:fipy-users" :search-type tree)
+        (:name "all mail" :query "*" :key "a"))))
+;; (add-hook 'notmuch-search-hook '(lambda () (goto-char(point-max))) 1 nil)
+
+
+(autoload 'gnus-alias-determine-identity "gnus-alias" "" t)
+(add-hook 'message-setup-hook 'gnus-alias-determine-identity)
+
+;; Define two identities, "home" and "work"
+(setq gnus-alias-identity-alist
+      '(("UC_mail"
+         nil ;; Does not refer to any other identity
+         "Shaun Mucalo <shaun.mucalo@pg.canterbury.ac.nz>" ;; Sender address
+         nil ;; No organization header
+         nil ;; No extra headers
+         nil ;; No extra body text
+         nil) ;; "~/.signature")
+        ("gmail"
+         nil
+         "Shaun Mucalo <shaunmucalo@gmail.com>"
+         nil ;; "Example Corp."
+         nil ;; (("Bcc" . "john.doe@example.com"))
+         nil
+         nil) ;; "~/.signature.work")
+        ("yahoo"
+         nil
+         "Shaun Mucalo <s_mucalo@yahoo.co.nz>"
+         nil ;; "Example Corp."
+         nil ;; (("Bcc" . "john.doe@example.com"))
+         nil
+         nil) ;; "~/.signature.work")
+        ))
+;; Use "UC_mail" identity by default
+(setq gnus-alias-default-identity "UC_mail")
+;; Define rules to match work identity
+                                        ; (setq gnus-alias-identity-rules)
+                                        ; '(("UC_mail" ("any" "shaun.mucalo@\\(example\\.com\\|help\\.example.com\\)" both) "gmail"))
+;; Determine identity when message-mode loads
+(add-hook 'message-setup-hook 'gnus-alias-determine-identity)
+
+
+(use-package mu4e
+  :diminish t
+
+  )
+
+(require 'mu4e)
+
+(setq  mu4e-maildir "~/.mail"
+       mu4e-sent-folder "/UC_mail/Sent Items"
+       mu4e-drafts-folder "/UC_mail/Drafts"
+       mu4e-trash-folder "/UC_mail/Deleted Items"
+       user-mail-address "shaun.mucalo@pg.canterbury.ac.nz")
+
+;; (setq mu4e-sent-messages-behavior 'delete)
+(setq mu4e-get-mail-command "offlineimap -o")
+
+(defvar my-mu4e-account-alist
+  '(
+    ("UC_mail"
+     (mu4e-sent-folder "/UC_mail/Sent Items")
+     (mu4e-drafts-folder "/UC_mail/Drafts")
+     (mu4e-trash-folder "/UC_mail/Deleted Items")
+     (user-mail-address "shaun.mucalo@pg.canterbury.ac.nz"))
+    ("gmail"
+     (mu4e-sent-folder "/gmail_mail/[Gmail].Sent Mail")
+     (mu4e-trash-folder "/gmail_mail/[Gmail].Trash")
+     (mu4e-drafts-folder "/gmail_mail/[Gmail].Drafts")
+     (user-mail-address "shaunmucalo@gmail.com"))
+    ("yahoo"
+     (mu4e-sent-folder "/yahoo_mail/Sent")
+     (mu4e-drafts-folder "/yahoo_mail/Drafts")
+     (mu4e-trash-folder "/yahoo_mail/Trash")
+     (user-mail-address "s_mucalo@yahoo.co.nz"))
+    ))
+
+
+(defun my-mu4e-set-account ()
+  "Set the account for composing a message."
+  (let* ((account
+          (if mu4e-compose-parent-message
+              (let ((maildir (mu4e-message-field mu4e-compose-parent-message :maildir)))
+                (string-match "/\\(.*?\\)/" maildir)
+                (match-string 1 maildir))
+            (completing-read (format "Compose with account: (%s) "
+                                     (mapconcat #'(lambda (var) (car var))
+                                                my-mu4e-account-alist "/"))
+                             (mapcar #'(lambda (var) (car var)) my-mu4e-account-alist)
+                             nil t nil nil (caar my-mu4e-account-alist))))
+         (account-vars (cdr (assoc account my-mu4e-account-alist))))
+    (if account-vars
+        (mapc #'(lambda (var)
+                  (set (car var) (cadr var)))
+              account-vars)
+      (error "No email account found"))))
+
+
+
+
+(add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account)
+
+
+(defun mu4e-UC-mail()
+  (interactive)
+  (message "UC-mail account")
+  (setq user-mail-address "shaun.mucalo@pg.canterbury.ac.nz"
+        mu4e-sent-folder "/UC_mail/Sent Items"
+        mu4e-drafts-folder "/UC_mail/Drafts"
+        mu4e-trash-folder "/UC_mail/Deleted Items")
+  (setq  mu4e-maildir-shortcuts
+         '( ("/UC_mail/INBOX"        . ?i)
+            ("/UC_mail/Sent Items"   . ?s)
+            ("/UC_mail/Deleted Items". ?t)
+            ("/UC_mail/Drafts"       . ?d))))
+
+(defun mu4e-gmail-mail()
+  (interactive)
+  (message "gmail-mail account")
+  (setq
+   mu4e-sent-folder "/gmail_mail/Sent"
+   mu4e-trash-folder "/gmail_mail/Trash"
+   mu4e-drafts-folder "/gmail_mail/Drafts"
+   user-mail-address "shaunmucalo@gmail.com"
+   mu4e-maildir-shortcuts
+   '( ("/gmail_mail/INBOX"                . ?i)
+      ("/gmail_mail/Sent"   . ?s)
+      ("/gmail_mail/Trash"       . ?t)
+      ("/gmail_mail/Drafts"      . ?d)
+      )
+   ))
+
+(defun mu4e-yahoo-mail()
+  (interactive)
+  (message "yahoo-mail account")
+  (setq mu4e-sent-folder "/yahoo_mail/Sent"
+        mu4e-drafts-folder "/yahoo_mail/Drafts"
+        mu4e-trash-folder "/yahoo_mail/Trash"
+        user-mail-address "s_mucalo@yahoo.co.nz"
+        mu4e-maildir-shortcuts
+        '( ("/yahoo_mail/Inbox"  . ?i)
+           ("/yahoo_mail/Sent"   . ?s)
+           ("/yahoo_mail/Trash"  . ?t)
+           ("/yahoo_mail/Drafts" . ?d)
+           ))
+  )
+
+(define-key mu4e-main-mode-map (kbd "<f12>") 'mu4e-UC-mail)
+(define-key mu4e-main-mode-map (kbd "<f11>") 'mu4e-gmail-mail)
+(define-key mu4e-main-mode-map (kbd "<f10>") 'mu4e-yahoo-mail)
+
+
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+
+;; save attachment to my desktop (this can also be a function)
+(setq mu4e-attachment-dir "~/Downloads")
+
+;; attempt to show images when viewing messages
+ (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
+;; (setq mu4e-html2text-command "w3m -T text/html")
+(setq mu4e-view-show-images t)
+
+    (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
+
+    ;; Allow org-mode stuff in mu4e
+    (require 'org-mu4e)
+
+
+;; (use-package bbdb-loaddefs
+(use-package bbdb
+  :ensure t
+  :commands bbdb
+  :config
+  (bbdb-initialize 'gnus
+           ;;bbdb-insinuate-gnus adds bindings for the default
+           ;;keys to Gnus and configures Gnus to notify the
+           ;;BBDB when new messages are loaded. This
+           ;;notification is required if the BBDB is to be
+           ;;able to display BBDB entries for messages
+           ;;displayed in Gnus.
+
+           'message
+           ;; bbdb-insinuate-message adds a binding for M-TAB
+           ;; to Message mode. This will enable completion of
+           ;; addressees based on BBDB records.
+
+           'mu4e
+           'anniv)
+
+  (bbdb-mua-auto-update-init 'gnus 'message 'mu4e)
+
+  (setq bbdb-file "~/Dropbox/bbdb")
+
+  ;; size of the bbdb popup
+  (setq bbdb-mua-pop-up-window-size 10)
+
+  ;; how to handle new entries
+  (setq bbdb-mua-update-interactive-p '(query . create))
+
+  ;; look at every address; not only the first one
+  (setq bbdb-message-all-addresses t)
+
+  (setq bbdb-phone-style 'nil)
+
+  (setq bbdb-mua-pop-up t)
+
+  (setq bbdb-default-country "New Zealand"))
+
+  ;; http://www.emacs.uniyar.ac.ru/doc/em24h/emacs183.htm
+  ;; (use-package bbdb-gnus
+  ;;   :ensure t
+  ;;   :defer t
+  ;;   :config
+  ;;   (setq bbdb/gnus-score-default 1000)
+  ;;   (setq gnus-score-find-score-files-function
+  ;;         '(gnus-score-find-bnews bbdb/gnus-score))))
+
+
+
+;; (use-package bbdb
+;;   :ensure t
+;;   :defer t
+;;   :init
+;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;;   (bbdb-initialize 'message 'mu4e)
+;;   :config
+;;   (setq bbdb-file "~/Dropbox/bbdb")
+;;   (setq bbdb-north-american-phone-numbers-p nil)
+;;   (setq bbdb-mail-user-agent (quote message-user-agent))
+;;     ;; (use-package bbdb
+;;     ;;   :ensure t
+;;     ;;   :config
+;;     ;;   (autoload 'bbdb-insinuate-mu4e "bbdb-mu4e")
+;;     ;;   (bbdb-initialize 'message 'mu4e))
+
+;;     (setq mu4e-view-mode-hook (quote (bbdb-mua-auto-update visual-line-mode)))
+;;     (setq mu4e-compose-complete-addresses nil)
+
+#+end_src
+* Python
+#+begin_src emacs-lisp :tangle yes
+(use-package python
+  :defer t
+  :mode ("\\.py\\'" . python-mode)
+  :init
+  (setq indent-tabs-mode nil)
+  (setq default-tab-width 4)
+  (setq python-shell-interpreter "ipython3"
+        python-shell-interpreter-args "--simple-prompt -i"))
+
+
+(use-package cython-mode
+  :ensure t
+  :mode (("\\.pyx\\'"  . cython-mode)
+         ("\\.spyx\\'" . cython-mode)
+         ("\\.pxd\\'"  . cython-mode)
+         ("\\.pxi\\'"  . cython-mode)))
+
+(use-package elpy
+  :defer t
+  :ensure t
+  :init (with-eval-after-load 'python (elpy-enable))
+  )
+
+#+end_src
+* R
+#+begin_src emacs-lisp :tangle yes
+(setq ess-ask-for-ess-directory nil)
+(setq ess-local-process-name "R")
+(setq ansi-color-for-comint-mode 'filter)
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+(setq comint-move-point-for-output t)
+(defun my-ess-start-R ()
+  (interactive)
+  (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+      (progn
+        (delete-other-windows)
+        (setq w1 (selected-window))
+        (setq w1name (buffer-name))
+        (setq w2 (split-window w1 nil t))
+        (R)
+        (set-window-buffer w2 "*R*")
+        (set-window-buffer w1 w1name))))
+(defun my-ess-eval ()
+  (interactive)
+  (my-ess-start-R)
+  (if (and transient-mark-mode mark-active)
+      (call-interactively 'ess-eval-region)
+    (call-interactively 'ess-eval-line-and-step)))
+(add-hook 'ess-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+(add-hook 'inferior-ess-mode-hook
+          '(lambda()
+             (local-set-key [C-up] 'comint-previous-input)
+             (local-set-key [C-down] 'comint-next-input)))
+(add-hook 'Rnw-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+
+(use-package ess-site
+             :defer t)
+
+    ;; (use-package ess
+    ;;   :ensure t
+    ;;   :init (use-package 'ess-site)
+    ;;   :bind (:map ess-mode-map
+    ;;               ([(shift return)] . my-ess-eval)
+    ;;               ("C-up"
+
+    ;;   :config
+    ;;   (setq ess-local-process-name "R"
+    ;;         ansi-color-for-comint-mode 'filter
+    ;;         comint-scroll-to-bottom-on-input t
+    ;;         comint-scroll-to-bottom-on-output t
+    ;;         comint-move-point-for-output t))
+
+#+end_src
+* c
+#+begin_src emacs-lisp :tangle yes
+(use-package cc-mode
+  :config
+  (setq c-default-style "ellemtel")
+  (setq c-basic-offset 4)
+  ;; (setq c-toggle-hungry-state)
+  )
+
+(use-package flymake
+  :config
+  (flymake-mode t)
+  :bind
+  ("<f5>" . flymake-display-err-menu-for-current-line)
+  ("<f6>" . flymake-goto-next-error))
+
+#+end_src
+* dired
+#+begin_src emacs-lisp :tangle yes
+(use-package dired+
+  :ensure t
+  :config (require 'dired+)
+  (setq diredp-hide-details-propagate-flag t)
+  (setq diredp-hide-details-initially-flag t)
+  )
+
+;; Go to first real file in dired M-<
+(defun dired-back-to-top ()
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 3))
+
+(define-key dired-mode-map
+  (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+
+;; Go to last real file in dired M->
+(defun dired-jump-to-bottom ()
+  (interactive)
+  (end-of-buffer)
+  (dired-next-line -1))
+
+(define-key dired-mode-map
+  (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+
+#+end_src
+
+* LaTeX
+#+begin_src emacs-lisp :tangle yes
+    (use-package latex
+      :mode ("\\.tex\\'" . latex-mode)
+      :commands (latex-mode LaTeX-mode plain-tex-mode)
+      :bind (:map LaTeX-mode-map
+                  ("C-c C-r" . reftex-query-replace-document)
+                  ("C-c C-g" . reftex-grep-document))
+      :init
+      (progn
+        (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+        (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+        (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+        (add-hook 'LaTeX-mode-hook #'TeX-source-correlate-mode)
+        (add-hook 'LaTex-mode-hook #'LaTex-math-mode)
+        (add-hook 'text-mode-hook #'turn-on-auto-fill)
+        (setq TeX-auto-save t
+              TeX-save-query nil
+              TeX-show-compilation t
+              TeX-parse-self t
+              TeX-source-correlate-start-server t
+              TeX-save-query nil
+              TeX-PDF-mode t)
+        (setq-default TeX-master nil))
+      :config
+      (add-to-list 'TeX-command-list
+                   '("Sage" "sage %s.sagetex.sage" TeX-run-command nil t :help "Run SAGE.") t)
+      (add-to-list 'TeX-command-list
+                   '("Wordcount" "texcount %t" 'TeX-run-shell nil t :help "Run texcount.") t)
+      (add-to-list 'TeX-command-list
+                   '("Pythontex" "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t" 'TeX-run-shell nil t :help "Run pythontex.") t)
+      (add-to-list 'TeX-command-list
+                   '("Depythontex" "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t" 'TeX-run-shell nil t :help "Run depythontex.") t)
+      (add-to-list 'TeX-command-list
+                   '("Mk" "latexmk -pdf %s" 'TeX-run-TeX nil t :help "Run Latexmk on file") t))
+
+    (use-package preview
+      :commands LaTeX-preview-setup
+      :init
+      (progn
+        (setq-default preview-scale 1.4
+              preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+
+    (use-package reftex
+      :commands turn-on-reftex
+      :init
+      (progn
+        (setq reftex-plug-into-AUCTeX t
+              reftex-extra-bindings t)))
+
+    (use-package bibtex
+      :mode ("\\.bib" . bibtex-mode)
+      :init
+      (progn
+        (setq bibtex-align-at-equal-sign t)
+        (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+
+(setq-default TeX-master nil);
+
+#+end_src
+
+* Org
+#+begin_src emacs-lisp :tangle yes
+(use-package org
+  :mode
+  ("\\.org$" . org-mode)
+  :init
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  :config
+  (org-babel-do-load-languages 'org-babel-do-load-languages '((python . t)))
+  (setq org-log-done t)
+  (setq org-startup-indented t)
+  (setq org-agenda-files (list  "~/org/work.org"
+                                "~/org/school.org"
+                                "~/org/home.org"))
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  :bind
+  ("C-c l" . org-store-link)
+  ("C-c a" . org-agenda)
+  ("C-c c" . org-capture))
+
+#+end_src
+
+* exwm
+;; Only loaded when exwm is used
+
+;; Shrink fringes to 1 pixel
+(fringe-mode 1)
+
+;; You may want Emacs to show you the time
+(setq display-time-default-load-average nil)
+(display-time-mode t)
+
+;; Emacs server is not required to run EXWM but it has some interesting uses
+;; (see next section)
+(server-start)
+
+;;;; Below are configurations for EXWM
+
+;; Load EXWM
+(require 'exwm)
+
+;; Fix problems with Ido
+(require 'exwm-config)
+(exwm-config-ido)
+
+;; Set the initial number of workspaces.
+(setq exwm-workspace-number 4)
+
+;; All buffers created in EXWM mode are named "*EXWM*". You may want to change
+;; it in `exwm-update-class-hook' and `exwm-update-title-hook', which are run
+;; when a new window class name or title is available. Here's some advice on
+;; this subject:
+;; + Always use `exwm-workspace-rename-buffer` to avoid naming conflict.
+;; + Only renaming buffer in one hook and avoid it in the other. There's no
+;;   guarantee on the order in which they are run.
+;; + For applications with multiple windows (e.g. GIMP), the class names of all
+;;   windows are probably the same. Using window titles for them makes more
+;;   sense.
+;; + Some application change its title frequently (e.g. browser, terminal).
+;;   Its class name may be more suitable for such case.
+;; In the following example, we use class names for all windows expect for
+;; Java applications and GIMP.
+(add-hook 'exwm-update-class-hook
+          (lambda ()
+            (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                        (string= "gimp" exwm-instance-name))
+              (exwm-workspace-rename-buffer exwm-class-name))))
+(add-hook 'exwm-update-title-hook
+          (lambda ()
+            (when (or (not exwm-instance-name)
+                      (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                      (string= "gimp" exwm-instance-name))
+              (exwm-workspace-rename-buffer exwm-title))))
+
+;; `exwm-input-set-key' allows you to set a global key binding (available in
+;; any case). Following are a few examples.
+;; + We always need a way to go back to line-mode from char-mode
+(exwm-input-set-key (kbd "s-r") #'exwm-reset)
+;; + Bind a key to switch workspace interactively
+(exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
+;; + Bind "s-0" to "s-9" to switch to the corresponding workspace.
+(dotimes (i 10)
+  (exwm-input-set-key (kbd (format "s-%d" i))
+                      `(lambda ()
+                         (interactive)
+                         (exwm-workspace-switch-create ,i))))
+;; + Application launcher ('M-&' also works if the output buffer does not
+;;   bother you). Note that there is no need for processes to be created by
+;;   Emacs.
+(exwm-input-set-key (kbd "s-&")
+                    (lambda (command)
+                      (interactive (list (read-shell-command "$ ")))
+                      (start-process-shell-command command nil command)))
+;; + 'slock' is a simple X display locker provided by suckless tools.
+(exwm-input-set-key (kbd "s-<f2>")
+                    (lambda () (interactive) (start-process "" nil "slock")))
+
+;; The following example demonstrates how to set a key binding only available
+;; in line mode. It's simply done by first push the prefix key to
+;; `exwm-input-prefix-keys' and then add the key sequence to `exwm-mode-map'.
+;; The example shorten 'C-c q' to 'C-q'.
+(push ?\C-q exwm-input-prefix-keys)
+(define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
+
+;; The following example demonstrates how to use simulation keys to mimic the
+;; behavior of Emacs. The argument to `exwm-input-set-simulation-keys' is a
+;; list of cons cells (SRC . DEST), where SRC is the key sequence you press and
+;; DEST is what EXWM actually sends to application. Note that SRC must be a key
+;; sequence (of type vector or string), while DEST can also be a single key.
+(exwm-input-set-simulation-keys
+ '(
+    ;; movement
+    ([?\C-b] . left)
+    ([?\M-b] . C-left)
+    ([?\C-f] . right)
+    ([?\M-f] . C-right)
+    ([?\C-p] . up)
+    ([?\C-n] . down)
+    ([?\C-a] . home)
+    ([?\C-e] . end)
+    ([?\M-v] . prior)
+    ([?\C-v] . next)
+    ([?\C-d] . delete)
+    ([?\C-k] . (S-end delete))
+    ;; cut/paste.
+    ([?\C-w] . ?\C-x)
+    ([?\M-w] . ?\C-c)
+    ([?\C-y] . ?\C-v)
+    ;; search
+    ([?\C-s] . ?\C-f)))
+
+;; You can hide the mode-line of floating X windows by uncommenting the
+;; following lines
+;(add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
+;(add-hook 'exwm-floating-exit-hook #'exwm-layout-show-mode-line)
+
+;; You can hide the minibuffer and echo area when they're not used, by
+;; uncommenting the following line
+;(setq exwm-workspace-minibuffer-position 'bottom)
+
+;; Do not forget to enable EXWM. It will start by itself when things are ready.
+(exwm-enable)

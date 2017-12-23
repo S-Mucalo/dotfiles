@@ -1,3 +1,5 @@
+personal.el
+settings.el
 *.log
 *log
 *database
