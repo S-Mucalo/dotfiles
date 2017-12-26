@@ -43,6 +43,7 @@ gaps outer 15
 # Definitions
 set $term urxvt
 set $BROWSER qutebrowser
+set $EDITOR emacsclient -nc
 
 # Unclutter makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
@@ -124,7 +125,7 @@ bindsym $mod+Shift+r restart
 bindsym $mod+t          split toggle
 bindsym $mod+Shift+t    gaps inner current set 15; gaps outer current set 15
 
-# bindsym $mod+y
+bindsym $mod+y          exec $EDITOR
 bindsym $mod+Shift+y    resize shrink width 10 px or 10ppt
 
 bindsym $mod+u          [instance="dropdown_tmux"] scratchpad show; move position center
@@ -222,12 +223,12 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-set $ws1 "⇋"
-set $ws2 "⇋"
-set $ws3 "⇋"
-set $ws3 "⇋"
-set $ws4 "⇋"
-set $ws5 "⇋"
+# set $ws1
+# set $ws2 "⇋"
+# set $ws3 "⇋"
+# set $ws3 "⇋"
+# set $ws4 "⇋"
+# set $ws5 "⇋"
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace 1

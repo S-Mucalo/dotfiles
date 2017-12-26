@@ -7,11 +7,11 @@ endif
 source $VIMRUNTIME/defaults.vim
 
 if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
+  set nobackup      " do not keep a backup file, use versions instead
 else
-  set backup		" keep a backup file (restore to previous version)
+  set backup        " keep a backup file (restore to previous version)
   if has('persistent_undo')
-    set undofile	" keep an undo file (undo changes after closing)
+    set undofile    " keep an undo file (undo changes after closing)
   endif
 endif
 
@@ -34,7 +34,7 @@ if has("autocmd")
 
 else
 
-  set autoindent		" always set autoindenting on
+  set autoindent        " always set autoindenting on
 
 endif " has("autocmd")
 
@@ -55,3 +55,6 @@ python3 del powerline_setup
 set laststatus=2
 set tabline=2
 set noshowmode
+
+set backupdir=~/.vimtmp,.
+set directory=~/.vimtmp,.
