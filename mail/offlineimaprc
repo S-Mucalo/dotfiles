@@ -1,7 +1,7 @@
 [general]
 accounts = UC_mail, gmail, yahoo
 sslcacertfile = /etc/ssl/certs/ca-certificates.crt
-pythonfile = ~/.dotfiles/bin/offlineimap.py
+pythonfile = ~/.dotfiles/bin/gkey_passwords.py
 maxsyncaccounts = 3
 socktimeout = 45
 
@@ -11,7 +11,7 @@ remoterepository = UC_Remote
 autorefresh = 5
 quick = 5
 # postsynchook = pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
-postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "mu index --maildir=~/.mail/"
+postsynchook = pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
 
 # postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && ./mail/tag_new"
 # postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && notmuch tag --batch --input=/home/spm105/.dotfiles/mail/notmuch_tags"

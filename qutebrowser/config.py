@@ -13,8 +13,14 @@
 # c.aliases = {'w': 'session-save', 'q': 'quit', 'wq': 'quit --save'}
 c.aliases["gh"] = "open https://www.github.com/S-Mucalo"
 c.aliases["home"] = "open www.google.com"
+c.aliases["ytb"] = "open https://www.youtube.com"
+c.aliases["Ytb"] = "open -t https://www.youtube.com"
 c.aliases["ra"] = "open https://www.reddit.com/r/all"
-
+c.aliases["Ra"] = "open -t https://www.reddit.com/r/all"
+c.aliases["tm"] = "open https://www.trademe.co.nz"
+c.aliases["Tm"] = "open -t https://www.trademe.co.nz"
+c.aliases["cfe"] = "config-edit"
+c.aliases["cfr"] = "config-source ~/.config/qutebrowser/config.py"
 ## How often (in milliseconds) to auto-save config/cookies/etc.
 ## Type: Int
 # c.auto_save.interval = 15000
@@ -36,6 +42,7 @@ c.aliases["ra"] = "open https://www.reddit.com/r/all"
 ##   - webengine: Use QtWebEngine (based on Chromium)
 ##   - webkit: Use QtWebKit (based on WebKit, similar to Safari)
 # c.backend = 'webengine'
+c.backend = 'webkit'
 
 ## This setting can be used to map keys to other keys. When the key used
 ## as dictionary-key is pressed, the binding for the key used as
@@ -1016,7 +1023,7 @@ c.editor.command =  ["urxvt", "-e", "vim", "{}"]
 ## Enable smooth scrolling for web pages. Note smooth scrolling does not
 ## work with the `:scroll-px` command.
 ## Type: Bool
-# c.scrolling.smooth = False
+c.scrolling.smooth = True
 
 ## The name of the session to save by default. If this is set to null,
 ## the session which was last loaded is saved.
@@ -1070,7 +1077,7 @@ c.editor.command =  ["urxvt", "-e", "vim", "{}"]
 ##   - tr-TR: Turkish (Turkey)
 ##   - uk-UA: Ukrainian (Ukraine)
 ##   - vi-VN: Vietnamese (Viet Nam)
-# c.spellcheck.languages = []
+c.spellcheck.languages = [en-GB]
 
 ## Hide the statusbar unless a message is shown.
 ## Type: Bool
