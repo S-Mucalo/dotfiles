@@ -17,6 +17,7 @@ export BROWSER="qutebrowser"
 
 # Paths
 export PATH=$PATH:$HOME/.dotfiles/bin
+export PATH=$PATH:$HOME/.local/bin
 export PYTHONPATH=$PYTHONPATH:$HOME/.dotfiles/bin
 export PYTHON2PATH=$PYTHON2PATH:$HOME/.dotfiles/bin
 
