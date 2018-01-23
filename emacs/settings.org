@@ -894,27 +894,28 @@
                 ("C-c C-g" . reftex-grep-document))
     :config
     :hook
-      ((LaTeX-mode . LaTeX-math-mode)
-       (LaTeX-mode . flyspell-mode)
-       (LaTeX-mode . turn-on-reftex)
-       (LaTeX-mode . TeX-source-correlate-mode)
-       (text-mode . turn-on-auto-fill))
-      :init
-      (setq TeX-auto-save t
-            TeX-save-query nil
-            TeX-show-compilation t
-            TeX-parse-self t
-            TeX-source-correlate-start-server t
-            TeX-save-query nil
-            TeX-PDF-mode t)
-      (setq-default TeX-master nil))
+    ((LaTeX-mode . LaTeX-math-mode)
+     (LaTeX-mode . flyspell-mode)
+     (LaTeX-mode . turn-on-reftex)
+     (LaTeX-mode . TeX-source-correlate-mode)
+     (text-mode . turn-on-auto-fill))
+    :init
+    (setq TeX-auto-save t
+          TeX-save-query nil
+          TeX-show-compilation t
+          TeX-parse-self t
+          TeX-source-correlate-start-server t
+          TeX-save-query nil
+          TeX-PDF-mode t
+          TeX-error-overview-open-after-TeX-run t)
+    (setq-default TeX-master nil))
 
   (use-package preview
     :commands LaTeX-preview-setup
     :init
     (progn
       (setq-default preview-scale 1.4
-            preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+                    preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
   (use-package reftex
     :commands turn-on-reftex
@@ -933,20 +934,61 @@
 
   (eval-after-load "tex"
     '(setq TeX-command-list
-      (append TeX-command-list
-            (list
-             (list "Sage" "sage %s.sagetex.sage"
-                   'TeX-run-command nil t :help "Run SAGE.")
-             (list "Wordcount" "texcount %t"
-                   'TeX-run-shell nil t :help "Run texcount.")
-             (list "Pythontex"
-                   "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
-                   'TeX-run-shell nil t :help "Run pythontex.")
-             (list "Depythontex"
-                   "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
-                   'TeX-run-shell nil t :help "Run depythontex.")
-             (list "Latexmk" "latexmk -pdf %s"
-                   'TeX-run-TeX nil t :help "Run Latexmk on file")))))
+           (append TeX-command-list
+                   (list
+                    (list "Sage" "sage %s.sagetex.sage"
+                          'TeX-run-command nil t :help "Run SAGE.")
+                    (list "Wordcount" "texcount %t"
+                          'TeX-run-shell nil t :help "Run texcount.")
+                    (list "Pythontex"
+                          "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
+                          'TeX-run-shell nil t :help "Run pythontex.")
+                    (list "Depythontex"
+                          "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
+                          'TeX-run-shell nil t :help "Run depythontex.")
+                    (list "Latexmk" "latexmk -pdf %s"
+                          'TeX-run-TeX nil t :help "Run Latexmk on file")))))
+
+  (defun TeX-error-delete-window ()
+    "Delete TeX error window when there are no errors to show."
+    (let ((w (get-buffer-window))
+          (b (get-buffer "*TeX Help*")))
+      (when w
+        (delete-window w))
+      (when b
+        (setq w (get-buffer-window b))
+        (when w
+          (delete-window w)))))
+
+  (defun TeX-error-install-delete-window-hook ()
+    "Install `TeX-error-delete-window' in buffer-local `kill-buffer-hook'."
+    (add-hook 'kill-buffer-hook #'TeX-error-delete-window nil t))
+
+  (add-hook 'TeX-error-overview-mode-hook #'TeX-error-install-delete-window-hook)
+
+
+
+  (defcustom TeX-buf-close-at-warnings-only t
+    "Close TeX buffer if there are only warnings."
+    :group 'TeX-output
+    :type 'boolean)
+
+  (defun my-tex-close-TeX-buffer (_output)
+    "Close compilation buffer if there are no errors.
+  Hook this function into `TeX-after-compilation-finished-functions'."
+    (let ((buf (TeX-active-buffer)))
+      (when (buffer-live-p buf)
+        (with-current-buffer buf
+          (when (progn (TeX-parse-all-errors)
+                       (or
+                        (and TeX-buf-close-at-warnings-only
+                             (null (cl-assoc 'error TeX-error-list)))
+                        (null TeX-error-list)))
+            (cl-loop for win in (window-list)
+                     if (eq (window-buffer win) (current-buffer))
+                     do (delete-window win)))))))
+
+  (add-hook 'TeX-after-compilation-finished-functions #'my-tex-close-TeX-buffer)
 #+end_src
 
 * Org
