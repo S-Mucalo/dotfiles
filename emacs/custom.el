@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
    (quote
-    ("71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" default)))
+    ("065efdd71e6d1502877fd5621b984cded01717930639ded0e569e1724d058af8" "71ecffba18621354a1be303687f33b84788e13f40141580fa81e7840752d31bf" "c86f868347919095aa44d2a6129dd714cbcf8feaa88ba954f636295b14ceff8f" "8fed5e4b89cf69107d524c4b91b4a4c35bcf1b3563d5f306608f0c48f580fdf8" default)))
  '(org-agenda-files
    (quote
     ("~/projects/research_paper/outline.org" "~/org/work.org" "~/org/school.org" "~/org/home.org")))
@@ -17,7 +17,7 @@
  '(org-startup-indented t)
  '(package-selected-packages
    (quote
-    (realgud helm-ag helm org-bullets dumb-jump yasnippet-snippets yasnippet beacon-mode mingus simple-mpc smartparens auctex dired+ nodejs-repl tern-auto-complete tern js2-refactor ac-js2 emmet-mode web-mode iedit expand-region hungry-delete beacon undo-tree virtualenvwrapper flycheck powerline avy counsel notmuch window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
+    (xresources-theme realgud helm-ag helm org-bullets dumb-jump yasnippet-snippets yasnippet beacon-mode mingus simple-mpc smartparens auctex dired+ nodejs-repl tern-auto-complete tern js2-refactor ac-js2 emmet-mode web-mode iedit expand-region hungry-delete beacon undo-tree virtualenvwrapper flycheck powerline avy counsel notmuch window-number which-key visual-regexp use-package swiper smex pkgbuild-mode paredit muttrc-mode monokai-theme mew markdown-mode magit lua-mode latex-preview-pane jedi ipython ido-vertical-mode grandshell-theme gnus-alias f ess elpy ein dired-details cython-mode cyberpunk-theme cmake-mode bbdb ace-jump-mode)))
  '(safe-local-variable-values
    (quote
     ((TeX-command-extra-options . "-shell-escape")

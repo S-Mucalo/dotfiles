@@ -397,8 +397,9 @@
   (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
   (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
   (global-set-key (kbd "<f5>") 'revert-buffer)
-  (global-set-key (kbd "C-c 3") 'toggle-window-split)
-  (global-set-key (kbd "C-c 2") 'rotate-windows)
+  (global-set-key (kbd "C-x 4") 'toggle-window-split)
+  (global-set-key (kbd "C-x 5") 'rotate-windows)
+  (global-set-key (kbd "C-x 7") 'delete-frame)
   (global-set-key (kbd "<C-S-down>") 'move-line-down)
   (global-set-key (kbd "<C-S-up>") 'move-line-up)
   (global-set-key (kbd "<C-return>") 'open-line-below)
@@ -551,8 +552,8 @@
     (setq mu4e-attachment-dir "~/Downloads")
 
     ;; attempt to show images when viewing messages
-    (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
-    ;; (setq mu4e-html2text-command "w3m -T text/html")
+    ;; (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
+    (setq mu4e-html2text-command "w3m -T text/html")
     (setq mu4e-view-show-images t)
 
     (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
@@ -852,6 +853,10 @@
     :disabled t)
 
   (use-package cyberpunk-theme
+    :disabled t
+    :ensure t)
+
+  (use-package xresources-theme
     :ensure t)
 #+end_src
 * dired

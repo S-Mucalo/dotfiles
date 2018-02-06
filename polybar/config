@@ -1,21 +1,41 @@
 
 [colors]
-background = #282A36
-foreground =  #1A80B5
-foreground-alt = #F8F8F2
+; background = #282A36
+; foreground =  #1A80B5
+; foreground-alt = #F8F8F2
 
 dark = #1E1F26
 medium = #474b61
 light = #E6E6E6
 
-red = #FF2310
-magenta = #FF07F6
-blue = #3A43C0
-cyan = #8BE9FD
-green = #20FA4B
-yellow = #F1FA8C
+; red = #FF2310
+; magenta = #FF07F6
+; blue = #3A43C0
+; cyan = #8BE9FD
+; green = #20FA4B
+; yellow = #F1FA8C
 orange = #FF8F15
 
+black =         ${xrdb:color0:#222}
+red =           ${xrdb:color1:#222}
+green =         ${xrdb:color2:#222}
+yellow =        ${xrdb:color3:#222}
+blue =          ${xrdb:color4:#222}
+magenta =       ${xrdb:color5:#222}
+cyan =          ${xrdb:color6:#222}
+gray =          ${xrdb:color7:#222}
+light_gray =    ${xrdb:color8:#222}
+light_red =     ${xrdb:color9:#222}
+light_green =   ${xrdb:color10:#222}
+light_yellow =  ${xrdb:color11:#222}
+light_blue =    ${xrdb:color12:#222}
+light_magenta = ${xrdb:color13:#222}
+light_cyan =    ${xrdb:color14:#222}
+white =         ${xrdb:color15:#222}
+
+background = ${xrdb:background:#222}
+foreground =  ${xrdb:color15:#222}
+foreground-alt = ${xrdb:color9:#222}
 
 [bar/top_bar]
 ;monitor = ${env:MONITOR:HDMI-1}
@@ -299,7 +319,7 @@ format-discharging = <ramp-capacity><label-discharging>
 format-full = <label-full>
 
 label-full = %{F#20FA4B}%{F-} %percentage:3%%
-label-charging = %percentage:3%%
+label-charging = %percehantage:3%%
 label-discharging = %percentage:3%%
 
 ramp-capacity-0 = 

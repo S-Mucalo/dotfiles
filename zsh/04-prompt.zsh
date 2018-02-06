@@ -1,5 +1,14 @@
 #! /usr/bin/zsh
 
+
+# set formats
+# %b - branchname
+# %u - unstagedstr (see below)
+# %c - stagedstr (see below)
+# %a - action (e.g. rebase-i)
+# %R - repository path
+# %S - path in the repository
+# (%s:%r) %b %u%c
 local FMT_BRANCH="%{$fg[red]%}(%s:%{$fg[white]%}%r%{$fg[red]%}) %{$fg[magenta]%}%b%{%F{199}%}%u%c"
 local FMT_ACTION="(%F{3}%a%f)"
 local FMT_PATH="%F{1}%R%F{2}/%S%f"

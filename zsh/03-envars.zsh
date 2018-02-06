@@ -22,8 +22,10 @@ export PYTHONPATH=$PYTHONPATH:$HOME/.dotfiles/bin
 export PYTHON2PATH=$PYTHON2PATH:$HOME/.dotfiles/bin
 
 # Less
-export LESSOPEN='| /usr/bin/highlight -O ansi %s'
-export LESS='-A$-R$-g$-i$-m$-s'
+LESS="$LESS -R -I -M"
+export LESS
+LESSOPEN="| colorize_via_pygmentize.sh %s"
+export LESSOPEN
 
 # PETSc
 export PETSC_DIR=$HOME/petsc

@@ -80,11 +80,14 @@ source $HOME/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
 export LS_COLORS
 
+(cat $HOME/.cache/wal/sequences &)
+source $HOME/.cache/wal/colors-tty.sh
+
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Import seperate config files
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-for r in $HOME/.dotfiles/zsh/*_zsh; do
+for r in $HOME/.dotfiles/zsh/*.zsh; do
   if [[ $DEBUG > 0 ]]; then
     echo "zsh: sourcing $r"
   fi

@@ -11,14 +11,44 @@
 
 set $mod Mod4
 
+set_from_resource $black            i3wm.color0 #f0f0f0
+set_from_resource $red              i3wm.color1 #f0f0f0
+set_from_resource $green            i3wm.color2 #f0f0f0
+set_from_resource $yellow           i3wm.color3 #f0f0f0
+set_from_resource $blue             i3wm.color4 #f0f0f0
+set_from_resource $magenta          i3wm.color5 #f0f0f0
+set_from_resource $cyan             i3wm.color6 #f0f0f0
+set_from_resource $gray             i3wm.color7 #f0f0f0
+set_from_resource $l_gray           i3wm.color8 #f0f0f0
+set_from_resource $l_red            i3wm.color9 #f0f0f0
+set_from_resource $l_green          i3wm.color10 #f0f0f0
+set_from_resource $l_yellow         i3wm.color11 #f0f0f0
+set_from_resource $l_blue           i3wm.color12 #f0f0f0
+set_from_resource $l_magenta        i3wm.color13 #f0f0f0
+set_from_resource $l_cyan           i3wm.color14 #f0f0f0
+set_from_resource $white            i3wm.color15 #f0f0f0
+
+set_from_resource $bg               i3wm.background #f0f0f0
+set_from_resource $fg               i3wm.foreground #f0f0f0
+
 # class                 border  backgr. text    indicator child_border
-client.focused          #4c7899 #285577 #ffffff #ee1055   #ee1055
-client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
-client.unfocused        #333333 #222222 #888888 #292d2e   #222222
-client.urgent           #2f343a #900000 #ffffff #900000   #900000
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+client.focused          #4c7899 #285577 $bg      $magenta  $magenta
+client.focused_inactive #333333 #5f676a $bg      #484e50   $gray
+client.unfocused        #333333 #222222 $bg      #292d2e   #222222
+client.urgent           #2f343a #900000 $bg      #900000   #900000
+client.placeholder      #000000 #0c0c0c $bg      #000000   #0c0c0c
 
 client.background       #ffffff
+
+
+# # class                 border  backgr. text    indicator child_border
+# client.focused          #4c7899 #285577 #ffffff #ee1055   #ee1055
+# client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
+# client.unfocused        #333333 #222222 #888888 #292d2e   #222222
+# client.urgent           #2f343a #900000 #ffffff #900000   #900000
+# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+
+# client.background       #ffffff
 
 # # class                 border  backgr. text    indicator child_border
 # client.focused          #555555 #555555 #ffffff #ee1055  #990055
@@ -30,6 +60,7 @@ client.background       #ffffff
 # client.background       #ffffff
 
 # i3-gaps
+smart_gaps on
 hide_edge_borders both
 for_window [class="^.*"] border pixel 3
 gaps inner 10
@@ -38,7 +69,8 @@ gaps outer 5
 # Definitions
 set $term urxvt
 set $BROWSER chromium
-set $EDITOR emacsclient -nc
+set $ALTERNATE_EDITOR emacs
+set $EDITOR emacsclient -nc -a ""
 
 # Unclutter makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
@@ -129,7 +161,7 @@ bindsym $mod+Shift+u    resize shrink height 10 px or 10 ppt
 bindsym $mod+i          [instance="dropdown_python"] scratchpad show; move position center
 bindsym $mod+Shift+i    resize grow height 10 px or 10 ppt
 
-#bindsym $mod+o         exec --no-startup-id $beg
+bindsym $mod+o          exec $ALTERNATE_EDITOR
 bindsym $mod+Shift+o    resize grow width 10 px or 10 ppt
 
 bindsym $mod+p          exec $pause
@@ -145,7 +177,7 @@ bindsym $mod+d          exec rofi -run-list-command ". rofi_aliases.sh" -run-com
 bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
 
 bindsym $mod+f          fullscreen toggle
-#bindsym $mod+Shift+f
+bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/wallpaper_set
 
 bindsym $mod+g          workspace prev
 bindsym $mod+Shift+g    exec --no-startup-id gimp
@@ -281,7 +313,7 @@ bindsym $mod+Shift+bracketright exec $bigfor
 #Print screen takes a screenshot.
 #With shift, it takes one only of the given window.
 bindsym $mod+Print          exec --no-startup-id scrot
-bindsym $mod+Shift+Print        exec --no-startup-id scrot -u
+bindsym $mod+Shift+Print    exec --no-startup-id scrot -u
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -311,7 +343,9 @@ bindsym $mod+semicolon mode "resize"
 
 
 # Start polybar
-exec_always --no-startup-id $HOME/.dotfiles/bin/polybar_launch.sh
+exec_always --no-startup-id $HOME/.dotfiles/bin/polybar_launch
+exec --no-startup-id wal -R
+exec --no-startup-id udiskie --no-automount --notify --smart-tray --use-udisks2
 
 ###---Extra XF86 Keys---###
 #These are the extra media keys that some keyboards have.
@@ -377,7 +411,7 @@ bindsym XF86Search              exec $BROWSER https://duckduckgo.com
 #bindsym XF86Go                 exec
 #bindsym XF86Finance            exec
 #bindsym XF86Game               exec
-bindsym XF86Shop                exec $BROWSER https:www.trademe.co.nz
+bindsym XF86Shop                exec $BROWSER https://www.trademe.co.nz
 #bindsym XF86MonBrightnessDown  exec --no-startup-id xbacklight -dec 15
 #bindsym XF86MonBrightnessUp    exec --no-startup-id xbacklight -inc 15
 bindsym XF86AudioMedia          exec $music

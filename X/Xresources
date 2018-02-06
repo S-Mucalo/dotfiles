@@ -1,4 +1,5 @@
-urxvt.font: xft:inconsolata,xft:Inconsolata\ for\ Powerline:pixelsize=12
+URxvt*font: xft:inconsolata:pixelsize=18,xft:Inconsolata\ for\ Powerline:pixelsize=18
+! urxvt.font: xft:inconsolata,xft:PowerlineSymbols:pixelsize=12
 
 ! URxvt.perl-ext-common: tabbed,clipboard
 urxvt.urgentOnBell: True
@@ -89,8 +90,8 @@ URxvt.matcher.launcher.2: emacs +$2 $1
 ! URxvt.iso14755_52:        false
 
 ! URxvt*.transparent: true
-! ! URxvt*.shading: 0 to 99 darkens, 101 to 200 lightens
-! URxvt*.shading: 20
+! URxvt*.shading: 0 to 99 darkens, 101 to 200 lightens
+URxvt*.shading: 20
 ! Compile xft: Attempt to find a visual with the given bit depth; option -depth.
 ! URxvt*depth: bitdepth
 
@@ -632,7 +633,7 @@ URxvt.matcher.launcher.2: emacs +$2 $1
 
 
 
-! I don't think this is working, but for posterity. The attempt is to copy all settings to each version.
+! I dont think this is working, but for posterity. The attempt is to copy all settings to each version.
 dropdown*:                  urxvt*
 dropdown_python*:           dropdown*
 dropdown_math*:             dropdown*
