@@ -20,52 +20,52 @@
 * Global settings
 
 #+begin_src emacs-lisp :tangle yes
-  (setq inhibit-startup-screen t)         ; Stop the splash screen
-  (setq mouse-yank-at-point t)            ; When copying with the mouse, paste at point
-  (setq ispell-list-command "--list")     ; Required for aspell backend
-  (setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
-  (setq ispell-local-dictionary "en_GB")
-  (setq global-visual-line-mode t)        ; Move to the next row even if it's wrapped
-  (setq column-number-mode t)             ; Display column position in modeline
-  (setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
-  (setq delete-old-versions t)            ; Delete old backups
-  (setq kept-new-versions 6)
-  (setq kept-old-versions 2)
-  (setq version-control t)                ; Control version numbers for old files
-  (setq mouse-autoselect-window t)        ; Move window focus with mouse move
-  (setq show-paren-delay 0)               ; Show parens immediately
-  (setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
-  (setq select-enable-clipboard t)             ; Cut/paste from clipboard
-  (setq x-select-enable-primary t)             ; And from selection buffer
-  (setq auto-revert-verbose nil)               ; Don't warn when file changes
-  (setq vc-follow-symlinks t)                  ; Just do it
-  (setq global-auto-revert-non-file-buffers t) ; For all buffer types
-  (setq mouse-drag-copy-region t)              ; Drag stuff
-  ;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ; Really slow mouse scroll
-  (setq mouse-wheel-progressive-speed nil) ; Don't speed up
-  (setq scroll-step 1)                     ; Go slow
-  (setq scroll-conservatively 10000)       ; Don't jump when scrolling
-  (setq auto-window-vscroll nil)           ; Don't jump when scrolling
-  (setq visible-bell t)                    ; Don't beep
+    (setq inhibit-startup-screen t)         ; Stop the splash screen
+    (setq mouse-yank-at-point t)            ; When copying with the mouse, paste at point
+    (setq ispell-list-command "--list")     ; Required for aspell backend
+    (setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
+    (setq ispell-local-dictionary "en_GB")
+    (setq global-visual-line-mode t)        ; Move to the next row even if it's wrapped
+    (setq column-number-mode t)             ; Display column position in modeline
+    (setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+    (setq delete-old-versions t)            ; Delete old backups
+    (setq kept-new-versions 6)
+    (setq kept-old-versions 2)
+    (setq version-control t)                ; Control version numbers for old files
+    (setq mouse-autoselect-window t)        ; Move window focus with mouse move
+    (setq show-paren-delay 0)               ; Show parens immediately
+    (setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
+    (setq select-enable-clipboard t)             ; Cut/paste from clipboard
+    (setq x-select-enable-primary t)             ; And from selection buffer
+    (setq auto-revert-verbose nil)               ; Don't warn when file changes
+    (setq vc-follow-symlinks t)                  ; Just do it
+    (setq global-auto-revert-non-file-buffers t) ; For all buffer types
+    (setq mouse-drag-copy-region t)              ; Drag stuff
+    ;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ; Really slow mouse scroll
+    (setq mouse-wheel-progressive-speed nil) ; Don't speed up
+    (setq scroll-step 1)                     ; Go slow
+    (setq scroll-conservatively 10000)       ; Don't jump when scrolling
+    (setq auto-window-vscroll nil)           ; Don't jump when scrolling
+    (setq visible-bell t)                    ; Don't beep
 
-  (setq-default ispell-program-name "aspell")
-  (setq-default save-place t)             ; Come back to the same place in buffer next visit
-  (setq-default fill-column 80)
+    (setq-default ispell-program-name "aspell")
+    (setq-default save-place t)             ; Come back to the same place in buffer next visit
+    (setq-default fill-column 80)
 
-  ;; (show-paren-mode 1)                     ; Show matching parenthesis
-  (global-hl-line-mode t)                 ; highlight line all the time
-  (transient-mark-mode t)                 ; Allow highlighting
-  (global-auto-revert-mode 1)             ; Change buffers if they change on disk
-  (scroll-bar-mode -1)                    ; Turn off scroll
-  (tool-bar-mode -1)                      ; Turn off tool-bar
-  (menu-bar-mode t)                       ; Still show the menubar
-  ;; (delete-selection-mode 1)               ; Selection is deleted
-  (semantic-mode 1)                       ; Use cedet
+    ;; (show-paren-mode 1)                     ; Show matching parenthesis
+    (global-hl-line-mode t)                 ; highlight line all the time
+    (transient-mark-mode t)                 ; Allow highlighting
+    (global-auto-revert-mode 1)             ; Change buffers if they change on disk
+    (scroll-bar-mode -1)                    ; Turn off scroll
+    (tool-bar-mode -1)                      ; Turn off tool-bar
+    (if (not window-system) (menu-bar-mode -1)); Still show the menubar
+    ;; (delete-selection-mode 1)               ; Selection is deleted
+    (semantic-mode 1)                       ; Use cedet
 
-  (defalias 'yes-or-no-p 'y-or-n-p)       ; y
+    (defalias 'yes-or-no-p 'y-or-n-p)       ; y
 
-  ;; Open init file with C-x r j e
-  (set-register ?e (cons 'file "~/.dotfiles/emacs/settings.org"))
+    ;; Open init file with C-x r j e
+    (set-register ?e (cons 'file "~/.dotfiles/emacs/settings.org"))
 #+end_src
 * Functions
 
@@ -397,8 +397,8 @@
   (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
   (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
   (global-set-key (kbd "<f5>") 'revert-buffer)
-  (global-set-key (kbd "C-x 4") 'toggle-window-split)
-  (global-set-key (kbd "C-x 5") 'rotate-windows)
+  (global-set-key (kbd "C-x 5") 'toggle-window-split)
+  (global-set-key (kbd "C-x 6") 'rotate-windows)
   (global-set-key (kbd "C-x 7") 'delete-frame)
   (global-set-key (kbd "<C-S-down>") 'move-line-down)
   (global-set-key (kbd "<C-S-up>") 'move-line-up)
@@ -479,6 +479,7 @@
     (use-package smartparens-latex)
     (smartparens-global-mode t)
     (show-smartparens-global-mode t)
+
     :bind
     (("C-<down>" . sp-down-sexp)
       ("C-<up>"   . sp-up-sexp)
@@ -658,108 +659,57 @@
   ;; Allow org-mode stuff in mu4e
   (use-package org-mu4e
     :after mu4e)
+  (use-package mu4e-alert
+    :ensure t
+    :config
+    (mu4e-alert-set-default-style 'libnotify)
+    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
+
 #+end_src
 
 * Python
 #+begin_src emacs-lisp :tangle yes
-    (use-package python
-      :defer t
-      :mode ("\\.py\\'" . python-mode)
-      :init
-      (setq indent-tabs-mode nil)
-      (setq default-tab-width 4)
-      (setq python-shell-interpreter "ipython3"
-            python-shell-interpreter-args "--simple-prompt -i"))
+  (use-package python
+    :defer t
+    :mode ("\\.py\\'" . python-mode)
+    :init
+    (setq indent-tabs-mode nil)
+    (setq default-tab-width 4)
+    (setq python-shell-interpreter "ipython3"
+          python-shell-interpreter-args "--simple-prompt -i"))
 
-    ;;  py-electric-colon-active t
-    ;;  py-smart-indentation t)
-
-
-    (use-package cython-mode
-      :defer t
-      :ensure t
-      :mode (("\\.pyx\\'"  . cython-mode)
-             ("\\.spyx\\'" . cython-mode)
-             ("\\.pxd\\'"  . cython-mode)
-             ("\\.pxi\\'"  . cython-mode)))
-
-    ;; # Either of these
-    ;; pip install rope
-    ;; pip install jedi
-    ;; # flake8 for code checks
-    ;; pip install flake8
-    ;; # and autopep8 for automatic PEP8 formatting
-    ;; pip install autopep8
-    ;; # and yapf for code formatting
-    ;; pip install yapf
-    (use-package elpy
-      :defer t
-      :ensure t
-      ;; :init (with-eval-after-load 'python (elpy-enable))
-      :after python
-      :init
-      (elpy-enable)
-      :config
-      (setq elpy-rpc-backend "jedi"))
-
-    (setq gud-pdb-command-name "python -m pdb")
-    ;; TODO:
-    ;; (require 'virtualenvwrapper)
-    ;; (require 'jedi)
-    ;; (require 'ca-customs)
-
-    ;; (add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
-    ;; (add-to-list 'load-path (make-conf-path "python-mode/test"))
-    ;; (autoload 'doctest-mode "doctest-mode" "doc test python mode" t)
-
-    ;; (venv-initialize-interactive-shells)
-    ;; (venv-initialize-eshell)
-
-    ;; (setq
-    ;;  jedi:complete-on-dot t
-    ;;  jedi:setup-keys t
+  ;;  py-electric-colon-active t
+  ;;  py-smart-indentation t)
 
 
-    ;; (defun ca-python-remove-pdb ()
-    ;;   "Remove the pdb tracking lines"
-    ;;   (interactive)
-    ;;   (save-excursion
-    ;;     (goto-char (point-min))
-    ;;     (delete-matching-lines "import pdb")))
+  (use-package cython-mode
+    :defer t
+    :ensure t
+    :mode (("\\.pyx\\'"  . cython-mode)
+           ("\\.spyx\\'" . cython-mode)
+           ("\\.pxd\\'"  . cython-mode)
+           ("\\.pxi\\'"  . cython-mode)))
 
-    ;; (defun jedi-setup-venv ()
-    ;;   "Activates the virtualenv of the current buffer."
-    ;;   (let ((project-name (ca-project-name buffer-file-name)))
-    ;;     (if (venv-is-valid project-name)
-    ;;         (venv-workon project-name)
-    ;;       (if (and (boundp 'project-venv-name)
-    ;;                (venv-is-valid project-venv-name))
-    ;;           (venv-workon project-venv-name)
-    ;;         (print "Not finding any virtualenv")))))
+  ;; # Either of these
+  ;; pip install rope
+  ;; pip install jedi
+  ;; # flake8 for code checks
+  ;; pip install flake8
+  ;; # and autopep8 for automatic PEP8 formatting
+  ;; pip install autopep8
+  ;; # and yapf for code formatting
+  ;; pip install yapf
+  (use-package elpy
+    :defer t
+    :ensure t
+    ;; :init (with-eval-after-load 'python (elpy-enable))
+    :after python
+    :init
+    (elpy-enable)
+    :config
+    (setq elpy-rpc-backend "jedi"))
 
-
-    ;; (require 'company-jedi)
-    ;;                                         ;TODO: add some binding to jump to things that are not defined
-    ;; (add-hook 'python-mode-hook
-    ;;           (lambda ()
-    ;;             (add-to-list 'company-backends 'company-jedi)
-    ;;             (hack-local-variables)
-    ;;             (jedi-setup-venv)
-    ;;             (jedi:setup)
-    ;;             (jedi:ac-setup)
-    ;;             (local-set-key "\C-cd" 'jedi:show-doc)
-    ;;             ;; (local-set-key (kbd "M-SPC") 'jedi:complete)
-    ;;             (local-set-key (kbd "M-.") 'jedi:goto-definition)
-    ;;             (local-set-key (kbd "M-D") 'ca-python-remove-pdb)
-    ;;             (local-set-key [f6] 'pytest-module)
-    ;;             ;; (local-set-key "\C-ca" 'pytest-all)
-    ;;             ;; (local-set-key "\C-cm" 'pytest-module)
-    ;;             ;; (local-set-key "\C-c." 'pytest-one)
-    ;;             ;; (local-set-key "\C-cd" 'pytest-directory)
-    ;;             ;; (local-set-key "\C-cpa" 'pytest-pdb-all)
-    ;;             ;; (local-set-key "\C-cpm" 'pytest-pdb-module)
-    ;;             ;; (local-set-key "\C-cp." 'pytest-pdb-one)
-    ;;             ))
+  (setq gud-pdb-command-name "python -m pdb")
 
 #+end_src
 * R
@@ -818,48 +768,72 @@
 #+end_src
 * c
 #+begin_src emacs-lisp :tangle yes
-  (use-package cc-mode
-    :config
-    (setq c-default-style "ellemtel")
-    (setq c-basic-offset 4)
-    ;; (setq c-toggle-hungry-state)
-    )
+    (use-package cc-mode
+      :config
+      (setq c-default-style "ellemtel")
+      (setq c-basic-offset 4)
+      ;; (setq c-toggle-hungry-state)
+      )
 
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode t))
+    (use-package flycheck
+      :ensure t
+      :config
+      (global-flycheck-mode t)
+      (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
-(use-package dumb-jump
 
-  :bind (("M-g o" . dumb-jump-go-other-window)
-         ("M-g j" . dumb-jump-go)
-         ("M-g i" . dumb-jump-go-prompt)
-         ("M-g x" . dumb-jump-go-prefer-external)
-         ("M-g z" . dumb-jump-go-prefer-external-other-window))
-  :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'ivy)
-  :ensure)
+  (use-package dumb-jump
+    :defer t
+    :bind (("M-g o" . dumb-jump-go-other-window)
+           ("M-g j" . dumb-jump-go)
+           ("M-g i" . dumb-jump-go-prompt)
+           ("M-g x" . dumb-jump-go-prefer-external)
+           ("M-g z" . dumb-jump-go-prefer-external-other-window))
+    :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'ivy)
+    :ensure)
 
 #+end_src
 * Theme
 
 #+begin_src emacs-lisp :tangle yes
   (use-package monokai-theme
-    :ensure t
-    :disabled t)
-
-  (use-package grandshell-theme
-    :ensure t
-    :disabled t)
-
-  (use-package cyberpunk-theme
     :disabled t
     :ensure t)
 
-  (use-package xresources-theme
+  (use-package grandshell-theme
+    :disabled t
     :ensure t)
+
+  (use-package cyberpunk-theme
+    :disabled f
+    :ensure t)
+
+  (use-package xresources-theme
+    :disabled t
+    :ensure t
+    :if window-system
+    :init
+    (if (daemonp)
+        (add-hook 'after-make-frame-functions
+                  '(lambda (f)
+                     (with-selected-frame f
+                       (when (window-system f) (load-theme 'xresources)))))
+      (load-theme 'xresources)))
+
+
+  (use-package smart-mode-line
+    :ensure t
+    :init
+    (setq sml/theme 'powerline)
+    ;; (setq sml/theme 'respectful)
+    ;; (setq sml/theme 'dark)
+    (sml/setup))
+
+  (use-package smart-mode-line-powerline-theme
+    :ensure t)
+
 #+end_src
-* dired
+* COMMENT dired
 #+begin_src emacs-lisp :tangle yes
   (use-package dired+
     :disabled t
@@ -887,11 +861,20 @@
   (define-key dired-mode-map
     (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 
+  (use-package bookmark+
+    :load-path "~/.emacs.d/wiki-packages/bookmark-plus")
+
+  (use-package dired+
+    :load-path "~/.emacs.d/wiki-packages/dired-plus/"
+    :config
+    (setq diredp-hide-details-initially-flag t)
+    (setq diredp-hide-details-initially-flag t))
 #+end_src
 
 * LaTeX
 #+begin_src emacs-lisp :tangle yes
   (use-package latex
+    :defer t
     :ensure auctex
     :mode ("\\.tex\\'" . latex-mode)
     :commands (latex-mode LaTeX-mode plain-tex-mode)
@@ -924,6 +907,7 @@
                     preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
   (use-package reftex
+    :defer t
     :commands turn-on-reftex
     :init
     (progn
@@ -931,6 +915,7 @@
             reftex-extra-bindings t)))
 
   (use-package bibtex
+    :defer t
     :mode ("\\.bib" . bibtex-mode)
     :init
     (progn
@@ -1199,19 +1184,22 @@ Use one of the following
 ** Helm
 
 #+begin_src emacs-lisp :tangle yes
-  (use-package helm-config
-    :ensure helm
+
+  (use-package helm
     :config
     (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-        helm-ff-file-name-history-use-recentf t
-        helm-echo-input-in-header-line t)
+          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+          helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+          helm-ff-file-name-history-use-recentf t
+          helm-echo-input-in-header-line t)
     (setq helm-autoresize-max-height 0)
     (setq helm-autoresize-min-height 20)
     (setq helm-mode-fuzzy-match t)
     (setq helm-completion-in-region-fuzzy-match t)
+    (setq helm-buffers-fuzzy-matching t)
+    (setq helm-recentf-fuzzy-matching t)
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
     (helm-autoresize-mode 1)
     (helm-mode 1)
     :bind
@@ -1219,8 +1207,11 @@ Use one of the following
      ("C-x c" . nil)
      ("C-x C-f" . helm-find-files)
      ("M-x" . helm-M-x)
-     ("C-x b" . helm-buffers-list)
+     ;; ("C-SPC" . helm-dabbrev)
+     ("C-x b" . helm-mini)
+     ;; ("C-x b" . helm-buffers-list)
      ("C-x C-r" . helm-recentf)
+     ("M-y" . helm-show-kill-ring)
      :map helm-map
      ("<tab>" . helm-execute-persistent-action) ; rebind tab to run persistent action
      ("C-i" . helm-execute-persistent-action) ; make TAB work in terminal
@@ -1229,12 +1220,43 @@ Use one of the following
   ;; (use-package helm-config
   ;;  :after helm)
 
+  (use-package projectile
+    :config
+    (projectile-global-mode)
+    (setq projectile-completion-system 'helm)
+    (helm-projectile-on))
+
+  (use-package helm-projectile
+    :after helm
+    :ensure t)
 
   (use-package helm-ag
-    :ensure t
     :after helm
     :init
-    (setq helm-follow-mode-persistent t))
+    (setq helm-follow-mode-persistent t)
+    (setq helm-ag-insert-at-point 'symbol)
+    :commands
+    (helm-ag helm-projectile-ag)
+    :bind
+    ("M-p" . helm-projectile-ag))
+
+  (use-package helm-descbinds
+    :after helm
+    :ensure t
+    :bind ("C-h b" . helm-descbinds))
+
+  (use-package helm-files)
+
+
+  (use-package helm-swoop
+    :after helm
+    :ensure t
+    :bind
+    (("M-m" . helm-swoop)
+     ("M-M" . helm-swoop-back-to-last-point))
+    :init
+    (bind-key "M-m" 'helm-swoop-from-isearch isearch-mode-map))
+
 #+end_src
 ** Ido
 
@@ -1284,47 +1306,47 @@ Use one of the following
 ** Company
 #+begin_src emacs-lisp :tangle yes
 
-  (use-package company
-    :ensure t
-    ;; :diminish ""
-    :init
-    ;; (add-hook 'prog-mode-hook 'company-mode)
-    ;; (add-hook 'comint-mode-hook 'company-mode)
-    :bind (:map company-active-map
-                ("M-n" . nil)
-                ("M-p" . nil)
-                ("C-n" . company-select-next)
-                ("C-p" . company-select-previous)
-                ("TAB" . company-complete-common-or-cycle)
-                ("<tab>" . company-complete-common-or-cycle)
-                ("S-TAB" . company-select-previous)
-                ("<backtab>" . company-select-previous))
-    :config
-    (global-company-mode)
-    (setq company-tooltip-limit 10)
-    (setq company-idle-delay 0.2)
-    (setq company-echo-delay 0)
-    (setq company-minimum-prefix-length 3)
-    (setq company-require-match nil)
-    (setq company-selection-wrap-around t)
-    (setq company-tooltip-align-annotations t)
-    (setq company-tooltip-flip-when-above t)
-    (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
+    (use-package company
+      :ensure t
+      ;; :diminish ""
+      :init
+      ;; (add-hook 'prog-mode-hook 'company-mode)
+      ;; (add-hook 'comint-mode-hook 'company-mode)
+      :bind (:map company-active-map
+                  ("M-n" . nil)
+                  ("M-p" . nil)
+                  ("C-n" . company-select-next)
+                  ("C-p" . company-select-previous)
+                  ("TAB" . company-complete-common-or-cycle)
+                  ("<tab>" . company-complete-common-or-cycle)
+                  ("S-TAB" . company-select-previous)
+                  ("<backtab>" . company-select-previous))
+      :config
+      (global-company-mode)
+      (setq company-tooltip-limit 10)
+      (setq company-idle-delay 0.2)
+      (setq company-echo-delay 0)
+      (setq company-minimum-prefix-length 3)
+      (setq company-require-match nil)
+      (setq company-selection-wrap-around t)
+      (setq company-tooltip-align-annotations t)
+      (setq company-tooltip-flip-when-above t)
+      (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
 
 
-(defun company-yasnippet-or-completion ()
-  "Solve company yasnippet conflicts."
-  (interactive)
-  (let ((yas-fallback-behavior
-         (apply 'company-complete-common nil)))
-    (yas-expand)))
+  (defun company-yasnippet-or-completion ()
+    "Solve company yasnippet conflicts."
+    (interactive)
+    (let ((yas-fallback-behavior
+           (apply 'company-complete-common nil)))
+      (yas-expand)))
 
-(add-hook 'company-mode-hook
-          (lambda ()
-            (substitute-key-definition
-             'company-complete-common
-             'company-yasnippet-or-completion
-             company-active-map)))
+  (add-hook 'company-mode-hook
+            (lambda ()
+              (substitute-key-definition
+               'company-complete-common
+               'company-yasnippet-or-completion
+               company-active-map)))
 
 #+end_src
 * Debug
@@ -1347,4 +1369,31 @@ Use one of the following
     :config
     (if (file-exists-p abbrev-file-name)
         (quietly-read-abbrev-file)))
+#+end_src
+* Evil mode
+#+begin_src emacs-lisp :tangle yes
+  (use-package evil
+    :ensure t
+    :init
+    (setq evil-move-cursor-back nil)
+    (setq evil-want-fine-undo t)
+    (setq evil-move-beyond-eol t)
+    :config
+    (evil-mode 1)
+
+    (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode))
+
+    (use-package evil-surround
+      :ensure t
+      :config
+      (global-evil-surround-mode))
+
+    (use-package evil-indent-textobject
+      :ensure t)
+
+    (use-package evil-mu4e
+      :ensure t))
 #+end_src

@@ -177,7 +177,7 @@ bindsym $mod+d          exec rofi -run-list-command ". rofi_aliases.sh" -run-com
 bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
 
 bindsym $mod+f          fullscreen toggle
-bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/wallpaper_set
+bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/theme_set.sh -new
 
 bindsym $mod+g          workspace prev
 bindsym $mod+Shift+g    exec --no-startup-id gimp
@@ -343,9 +343,13 @@ bindsym $mod+semicolon mode "resize"
 
 
 # Start polybar
+
 exec_always --no-startup-id $HOME/.dotfiles/bin/polybar_launch
-exec --no-startup-id wal -R
-exec --no-startup-id udiskie --no-automount --notify --smart-tray --use-udisks2
+exec --no-startup-id $HOME/.dotfiles/bin/theme_set.sh -R # wal -R
+# exec --no-startup-id  dunst_wal.sh
+exec --no-startup-id udiskie --no-automount --notify --tray --use-udisks2
+exec --no-startup-id $HOME/.dotfiles/bin/mail-notify.py
+
 
 ###---Extra XF86 Keys---###
 #These are the extra media keys that some keyboards have.
@@ -390,6 +394,7 @@ bindsym XF86Reload              restart
 #bindsym XF86New                exec
 #bindsym XF86LaunchA            exec
 #bindsym XF86LaunchB            exec
+#bindsym XF86Launch1            exec
 #bindsym XF86Launch2            exec
 #bindsym XF86Launch3            exec
 #bindsym XF86Launch4            exec

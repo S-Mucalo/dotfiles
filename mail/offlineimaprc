@@ -13,6 +13,7 @@ quick = 5
 # postsynchook = pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
 postsynchook = pkill -2 -u $UID mu && sleep 2 && mu index --maildir=~/.mail/
 
+
 # postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && ./mail/tag_new"
 # postsynchook = ionice -c 3 chrt --idle 0 /bin/sh -c "notmuch new && notmuch tag --batch --input=/home/spm105/.dotfiles/mail/notmuch_tags"
 
