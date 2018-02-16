@@ -13,6 +13,12 @@
     (package-refresh-contents)
     (package-install 'use-package))
 
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
   (setq custom-file "~/.emacs.d/custom.el")
   (load custom-file 'noerror)
 
@@ -493,8 +499,6 @@
   (use-package simple-mpc
     :ensure t)
 
-  (use-package mingus
-    :ensure t)
 
   (use-package visual-regexp
     :ensure t
@@ -835,40 +839,31 @@
 #+end_src
 * COMMENT dired
 #+begin_src emacs-lisp :tangle yes
-  (use-package dired+
-    :disabled t
-    :ensure t
-    :config (require 'dired+)
-    (setq diredp-hide-details-propagate-flag t)
-    (setq diredp-hide-details-initially-flag t)
-    )
+    ;; Go to first real file in dired M-<
+    (defun dired-back-to-top ()
+      (interactive)
+      (beginning-of-buffer)
+      (dired-next-line 3))
 
-  ;; Go to first real file in dired M-<
-  (defun dired-back-to-top ()
-    (interactive)
-    (beginning-of-buffer)
-    (dired-next-line 3))
+    (define-key dired-mode-map
+      (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 
-  (define-key dired-mode-map
-    (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+    ;; Go to last real file in dired M->
+    (defun dired-jump-to-bottom ()
+      (interactive)
+      (end-of-buffer)
+      (dired-next-line -1))
 
-  ;; Go to last real file in dired M->
-  (defun dired-jump-to-bottom ()
-    (interactive)
-    (end-of-buffer)
-    (dired-next-line -1))
+    (define-key dired-mode-map
+      (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 
-  (define-key dired-mode-map
-    (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+    (use-package bookmark+
+      :load-path "wiki-packages/bookmark-plus")
 
-  (use-package bookmark+
-    :load-path "~/.emacs.d/wiki-packages/bookmark-plus")
-
-  (use-package dired+
-    :load-path "~/.emacs.d/wiki-packages/dired-plus/"
-    :config
-    (setq diredp-hide-details-initially-flag t)
-    (setq diredp-hide-details-initially-flag t))
+    (use-package dired+
+      :load-path "wiki-packages/dired-plus/"
+      :config
+      (setq diredp-hide-details-initially-flag t))
 #+end_src
 
 * LaTeX
