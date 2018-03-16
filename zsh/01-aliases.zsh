@@ -25,6 +25,10 @@ alias gen_ctags='find . -name "*.[chCH]" -print | etags -'
 alias cless="less --no-lessopen"
 alias cat="colorize_via_pygmentize.sh"
 alias ccat="/usr/bin/env cat"
+
+# ranger
+alias r.ranger='SHELL=$HOME/.dotfiles/bin/r.shell ranger'
+
 # rsync
 alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"

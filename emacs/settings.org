@@ -554,7 +554,7 @@
 
     ;; attempt to show images when viewing messages
     ;; (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
-    (setq mu4e-html2text-command "w3m -T text/html")
+    (setq mu4e-html2text-command "w3m -dump -T text/html")
     (setq mu4e-view-show-images t)
 
     (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
@@ -1322,6 +1322,7 @@ Use one of the following
                   ("S-TAB" . company-select-previous)
                   ("<backtab>" . company-select-previous))
       :config
+
       (global-company-mode)
       (setq company-tooltip-limit 10)
       (setq company-idle-delay 0.2)

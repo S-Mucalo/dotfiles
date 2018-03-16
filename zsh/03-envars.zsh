@@ -14,6 +14,7 @@ export ALTERNATE_EDITOR=""
 export EDITOR="emacs"
 
 export BROWSER="qutebrowser"
+export TERMINAL="urxvt"
 
 # Paths
 export PATH=$PATH:$HOME/.dotfiles/bin
