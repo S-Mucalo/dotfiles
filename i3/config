@@ -131,9 +131,9 @@ font pango:inconsolata 12
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
 
-# start a terminal
-bindsym $mod+Return exec $term
-bindsym $mod+Shift+Return exec $term -e tmux
+# start a termimal
+bindsym $mod+Return exec $term -e tmux
+bindsym $mod+Shift+Return exec $term
 
 # kill focused window
 bindsym $mod+Shift+q kill
