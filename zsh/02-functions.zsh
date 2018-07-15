@@ -5,6 +5,7 @@ goto() { [ -d "$1" ] && cd "$1" || cd "$(dirname "$1")"; }
 cpf() { cp "$@" && goto "$_"; }
 mvf() { mv "$@" && goto "$_"; }
 mkf() { mkdir -p $1; cd $1 }
+mkmv() { mkdir -p "$2"; mv "$1" "$2" }
 cdl() { cd $@; ls }
 zsh_stats() { history 0 | awk '{print $2}' | sort | uniq -c | sort -rn | head }
 du1() { du -h --max-depth=1 "$@" | sort -k 1,1hr -k 2,2f; }

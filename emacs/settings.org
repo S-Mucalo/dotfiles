@@ -925,6 +925,8 @@
     '(setq TeX-command-list
            (append TeX-command-list
                    (list
+                    (list "XeLaTeX" "%`xelatex%(mode)%' %t"
+                          'TeX-run-TeX nil t :help "Run XeLaTeX")
                     (list "Sage" "sage %s.sagetex.sage"
                           'TeX-run-command nil t :help "Run SAGE.")
                     (list "Wordcount" "texcount %t"
