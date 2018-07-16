@@ -27,13 +27,14 @@ declare -a links=(.bashrc \
                       .config/dunst \
                       .config/rofi \
                       .config/mpd \
+                      .config/tmux \
+                      .config/gsimplecal \
                       .ncmpcpp \
                       .Xresources \
                       .offlineimaprc .msmtprc \
                       .ipython/profile_default/ipython_config.py \
                       .ipython/profile_default/ipython_kernel_config.py \
                       .ssh \
-                      .tmux.conf \
                       .vimrc \
                       .zshrc)
 
@@ -56,7 +57,7 @@ declare -a links=(.bashrc \
 # done
 
 
-declare -a configs=(dunst qutebrowser ranger polybar i3 mpd ncmpcpp)
+declare -a configs=(dunst tmux wal rofi udiskie gsimplecal qutebrowser ranger polybar i3 mpd ncmpcpp)
 for filename in ${configs[*]}
 do
     if [[ -L $HOME/.config/$filename ]]; then
