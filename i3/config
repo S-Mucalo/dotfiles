@@ -272,6 +272,8 @@ for_window [window_role="gimp-main"] focus
 assign [window_role="tr-main"] 6
 for_window [window_role="tr-main"] focus
 for_window [window_role="GtkFileChooserDialog"] resize shrink height 10 px
+for_window [class="(?i)gsimplecal"] floating enable, move position mouse, move down 30px
+
 
 workspace 5 gaps inner 0
 workspace 5 gaps outer 0

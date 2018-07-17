@@ -213,10 +213,10 @@ label-song-foreground = ${colors.foreground}
 
 [module/date]
 type = internal/date
-date =  %a, %d-%b %I:%M %p
+date =%{A1:gsimplecal:}  %a, %d-%b %I:%M %p %{A}
 ; date = %%{F#999}%Y-%m-%d%%{F-}  %%{F#fff}%H:%M%%{F-}
 
-date-alt =  %d-%b-%g
+; date-alt =  %d-%b-%g
 ;  %I:%M %p
 interval = 2
 
