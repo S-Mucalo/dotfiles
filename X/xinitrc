@@ -12,29 +12,29 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
 fi
 [[ -f ~/.Xresources ]] && xrdb -merge ~/.Xresources
 
-#!/bin/sh
 
 # this makes it work in Ubuntu
-xhost +
+#xhost +
 ## you might need to append the TTY you are working on
-xinit
+#xinit
 
-wmname LG3D
+#wmname LG3D
+exec i3
 
 # Remap caps lock to left control. This is not strictly speaking
 # exwm related, but it's handy
-setxkbmap -option 'ctrl:no caps'
+#setxkbmap -option 'ctrl:no caps'
 
 # Set fallback cursor
-xsetroot -cursor_name left_ptr
+#xsetroot -cursor_name left_ptr
 
 # If Emacs is started in server mode, `emacsclient` is a convenient way to edit
 # files in place (used by e.g. `git commit`)
-export VISUAL=emacsclient
-export EDITOR="$VISUAL"
+#export VISUAL=emacsclient
+#export EDITOR="$VISUAL"
 
 # Finally launch emacs and enable exwm
-exec dbus-launch --exit-with-session emacs
+#exec dbus-launch --exit-with-session emacs
 
 # xautolock -time 30 -locker "sudo pm-suspend" &
 # dropboxd &

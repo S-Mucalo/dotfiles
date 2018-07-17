@@ -1,0 +1,18 @@
+#! /usr/bin/expect -f
+
+set passfile [open "/etc/.credentials" r]
+gets $passfile username
+set u [regsub "user=" $username ""]
+gets $passfile password
+set p [regsub "password=" $password ""]
+close $passfile
+
+spawn telnet ienabler.canterbury.ac.nz 259
+
+expect "ser:"
+send "$u\r"
+expect "assword:"
+send "$p\r"
+expect "Enter your choice:"
+send "1"
+interact

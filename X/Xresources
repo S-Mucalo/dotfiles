@@ -1,4 +1,4 @@
-URxvt*font: xft:inconsolata:pixelsize=15,xft:Inconsolata\ for\ Powerline:pixelsize=15
+URxvt*font: xft:Inconsolata\ for\ Powerline:pixelsize=15,xft:Roboto\ Mono\ for\ Powerline:pixelsize=15
 
 ! URxvt.perl-ext-common: tabbed,clipboard
 urxvt.urgentOnBell: True
@@ -6,7 +6,7 @@ urxvt.urgentOnBell: True
 ! ! General
 urxvt*termName:  rxvt-256color
 urxvt*loginShell:         true
-urxvt*scrollBar:         false
+urxvt*scrollBar:         false#
 urxvt*secondaryScroll:    true
 urxvt*saveLines:         65535
 urxvt*cursorBlink:        true
