@@ -161,7 +161,7 @@ bindsym $mod+Shift+u    resize shrink height 10 px or 10 ppt
 bindsym $mod+i          [instance="dropdown_python"] scratchpad show; move position center
 bindsym $mod+Shift+i    resize grow height 10 px or 10 ppt
 
-bindsym $mod+o          exec $ALTERNATE_EDITOR
+bindsym $mod+o          exec --no-startup-id $HOME/.dotfiles/bin/ienabler
 bindsym $mod+Shift+o    resize grow width 10 px or 10 ppt
 
 bindsym $mod+p          exec $pause
