@@ -38,23 +38,6 @@ declare -a links=(.bashrc \
                       .vimrc \
                       .zshrc)
 
-# If files already exist create backups
-# for filename in ${links[*]}
-# do
-#     if [[ ! -f $filename && ! -d $filename ]]; then
-#         if [[ ! -e ~/.backup/$filename ]]; then
-
-#             mv ~/$filename ~/.backup/$filename
-#         else
-#             j=0
-#             while [[ -e $filename-$j ]] ; do
-#                 let j++
-#             done
-#             newname=$filename-$j
-#             mv ~/$filename ~/.backup/$newname
-#         fi
-#     fi
-# done
 
 
 declare -a configs=(dunst tmux wal rofi udiskie gsimplecal qutebrowser ranger polybar i3 mpd ncmpcpp)
@@ -109,9 +92,6 @@ ln -s $HOME/.dotfiles/mail/msmtprc $HOME/.msmtprc
 
 # ssh
 ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh
-
-# tmux
-ln -s $HOME/.dotfiles/tmux/tmux.conf $HOME/.tmux.conf
 
 # vim
 ln -s $HOME/.dotfiles/vim/vimrc $HOME/.vimrc
