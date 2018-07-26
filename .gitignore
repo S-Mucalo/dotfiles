@@ -9,12 +9,12 @@ history
 *state
 *.fifo
 *.sql
-
+profile_default
 tags
 __pycache__
 ranger/bookmarks
 ranger/tagged
-
+*.un~
 *.py[cod]
 
 # C extensions
