@@ -416,6 +416,11 @@
   (global-set-key [remap goto-line] 'goto-line-with-feedback)
   (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
   (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+
+
+  (define-prefix-command 'spm-map)
+  (global-set-key (kbd "C-c C-s") 'spm-map)
+  (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
 * Packages
 
@@ -443,6 +448,9 @@
       :ensure t)
     (yas-reload-all))
 
+  (use-package free-keys
+    :ensure t
+    :bind ("C-h C-k" . free-keys))
 
   (use-package magit
     :ensure t
@@ -667,6 +675,7 @@
   (use-package org-mu4e
     :after mu4e)
   (use-package mu4e-alert
+    :disabled t
     :ensure t
     :config
     (mu4e-alert-set-default-style 'libnotify)
