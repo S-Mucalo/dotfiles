@@ -1,7 +1,7 @@
 Host * 
      ForwardX11 yes
      Port 22
-     User spm105
+     User spm119
 
 Host uni_win
      HostName mech1342.canterbury.ac.nz

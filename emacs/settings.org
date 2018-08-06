@@ -398,7 +398,7 @@
   (global-unset-key (kbd "<next>"))
 
 
-  (global-set-key (kbd "C-x C-l") (lambda () (interactive (load-file user-init-file))))
+  (global-set-key (kbd "C-x C-l") (lambda () (interactive) (load-file user-init-file)))
   ;; (global-set-key (kbd "C-x C-r") 'recentf-open-files)  ; use helm-recentf
   (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
   (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
@@ -419,7 +419,7 @@
 
 
   (define-prefix-command 'spm-map)
-  (global-set-key (kbd "C-c C-s") 'spm-map)
+  (global-set-key (kbd "C-c s") 'spm-map)
   (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
 * Packages
@@ -1010,7 +1010,8 @@
     :bind
     ("C-c l" . org-store-link)
     ("C-c a" . org-agenda)
-    ("C-c c" . org-capture))
+    ("C-c c" . org-capture)
+    ("C-c b" . org-switchb))
 
     (use-package org-bullets
       :ensure t
@@ -1362,6 +1363,7 @@ Use one of the following
 * Debug
 #+begin_src emacs-lisp :tangle yes
 (use-package realgud
+:disabled t
 :ensure t
 :defer t)
 
@@ -1382,6 +1384,13 @@ Use one of the following
 #+end_src
 * Evil mode
 #+begin_src emacs-lisp :tangle yes
+
+  (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode)
+      (evil-leader/set-leader "<SPC>"))
+
   (use-package evil
     :ensure t
     :init
@@ -1391,15 +1400,9 @@ Use one of the following
     :config
     (evil-mode 1)
 
-    (use-package evil-leader
-      :ensure t
-      :config
-      (global-evil-leader-mode))
-
     (use-package evil-surround
       :ensure t
-      :config
-      (global-evil-surround-mode))
+      :config (global-evil-surround-mode))
 
     (use-package evil-indent-textobject
       :ensure t)
