@@ -1,6 +1,6 @@
 URxvt*font: xft:Inconsolata\ for\ Powerline:pixelsize=15,xft:Roboto\ Mono\ for\ Powerline:pixelsize=15
 
-! URxvt.perl-ext-common: tabbed,clipboard
+!URxvt.perl-ext-common: tabbed,clipboard
 urxvt.urgentOnBell: True
 
 ! ! General
@@ -74,7 +74,7 @@ URxvt*color15: #dddddd
 
 ! Extensions
 URxvt.perl-lib:        /usr/lib/urxvt/perl/
-URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc
+URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc,osc-xterm-clipboard
 
 URxvt.url-launcher:       firefox
 URxvt.keysym.C-Delete:    perl:matcher:last

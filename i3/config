@@ -40,25 +40,6 @@ client.placeholder      #000000 #0c0c0c $bg      #000000   #0c0c0c
 
 client.background       #ffffff
 
-
-# # class                 border  backgr. text    indicator child_border
-# client.focused          #4c7899 #285577 #ffffff #ee1055   #ee1055
-# client.focused_inactive #333333 #5f676a #ffffff #484e50   #5f676a
-# client.unfocused        #333333 #222222 #888888 #292d2e   #222222
-# client.urgent           #2f343a #900000 #ffffff #900000   #900000
-# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-
-# client.background       #ffffff
-
-# # class                 border  backgr. text    indicator child_border
-# client.focused          #555555 #555555 #ffffff #ee1055  #990055
-# client.focused_inactive #990055 #555555 #ffffff #0101010   #5f676a
-# client.unfocused        #888888 #222222 #888888 #888888   #222222
-# client.urgent           #888888 #900000 #ffffff #900000   #900000
-# client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-
-# client.background       #ffffff
-
 # i3-gaps
 smart_gaps on
 hide_edge_borders both
@@ -178,7 +159,7 @@ bindsym $mod+d          exec rofi -run-list-command ". rofi_aliases.sh" -run-com
 bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
 
 bindsym $mod+f          fullscreen toggle
-bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/theme_set.sh -new
+bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/theme_set.sh --new
 
 bindsym $mod+g          workspace prev
 bindsym $mod+Shift+g    exec --no-startup-id gimp
@@ -202,7 +183,9 @@ bindsym $mod+x          exec --no-startup-id ~/.dotfiles/bin/lock
 bindsym $mod+Shift+x    exec systemctl shutdown
 
 # reload the configuration file
-bindsym $mod+Shift+c reload
+bindsym $mod+c          exec remmina -c ~/.uni_remote.rdp
+
+bindsym $mod+Shift+c    reload
 
 bindsym $mod+v          exec $term -e htop
 
@@ -240,6 +223,8 @@ bindsym $mod+Shift+Right move right
 # focus the child container
 #bindsym $mod+d focus child
 
+workspace 2 output DVI-I-2
+workspace 10 output DVI-I-2
 # switch to workspace
 bindsym $mod+Tab workspace back_and_forth
 bindsym $mod+1 workspace 1
@@ -265,16 +250,12 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-assign [window_role="GIMP Startup"] 8
+for_window [class="Gimp"] focus
 assign [class="Gimp"] 8
-for_window [window_role="gimp-dock"] floating disable; move left; resize shrink width 50 px or 50ppt
-for_window [window_role="gimp-toolbox"] floating disable; move right; resize grow width 30 px or 30ppt
-for_window [window_role="gimp-main"] focus
-assign [window_role="tr-main"] 6
-for_window [window_role="tr-main"] focus
 for_window [window_role="GtkFileChooserDialog"] resize shrink height 10 px
 for_window [class="(?i)gsimplecal"] floating enable, move position mouse, move down 30px
-
+for_window [class="^Remmina$"] focus
+assign [class="Remmina"] 10
 
 workspace 5 gaps inner 0
 workspace 5 gaps outer 0
