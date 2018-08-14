@@ -51,6 +51,7 @@ do
 done
 
 
+
 # bash
 ln -s $HOME/.dotfiles/bash/bashrc $HOME/.bashrc
 
@@ -64,7 +65,6 @@ ln -s $HOME/.dotfiles/nano/nanorc $HOME/.nanorc
 
 # git
 ln -s $HOME/.dotfiles/git/gitconfig $HOME/.gitconfig
-
 
 # ipython
 ln -s $HOME/.dotfiles/ipython/ipython_config.py \
@@ -91,7 +91,7 @@ ln -s $HOME/.dotfiles/mail/offlineimaprc $HOME/.offlineimaprc
 ln -s $HOME/.dotfiles/mail/msmtprc $HOME/.msmtprc
 
 # ssh
-ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh
+# ln -s $HOME/.dotfiles/ssh/config $HOME/.ssh
 
 # vim
 ln -s $HOME/.dotfiles/vim/vimrc $HOME/.vimrc

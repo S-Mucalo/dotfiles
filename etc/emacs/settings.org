@@ -701,7 +701,8 @@
     (setq indent-tabs-mode nil)
     (setq default-tab-width 4)
     (setq python-shell-interpreter "ipython3"
-          python-shell-interpreter-args "--simple-prompt -i"))
+          python-shell-interpreter-args "--simple-prompt -i")
+    (setq python-shell-prompt-detect-failure-warning nil))
 
   ;;  py-electric-colon-active t
   ;;  py-smart-indentation t)
@@ -1339,33 +1340,32 @@ Use one of the following
 ** Company
 #+begin_src emacs-lisp :tangle yes
 
-    (use-package company
-      :ensure t
-      ;; :diminish ""
-      :init
-      ;; (add-hook 'prog-mode-hook 'company-mode)
-      ;; (add-hook 'comint-mode-hook 'company-mode)
-      :bind (:map company-active-map
-                  ("M-n" . nil)
-                  ("M-p" . nil)
-                  ("C-n" . company-select-next)
-                  ("C-p" . company-select-previous)
-                  ("TAB" . company-complete-common-or-cycle)
-                  ("<tab>" . company-complete-common-or-cycle)
-                  ("S-TAB" . company-select-previous)
-                  ("<backtab>" . company-select-previous))
-      :config
-
-      (global-company-mode)
-      (setq company-tooltip-limit 10)
-      (setq company-idle-delay 0.2)
-      (setq company-echo-delay 0)
-      (setq company-minimum-prefix-length 3)
-      (setq company-require-match nil)
-      (setq company-selection-wrap-around t)
-      (setq company-tooltip-align-annotations t)
-      (setq company-tooltip-flip-when-above t)
-      (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
+  (use-package company
+    :ensure t
+    ;; :diminish ""
+    :init
+    ;; (add-hook 'prog-mode-hook 'company-mode)
+    ;; (add-hook 'comint-mode-hook 'company-mode)
+    :bind (:map company-active-map
+                ("M-n" . nil)
+                ("M-p" . nil)
+                ("C-n" . company-select-next)
+                ("C-p" . company-select-previous)
+                ("TAB" . company-complete-common-or-cycle)
+                ("<tab>" . company-complete-common-or-cycle)
+                ("S-TAB" . company-select-previous)
+                ("<backtab>" . company-select-previous))
+    :config
+    (global-company-mode)
+    (setq company-tooltip-limit 10)
+    (setq company-idle-delay 0.2)
+    (setq company-echo-delay 0)
+    (setq company-minimum-prefix-length 3)
+    (setq company-require-match nil)
+    (setq company-selection-wrap-around t)
+    (setq company-tooltip-align-annotations t)
+    ;; (setq company-tooltip-flip-when-above t)
+    (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
 
 
   (defun company-yasnippet-or-completion ()
@@ -1375,13 +1375,36 @@ Use one of the following
            (apply 'company-complete-common nil)))
       (yas-expand)))
 
-  (add-hook 'company-mode-hook
-            (lambda ()
-              (substitute-key-definition
-               'company-complete-common
-               'company-yasnippet-or-completion
-               company-active-map)))
+  (;; add-hook 'company-mode-hook
+   (lambda ()
+     (substitute-key-definition
+      'company-complete-common
+      'company-yasnippet-or-completion
+      company-active-map)))
 
+  (use-package company-irony
+    :ensure t
+    :config
+    (require 'company)
+    (add-to-list 'company-backends 'company-irony))
+
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hoom 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (use-package company-jedi
+    :defer t
+    :init
+    (setq company-jedi-python-bin "python3")
+    :config
+    (add-to-list 'company-backends 'company-jedi))
+
+  ;; (with-eval-after-load 'company
+  ;;   (add-hook 'c++-mode-hook 'company-mode)
+  ;;   (add-hook 'c-mode-hook 'company-mode))
 #+end_src
 * Debug
 #+begin_src emacs-lisp :tangle yes
