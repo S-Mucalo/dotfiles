@@ -27,7 +27,7 @@ alias cat="colorize_via_pygmentize.sh"
 alias ccat="/usr/bin/env cat"
 
 # ranger
-alias r.ranger='SHELL=$HOME/.dotfiles/bin/r.shell ranger'
+alias r.ranger='SHELL=$HOME/bin/r.shell ranger'
 
 # rsync
 alias rsync-copy="rsync -avz --progress -h"
@@ -46,7 +46,7 @@ alias tkss='tmux kill-session -t'
 # grep
 grephistory()
 {
-    grep $1 $HOME/.dotfiles/zsh/history.log
+    grep $1 $HOME/.config/zsh/history.log
 }
 alias his='grephistory'
 

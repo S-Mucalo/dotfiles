@@ -17,10 +17,10 @@ export BROWSER="qutebrowser"
 export TERMINAL="urxvt"
 
 # Paths
-export PATH=$PATH:$HOME/.dotfiles/bin
+export PATH=$PATH:$HOME/bin
 export PATH=$PATH:$HOME/.local/bin
-export PYTHONPATH=$PYTHONPATH:$HOME/.dotfiles/bin
-export PYTHON2PATH=$PYTHON2PATH:$HOME/.dotfiles/bin
+export PYTHONPATH=$PYTHONPATH:$HOME/bin
+export PYTHON2PATH=$PYTHON2PATH:$HOME/bin
 
 # Less
 LESS="$LESS -R -I -M"

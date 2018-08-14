@@ -79,7 +79,7 @@
   (defalias 'yes-or-no-p 'y-or-n-p)       ; y
 
   ;; Open init file with C-x r j e
-  (set-register ?e (cons 'file "~/.dotfiles/emacs/settings.org"))
+  (set-register ?e (cons 'file "~/.emacs.d/settings.org"))
   (set-register ?o (cons 'file "~/Dropbox/org/notes.org"))
 #+end_src
 * Functions

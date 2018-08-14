@@ -1,16 +1,16 @@
 
-(defun dotfiles (relative-path)
-  "Return the full path of a file in the user's dotfiles directory."
-  (substitute-in-file-name (concat "$HOME/.dotfiles/emacs/" relative-path)))
+;; (defun dotfiles (relative-path)
+;;  "Return the full path of a file in the user's dotfiles directory."
+;;  (substitute-in-file-name (concat "$HOME/.emacs.d/" relative-path)))
 
 
 (require 'org)
-(org-babel-load-file (dotfiles "settings.org"))
+;; (org-babel-load-file (dotfiles "settings.org"))
 
 
 
-;; (expand-file-name "settings.org"
- ;;                   user-emacs-directory))
+(org-babel-load-file (expand-file-name "settings.org"
+                    user-emacs-directory))
 
 
 

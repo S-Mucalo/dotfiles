@@ -75,9 +75,9 @@ fi
 
 
 
-source $HOME/.dotfiles/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $HOME/.config/zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
-eval $( dircolors -b $HOME/.dotfiles/zsh/ls_colors )
+eval $( dircolors -b $HOME/.config/zsh/ls_colors )
 export LS_COLORS
 
 (cat $HOME/.cache/wal/sequences &)
@@ -87,7 +87,7 @@ source $HOME/.cache/wal/colors-tty.sh
 # Import seperate config files
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
-for r in $HOME/.dotfiles/zsh/*.zsh; do
+for r in $HOME/.config/zsh/*.zsh; do
   if [[ $DEBUG > 0 ]]; then
     echo "zsh: sourcing $r"
   fi
