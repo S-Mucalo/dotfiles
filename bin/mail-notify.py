@@ -15,8 +15,9 @@ from gi.repository import Notify
 
 
 #from gi._glib import GError
-
-maildir = '/home/shaun/.mail/'
+from pathlib import Path
+maildir = str(Path.home() / '.mail')
+#maildir = '/home/shaun/.mail/'
 boxes = [
     ('UC_mail', 'INBOX/new'),
     ('gmail_mail', 'INBOX/new'),

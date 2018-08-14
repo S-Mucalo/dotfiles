@@ -255,7 +255,7 @@ for_window [window_role="GtkFileChooserDialog"] resize shrink height 10 px
 for_window [class="(?i)gsimplecal"] floating enable, move position mouse, move down 30px
 for_window [class="^Remmina$"] focus
 assign [class="Remmina"] 10
-
+for_window[class="fiji-Main"] floating enable
 workspace 5 gaps inner 0
 workspace 5 gaps outer 0
 workspace 6 gaps inner 0
