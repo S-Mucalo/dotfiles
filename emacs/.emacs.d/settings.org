@@ -1265,7 +1265,7 @@ Use one of the following
      ("C-x c" . nil)
      ("C-x C-f" . helm-find-files)
      ("M-x" . helm-M-x)
-     ("C-SPC" . helm-dabbrev)
+     ("C-." . helm-dabbrev)
      ("C-x b" . helm-mini)
      ;; ("C-x b" . helm-buffers-list)
      ("C-x C-r" . helm-recentf)
@@ -1398,7 +1398,7 @@ Use one of the following
            (apply 'company-complete-common nil)))
       (yas-expand)))
 
-  (;; add-hook 'company-mode-hook
+  (add-hook 'company-mode-hook
    (lambda ()
      (substitute-key-definition
       'company-complete-common
