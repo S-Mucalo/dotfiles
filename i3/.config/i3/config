@@ -143,7 +143,7 @@ bindsym $mod+Shift+u    resize shrink height 10 px or 10 ppt
 bindsym $mod+i          [instance="dropdown_python"] scratchpad show; move position center
 bindsym $mod+Shift+i    resize grow height 10 px or 10 ppt
 
-bindsym $mod+o          exec --no-startup-id $HOME/.dotfiles/bin/ienabler
+bindsym $mod+o          exec --no-startup-id $HOME/bin/ienabler
 bindsym $mod+Shift+o    resize grow width 10 px or 10 ppt
 
 bindsym $mod+p          exec $pause
@@ -159,7 +159,7 @@ bindsym $mod+d          exec rofi -run-list-command ". rofi_aliases.sh" -run-com
 bindsym $mod+Shift+d    gaps inner current set 0; gaps outer current set 0
 
 bindsym $mod+f          fullscreen toggle
-bindsym $mod+Shift+f    exec --no-startup-id $HOME/.dotfiles/bin/theme_set.sh --new
+bindsym $mod+Shift+f    exec --no-startup-id $HOME/bin/theme_set.sh --new
 
 bindsym $mod+g          workspace prev
 bindsym $mod+Shift+g    exec --no-startup-id gimp
@@ -179,7 +179,7 @@ bindsym $mod+Shift+l    move right 30
 bindsym $mod+z          gaps outer current plus 5
 bindsym $mod+Shift+z    gaps outer current minus 5
 
-bindsym $mod+x          exec --no-startup-id ~/.dotfiles/bin/lock
+bindsym $mod+x          exec --no-startup-id ~/bin/lock
 bindsym $mod+Shift+x    exec systemctl shutdown
 
 # reload the configuration file
@@ -256,7 +256,7 @@ for_window [window_role="GtkFileChooserDialog"] resize shrink height 10 px
 for_window [class="(?i)gsimplecal"] floating enable, move position mouse, move down 30px
 for_window [class="^Remmina$"] focus
 assign [class="Remmina"] 10
-
+for_window[class="fiji-Main"] floating enable
 workspace 5 gaps inner 0
 workspace 5 gaps outer 0
 workspace 6 gaps inner 0
@@ -328,10 +328,10 @@ bindsym $mod+semicolon mode "resize"
 
 # Start polybar
 
-exec_always --no-startup-id $HOME/.dotfiles/bin/polybar_launch
-exec_always --no-startup-id $HOME/.dotfiles/bin/theme_set.sh -R
+exec_always --no-startup-id $HOME/bin/polybar_launch
+exec_always --no-startup-id $HOME/bin/theme_set.sh -R
 exec --no-startup-id udiskie --config=$HOME/.config/udiskie/config.yml # --no-automount --notify --tray --use-udisks2
-exec --no-startup-id $HOME/.dotfiles/bin/mail-notify.py
+exec --no-startup-id $HOME/bin/mail-notify.py
 
 
 ###---Extra XF86 Keys---###
@@ -372,7 +372,7 @@ bindsym XF86Explorer            exec $term -e ranger
 #bindsym XF86Xfer               exec
 bindsym XF86WWW                 exec --no-startup-id $BROWSER
 #bindsym XF86DOS                exec
-bindsym XF86ScreenSaver         exec --no-startup-id ~/.dotfiles/bin/lock
+bindsym XF86ScreenSaver         exec --no-startup-id ~/bin/lock
 #bindsym XF86RotateWindows      exec
 #bindsym XF86TaskPane           exec
 #bindsym XF86Favorites          exec

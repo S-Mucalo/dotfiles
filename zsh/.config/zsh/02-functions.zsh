@@ -42,7 +42,7 @@ namedir() {
 
 # {{{ Most used Commands
 mostused() {
-  sed -n 's/^\([a-z]*\) .*/\1/p' $HOME/.dotfiles/zsh/history.log |
+  sed -n 's/^\([a-z]*\) .*/\1/p' $HOME/.config/zsh/history.log |
   sort |
   uniq -c |
   sort -n -k1 |
@@ -88,7 +88,7 @@ mkgit() {
   touch README.markdown
   git add README.markdown
   git commit -m 'inital setup - automated'
-  git remote add origin git@github.com:Zaidean/$1.git
+  git remote add origin git@github.com:S-Mucalo/$1.git
   git push origin master
 } # }}}
 

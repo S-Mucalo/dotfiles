@@ -9,11 +9,10 @@ history
 *state
 *.fifo
 *.sql
-profile_default
 tags
 __pycache__
-ranger/bookmarks
-ranger/tagged
+.config/ranger/bookmarks
+.config/ranger/tagged
 *.un~
 *.py[cod]
 

@@ -90,6 +90,7 @@ type = internal/i3
 format = <label-state> <label-mode>
 index-sort = true
 wrapping-scroll = false
+exec-if = pgrep -x i3
 
 ; Only show workspaces on the same output as the bar
 ;pin-workspaces = true

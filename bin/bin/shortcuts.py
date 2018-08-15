@@ -31,9 +31,9 @@ quteshortcuts = ""
 rangershortcuts = ""
 zshshortcuts = ""
 home = str(Path.home())+"/"
-rangerlocation=home+".dotfiles/ranger/rc.conf"
-zshlocation=home+".dotfiles/zsh/aliases_zsh"
-qutelocation=home+".dotfiles/qutebrowser/config.py"
+rangerlocation=home+".config/ranger/rc.conf"
+zshlocation=home+".config/zsh/aliases_zsh"
+qutelocation=home+".config/qutebrowser/config.py"
 
 
 # These are the labels that demarcate where the shortcuts
