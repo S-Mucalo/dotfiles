@@ -1,14 +1,17 @@
  Bootstrapping package and use-package
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle no
   (defun debug-on-load-obsolete (filename)
     (when (equal (car (last (split-string filename "[/\\]") 2))
                  "obsolete")
       (debug)))
   (add-to-list 'after-load-functions #'debug-on-load-obsolete)
 
-  (require 'package)
+#+END_SRC
 
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (require 'package)
 
   (setq package-enable-at-startup nil)
   (add-to-list 'package-archives
@@ -434,7 +437,7 @@
   (global-set-key (kbd "C-c s") 'spm-map)
   (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
-* Packages
+* COMMENT Packages
 
 #+begin_src emacs-lisp :tangle yes
 
@@ -473,6 +476,11 @@
   (use-package free-keys
     :ensure t
     :bind ("C-h C-k" . free-keys))
+
+  (use-package multi-term
+    :ensure t
+    :config
+    (setq multi-term-program "/bin/bash"))
 
   (use-package magit
     :ensure t
@@ -553,6 +561,7 @@
 
   (use-package comint
     :config
+    (setq ansi-color-for-comint-mode 'filter)
     (setq comint-scroll-to-bottom-on-input t)
     (setq comint-scroll-to-bottom-on-output t)
     (setq comint-move-point-for-output t)
@@ -753,12 +762,6 @@
 #+end_src
 * R
 #+begin_src emacs-lisp :tangle yes
-  (setq ess-ask-for-ess-directory nil)
-  (setq ess-local-process-name "R")
-  (setq ansi-color-for-comint-mode 'filter)
-  (setq comint-scroll-to-bottom-on-input t)
-  (setq comint-scroll-to-bottom-on-output t)
-  (setq comint-move-point-for-output t)
   (defun my-ess-start-R ()
     (interactive)
     (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
@@ -796,14 +799,9 @@
     :init (use-package ess-site)
     :bind (:map ess-mode-map
                 ([(shift return)] . my-ess-eval))
-
     :config
-    (setq ess-local-process-name "R"
-          ansi-color-for-comint-mode 'filter
-          comint-scroll-to-bottom-on-input t
-          comint-scroll-to-bottom-on-output t
-          comint-move-point-for-output t))
-
+    (setq ess-local-process-name "R")
+    (setq ess-ask-for-ess-directory nil))
 #+end_src
 * c
 #+begin_src emacs-lisp :tangle yes
@@ -1248,7 +1246,7 @@ Use one of the following
   (use-package helm
     :config
     (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-          helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-move-to-line-cycle-in-source     nil ; move to end or beginning of source when reaching top or bottom of source.
           helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
           helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
           helm-ff-file-name-history-use-recentf t
@@ -1267,7 +1265,7 @@ Use one of the following
      ("C-x c" . nil)
      ("C-x C-f" . helm-find-files)
      ("M-x" . helm-M-x)
-     ;; ("C-SPC" . helm-dabbrev)
+     ("C-SPC" . helm-dabbrev)
      ("C-x b" . helm-mini)
      ;; ("C-x b" . helm-buffers-list)
      ("C-x C-r" . helm-recentf)
@@ -1279,7 +1277,6 @@ Use one of the following
 
   ;; (use-package helm-config
   ;;  :after helm)
-
   (use-package projectile
     :config
     (projectile-global-mode)
