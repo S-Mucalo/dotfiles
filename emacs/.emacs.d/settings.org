@@ -1,4 +1,4 @@
-* Bootstrapping package and use-package
+ Bootstrapping package and use-package
 
 #+begin_src emacs-lisp :tangle yes
   (defun debug-on-load-obsolete (filename)
@@ -47,6 +47,7 @@
   (setq kept-old-versions 2)
   (setq version-control t)                ; Control version numbers for old files
   (setq mouse-autoselect-window t)        ; Move window focus with mouse move
+  (setq focus-follows-mouse t)
   (setq show-paren-delay 0)               ; Show parens immediately
   (setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
   (setq select-enable-clipboard t)             ; Cut/paste from clipboard
@@ -61,6 +62,7 @@
   (setq scroll-conservatively 10000)       ; Don't jump when scrolling
   (setq auto-window-vscroll nil)           ; Don't jump when scrolling
   (setq visible-bell t)                    ; Don't beep
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
   (setq-default ispell-program-name "aspell")
   (setq-default save-place t)             ; Come back to the same place in buffer next visit
@@ -72,9 +74,10 @@
   (global-auto-revert-mode 1)             ; Change buffers if they change on disk
   (scroll-bar-mode -1)                    ; Turn off scroll
   (tool-bar-mode -1)                      ; Turn off tool-bar
-  (if (not window-system) (menu-bar-mode -1)); Still show the menubar
+  (when window-system (menu-bar-mode 1)); Still show the menubar
   ;; (delete-selection-mode 1)               ; Selection is deleted
   (semantic-mode 1)                       ; Use cedet
+
 
   (defalias 'yes-or-no-p 'y-or-n-p)       ; y
 
@@ -447,6 +450,16 @@
     :ensure t
     :mode ("\\.lua\\'" . lua-mode))
 
+  (use-package async
+    :ensure t
+    :init (dired-async-mode 1))
+
+  (use-package pretty-mode
+    :ensure t
+    :if window-system
+    :config
+    (global-pretty-mode t))
+
   (use-package yasnippet
     :defer 10
     :ensure t
@@ -505,11 +518,11 @@
 
     :bind
     (("C-<down>" . sp-down-sexp)
-      ("C-<up>"   . sp-up-sexp)
-      ("M-<down>" . sp-backward-down-sexp)
-      ("M-<up>"   . sp-backward-up-sexp)
-      ("C-M-a" . sp-beginning-of-sexp)
-      ("C-M-e" . sp-end-of-sexp))
+     ("C-<up>"   . sp-up-sexp)
+     ("M-<down>" . sp-backward-down-sexp)
+     ("M-<up>"   . sp-backward-up-sexp)
+     ("C-M-a" . sp-beginning-of-sexp)
+     ("C-M-e" . sp-end-of-sexp))
     :hook
     ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
 
@@ -859,7 +872,7 @@
     :ensure t)
 
 #+end_src
-* COMMENT dired
+* Dired
 #+begin_src emacs-lisp :tangle yes
     ;; Go to first real file in dired M-<
     (defun dired-back-to-top ()
@@ -1044,11 +1057,15 @@
 #+end_src
 
 * exwm
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle yes
   (use-package exwm
+    :ensure t
+    :if (string= (getenv "XDG_SESSION_DESKTOP") "exwm")
     :init
     (fringe-mode 1)
+    (menu-bar-mode -1)
     (display-time-mode t)
+    (server-start)
     (setq display-time-default-load-average nil)
     :config
     (setq exwm-workspace-number 4)
@@ -1077,81 +1094,90 @@
                           (string-prefix-p "sun-awt-X11-" exwm-instance-name)
                           (string= "gimp" exwm-instance-name))
                   (exwm-workspace-rename-buffer exwm-title))))
-    ;; `exwm-input-set-key' allows you to set a global key binding (available in
-    ;; any case). Following are a few examples.
-    ;; + We always need a way to go back to line-mode from char-mode
-    (exwm-input-set-key (kbd "s-r") #'exwm-reset)
-    ;; + Bind a key to switch workspace interactively
-    (exwm-input-set-key (kbd "s-w") #'exwm-workspace-switch)
-    ;; + Bind "s-0" to "s-9" to switch to the corresponding workspace.
-    (dotimes (i 10)
-      (exwm-input-set-key (kbd (format "s-%d" i))
-                          `(lambda ()
-                             (interactive)
-                             (exwm-workspace-switch-create ,i))))
-    ;; + Application launcher ('M-&' also works if the output buffer does not
-    ;;   bother you). Note that there is no need for processes to be created by
-    ;;   Emacs.
-    (exwm-input-set-key (kbd "s-&")
-                        (lambda (command)
-                          (interactive (list (read-shell-command "$ ")))
-                          (start-process-shell-command command nil command)))
-    ;; + 'slock' is a simple X display locker provided by suckless tools.
-    (exwm-input-set-key (kbd "s-<f2>")
-                        (lambda () (interactive) (start-process "" nil "slock")))
 
-    ;; The following example demonstrates how to set a key binding only available
-    ;; in line mode. It's simply done by first push the prefix key to
-    ;; `exwm-input-prefix-keys' and then add the key sequence to `exwm-mode-map'.
-    ;; The example shorten 'C-c q' to 'C-q'.
-    (push ?\C-q exwm-input-prefix-keys)
+    ;; Global keybindings can be defined with `exwm-input-global-keys'.
+    ;; Here are a few examples:
+    (setq exwm-input-global-keys
+          `(
+            ;; Bind "s-r" to exit char-mode and fullscreen mode.
+            ([?\s-r] . exwm-reset)
+            ;; Bind "s-w" to switch workspace interactively.
+            ([?\s-w] . exwm-workspace-switch)
+            ;; Bind "s-0" to "s-9" to switch to a workspace by its index.
+            ,@(mapcar (lambda (i)
+                        `(,(kbd (format "s-%d" i)) .
+                          (lambda ()
+                            (interactive)
+                            (exwm-workspace-switch-create ,i))))
+                      (number-sequence 0 9))
+            ;; Bind "s-&" to launch applications ('M-&' also works if the output
+            ;; buffer does not bother you).
+            ([?\s-&] . (lambda (command)
+                         (interactive (list (read-shell-command "$ ")))
+                         (start-process-shell-command command nil command)))
+            ;; Bind "s-<f2>" to "slock", a simple X display locker.
+            ([s-f2] . (lambda ()
+                        (interactive)
+                        (start-process "" nil "/usr/bin/slock")))))
+
+    ;; To add a key binding only available in line-mode, simply define it in
+    ;; `exwm-mode-map'.  The following example shortens 'C-c q' to 'C-q'.
     (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
 
-    ;; The following example demonstrates how to use simulation keys to mimic the
-    ;; behavior of Emacs. The argument to `exwm-input-set-simulation-keys' is a
-    ;; list of cons cells (SRC . DEST), where SRC is the key sequence you press and
-    ;; DEST is what EXWM actually sends to application. Note that SRC must be a key
-    ;; sequence (of type vector or string), while DEST can also be a single key.
-    (exwm-input-set-simulation-keys
-     '(
-       ;; movement
-       ([?\C-b] . left)
-       ([?\M-b] . C-left)
-       ([?\C-f] . right)
-       ([?\M-f] . C-right)
-       ([?\C-p] . up)
-       ([?\C-n] . down)
-       ([?\C-a] . home)
-       ([?\C-e] . end)
-       ([?\M-v] . prior)
-       ([?\C-v] . next)
-       ([?\C-d] . delete)
-       ([?\C-k] . (S-end delete))
-       ;; cut/paste.
-       ([?\C-w] . ?\C-x)
-       ([?\M-w] . ?\C-c)
-       ([?\C-y] . ?\C-v)
-       ;; search
-       ([?\C-s] . ?\C-f)))
+    ;; The following example demonstrates how to use simulation keys to mimic
+    ;; the behavior of Emacs.  The value of `exwm-input-simulation-keys` is a
+    ;; list of cons cells (SRC . DEST), where SRC is the key sequence you press
+    ;; and DEST is what EXWM actually sends to application.  Note that both SRC
+    ;; and DEST should be key sequences (vector or string).
+    (setq exwm-input-simulation-keys
+          '(
+            ;; movement
+            ([?\C-b] . [left])
+            ([?\M-b] . [C-left])
+            ([?\C-f] . [right])
+            ([?\M-f] . [C-right])
+            ([?\C-p] . [up])
+            ([?\C-n] . [down])
+            ([?\C-a] . [home])
+            ([?\C-e] . [end])
+            ([?\M-v] . [prior])
+            ([?\C-v] . [next])
+            ([?\C-d] . [delete])
+            ([?\C-k] . [S-end delete])
+            ;; cut/paste.
+            ([?\C-w] . [?\C-x])
+            ([?\M-w] . [?\C-c])
+            ([?\C-y] . [?\C-v])
+            ;; search
+            ([?\C-s] . [?\C-f])))
 
-    ;; You can hide the mode-line of floating X windows by uncommenting the
-    ;; following lines
-    ;; (add-hook 'exwm-floating-setup-hook #'exwm-layout-hide-mode-line)
-    ;; (add-hook 'exwm-floating-exit-hook #'exwm-layout-show-mode-line)
+    ;; You can hide the minibuffer and echo area when they're not used, by
+    ;; uncommenting the following line.
+                                          ; (setq exwm-workspace-minibuffer-position 'bottom)
 
     ;; You can hide the minibuffer and echo area when they're not used, by
     ;; uncommenting the following line
     ;; (setq exwm-workspace-minibuffer-position 'bottom)
+    (use-package exwm-randr
+      :init
+      (setq exwm-randr-workspace-output-plist '(0 "DVI-I-1" 1 "DVI-I-2"))
+      :config
+      (exwm-randr-enable)
+      :hook
+      (exwm-randr-screen-change-hook . (lambda () (start-process-shell-command
+                                                   "xrandr" nil "xrandr --output DVI-I-1 --output DVI-I-2 --auto"))))
 
+    ;; (use-package exwm-config
+    ;; :config
+    ;; (exwm-config-ido))
+
+    (use-package helm-exwm
+      :ensure t
+      )
     ;; Do not forget to enable EXWM. It will start by itself when things are ready.
-    (exwm-enable)
-    )
+    (exwm-enable))
 
-  (use-package exwm-config
-    :after (exwm)
-    :config
-    ;; (exwm-config-ido)
-    )
+
 #+end_src
 * Slime
 #+begin_src emacs-lisp :tangle yes
@@ -1432,13 +1458,8 @@ Use one of the following
 
 #+begin_src emacs-lisp :tangle yes
 
-  (use-package evil-leader
-      :ensure t
-      :config
-      (global-evil-leader-mode)
-      (evil-leader/set-leader "<SPC>"))
-
   (use-package evil
+    :disabled t
     :ensure t
     :init
     (setq evil-move-cursor-back nil)
@@ -1446,6 +1467,12 @@ Use one of the following
     (setq evil-move-beyond-eol t)
     :config
     (evil-mode 1)
+    (use-package evil-leader
+      :ensure t
+      :config
+      (global-evil-leader-mode)
+      (evil-leader/set-leader "<SPC>"))
+
 
     (use-package evil-surround
       :ensure t
@@ -1456,4 +1483,5 @@ Use one of the following
 
     (use-package evil-mu4e
       :ensure t))
+
 #+end_src
