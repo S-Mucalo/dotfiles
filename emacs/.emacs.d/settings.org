@@ -1,4 +1,4 @@
- Bootstrapping package and use-package
+*  Bootstrapping package and use-package
 
 #+begin_src emacs-lisp :tangle no
   (defun debug-on-load-obsolete (filename)
@@ -35,6 +35,7 @@
 
 
 #+end_src
+
 * Global settings
 #+begin_src emacs-lisp :tangle yes
   (setq inhibit-startup-screen t)         ; Stop the splash screen
@@ -88,6 +89,7 @@
   (set-register ?e (cons 'file "~/.emacs.d/settings.org"))
   (set-register ?o (cons 'file "~/Dropbox/org/notes.org"))
 #+end_src
+
 * Functions
 
 #+begin_src emacs-lisp :tangle yes
@@ -400,6 +402,7 @@
 
   (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
 #+end_src
+
 * Global key bindings
 
 #+begin_src emacs-lisp :tangle yes
@@ -437,8 +440,9 @@
   (global-set-key (kbd "C-c s") 'spm-map)
   (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
-* COMMENT Packages
+<<<<<<< HEAD
 
+* Packages
 #+begin_src emacs-lisp :tangle yes
 
 
@@ -534,6 +538,10 @@
     :hook
     ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
 
+  (use-package rainbow-delimiters
+    :ensure t
+    :config
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
   (use-package simple-mpc
     :ensure t)
 
@@ -578,6 +586,7 @@
     (setq save-place-file "~/.emacs.d/places"))
 
 #+end_src
+
 * Mail
 #+begin_src emacs-lisp :tangle yes
   (use-package mu4e
@@ -760,7 +769,9 @@
   (setq gud-pdb-command-name "python -m pdb")
 
 #+end_src
+
 * R
+
 #+begin_src emacs-lisp :tangle yes
   (defun my-ess-start-R ()
     (interactive)
@@ -803,6 +814,7 @@
     (setq ess-local-process-name "R")
     (setq ess-ask-for-ess-directory nil))
 #+end_src
+
 * c
 #+begin_src emacs-lisp :tangle yes
     (use-package cc-mode
@@ -830,6 +842,7 @@
     :ensure)
 
 #+end_src
+
 * Theme
 
 #+begin_src emacs-lisp :tangle yes
@@ -870,6 +883,7 @@
     :ensure t)
 
 #+end_src
+
 * Dired
 #+begin_src emacs-lisp :tangle yes
     ;; Go to first real file in dired M-<
@@ -932,7 +946,7 @@
     :init
     (progn
       (setq-default preview-scale 1.4
-                    preview-scale-function '(lambda () (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+                    preview-scale-function '(lambda (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
   (use-package reftex
     :defer t
@@ -1020,7 +1034,12 @@
     :init
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     :config
-    (org-babel-do-load-languages 'org-babel-do-load-languages '((python . t)))
+    ;; (org-babel-do-load-languages 'org-babel-do-load-languages
+    ;;                              (append (org-babel-do-load-languages
+    ;;                                       '((python     . t)
+    ;;                                         (latex      . t)
+    ;;                                         (emacs-lisp . t)))))
+    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
     (setq org-log-done t)
     (setq org-startup-indented t)
     (setq org-agenda-files (list  "~/Dropbox/org/work.org"
@@ -1039,6 +1058,7 @@
     (setq org-startup-indented t)
     (setq org-src-fontify-natively t)
     (setq org-src-tab-acts-natively t)
+    (setq org-cycle-separator-lines 1)
     :bind
     ("C-c l" . org-store-link)
     ("C-c a" . org-agenda)
@@ -1067,20 +1087,6 @@
     (setq display-time-default-load-average nil)
     :config
     (setq exwm-workspace-number 4)
-    ;; All buffers created in EXWM mode are named "*EXWM*". You may want to change
-    ;; it in `exwm-update-class-hook' and `exwm-update-title-hook', which are run
-    ;; when a new window class name or title is available. Here's some advice on
-    ;; this subject:
-    ;; + Always use `exwm-workspace-rename-buffer` to avoid naming conflict.
-    ;; + Only renaming buffer in one hook and avoid it in the other. There's no
-    ;;   guarantee on the order in which they are run.
-    ;; + For applications with multiple windows (e.g. GIMP), the class names of all
-    ;;   windows are probably the same. Using window titles for them makes more
-    ;;   sense.
-    ;; + Some application change its title frequently (e.g. browser, terminal).
-    ;;   Its class name may be more suitable for such case.
-    ;; In the following example, we use class names for all windows expect for
-    ;; Java applications and GIMP.
     (add-hook 'exwm-update-class-hook
               (lambda ()
                 (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
@@ -1116,17 +1122,12 @@
             ;; Bind "s-<f2>" to "slock", a simple X display locker.
             ([s-f2] . (lambda ()
                         (interactive)
-                        (start-process "" nil "/usr/bin/slock")))))
+                        (start-process "" nil "~/bin/lock")))))
 
     ;; To add a key binding only available in line-mode, simply define it in
     ;; `exwm-mode-map'.  The following example shortens 'C-c q' to 'C-q'.
     (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
 
-    ;; The following example demonstrates how to use simulation keys to mimic
-    ;; the behavior of Emacs.  The value of `exwm-input-simulation-keys` is a
-    ;; list of cons cells (SRC . DEST), where SRC is the key sequence you press
-    ;; and DEST is what EXWM actually sends to application.  Note that both SRC
-    ;; and DEST should be key sequences (vector or string).
     (setq exwm-input-simulation-keys
           '(
             ;; movement
@@ -1148,7 +1149,6 @@
             ([?\C-y] . [?\C-v])
             ;; search
             ([?\C-s] . [?\C-f])))
-
     ;; You can hide the minibuffer and echo area when they're not used, by
     ;; uncommenting the following line.
                                           ; (setq exwm-workspace-minibuffer-position 'bottom)
@@ -1156,6 +1156,7 @@
     ;; You can hide the minibuffer and echo area when they're not used, by
     ;; uncommenting the following line
     ;; (setq exwm-workspace-minibuffer-position 'bottom)
+
     (use-package exwm-randr
       :init
       (setq exwm-randr-workspace-output-plist '(0 "DVI-I-1" 1 "DVI-I-2"))
@@ -1173,10 +1174,15 @@
       :ensure t
       )
     ;; Do not forget to enable EXWM. It will start by itself when things are ready.
-    (exwm-enable))
+    (exwm-enable)
+
+    (defun my/volume-up ()
+      (interactive)
+      (start-process "" nil "pamixer" "--allow-boost -i 5")))
 
 
 #+end_src
+
 * Slime
 #+begin_src emacs-lisp :tangle yes
     (defun slime-description-fontify ()
@@ -1349,6 +1355,7 @@ Use one of the following
     :ensure t)
 
 #+end_src
+
 * Auto-completion
 ** Auto-complete
 #+begin_src emacs-lisp :tangle yes
@@ -1429,6 +1436,7 @@ Use one of the following
   ;;   (add-hook 'c++-mode-hook 'company-mode)
   ;;   (add-hook 'c-mode-hook 'company-mode))
 #+end_src
+
 * Debug
 #+begin_src emacs-lisp :tangle yes
 (use-package realgud
@@ -1437,6 +1445,7 @@ Use one of the following
 :defer t)
 
 #+end_src
+
 * Abbrev mode
 #+begin_src emacs-lisp :tangle yes
   (use-package abbrev
@@ -1451,6 +1460,7 @@ Use one of the following
     (if (file-exists-p abbrev-file-name)
         (quietly-read-abbrev-file)))
 #+end_src
+
 * Evil mode
 
 #+begin_src emacs-lisp :tangle yes
