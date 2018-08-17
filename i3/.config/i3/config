@@ -55,6 +55,7 @@ set $EDITOR emacsclient -nc -a ""
 
 # Unclutter makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
+exec --no-startup-id dockd --daemon
 
 ##For mpc:
 set $music urxvt -e ncmpcpp
