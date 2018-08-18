@@ -440,7 +440,6 @@
   (global-set-key (kbd "C-c s") 'spm-map)
   (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
-<<<<<<< HEAD
 
 * Packages
 #+begin_src emacs-lisp :tangle yes
@@ -574,8 +573,8 @@
     (setq comint-scroll-to-bottom-on-output t)
     (setq comint-move-point-for-output t)
     :bind (:map comint-mode-map
-                ("<up>" . comint-previous-matching-input-from-input) ;; Untested
-                ("<down>" . comint-next-matching-input-from-input)  ;; Untested
+                ("<up>" . comint-previous-matching-input-from-input)
+                ("<down>" . comint-next-matching-input-from-input)
                 ("M-p" . comint-previous-matching-input-from-input)
                 ("M-n" . comint-next-matching-input-from-input)
                 ("C-<up>" . comint-previous-matching-input-from-input)
@@ -632,8 +631,8 @@
        :match-func (lambda (msg)
              (when msg
                (mu4e-message-contact-field-matches msg
-                 :to "shaun.mucalo@pg.canterbury.ac.nz")))
-       :vars '( ( user-mail-address      . "shaun.mucalo@pg.canterbury.ac.nz"  )
+                 :to "shaun.mucalo@canterbury.ac.nz")))
+       :vars '( ( user-mail-address      . "shaun.mucalo@canterbury.ac.nz"  )
                 ( mu4e-sent-folder       . "/UC_mail/Sent Items")
                 ( mu4e-drafts-folder     . "/UC_mail/Drafts")
                 ( mu4e-trash-folder      . "/UC_mail/Deleted Items")
@@ -1034,11 +1033,11 @@
     :init
     (add-hook 'org-mode-hook 'turn-on-auto-fill)
     :config
-    ;; (org-babel-do-load-languages 'org-babel-do-load-languages
-    ;;                              (append (org-babel-do-load-languages
-    ;;                                       '((python     . t)
-    ;;                                         (latex      . t)
-    ;;                                         (emacs-lisp . t)))))
+    (org-babel-do-load-languages 'org-babel-load-languages
+                                          '((python     . t)
+                                            (latex      . t)
+                                            (emacs-lisp . t)
+                                            (R          . t)))
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
     (setq org-log-done t)
     (setq org-startup-indented t)
@@ -1076,109 +1075,150 @@
 
 * exwm
 #+begin_src emacs-lisp :tangle yes
-  (use-package exwm
-    :ensure t
-    :if (string= (getenv "XDG_SESSION_DESKTOP") "exwm")
-    :init
-    (fringe-mode 1)
-    (menu-bar-mode -1)
-    (display-time-mode t)
-    (server-start)
-    (setq display-time-default-load-average nil)
-    :config
-    (setq exwm-workspace-number 4)
-    (add-hook 'exwm-update-class-hook
-              (lambda ()
-                (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
-                            (string= "gimp" exwm-instance-name))
-                  (exwm-workspace-rename-buffer exwm-class-name))))
-    (add-hook 'exwm-update-title-hook
-              (lambda ()
-                (when (or (not exwm-instance-name)
-                          (string-prefix-p "sun-awt-X11-" exwm-instance-name)
-                          (string= "gimp" exwm-instance-name))
-                  (exwm-workspace-rename-buffer exwm-title))))
-
-    ;; Global keybindings can be defined with `exwm-input-global-keys'.
-    ;; Here are a few examples:
-    (setq exwm-input-global-keys
-          `(
-            ;; Bind "s-r" to exit char-mode and fullscreen mode.
-            ([?\s-r] . exwm-reset)
-            ;; Bind "s-w" to switch workspace interactively.
-            ([?\s-w] . exwm-workspace-switch)
-            ;; Bind "s-0" to "s-9" to switch to a workspace by its index.
-            ,@(mapcar (lambda (i)
-                        `(,(kbd (format "s-%d" i)) .
-                          (lambda ()
-                            (interactive)
-                            (exwm-workspace-switch-create ,i))))
-                      (number-sequence 0 9))
-            ;; Bind "s-&" to launch applications ('M-&' also works if the output
-            ;; buffer does not bother you).
-            ([?\s-&] . (lambda (command)
-                         (interactive (list (read-shell-command "$ ")))
-                         (start-process-shell-command command nil command)))
-            ;; Bind "s-<f2>" to "slock", a simple X display locker.
-            ([s-f2] . (lambda ()
-                        (interactive)
-                        (start-process "" nil "~/bin/lock")))))
-
-    ;; To add a key binding only available in line-mode, simply define it in
-    ;; `exwm-mode-map'.  The following example shortens 'C-c q' to 'C-q'.
-    (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
-
-    (setq exwm-input-simulation-keys
-          '(
-            ;; movement
-            ([?\C-b] . [left])
-            ([?\M-b] . [C-left])
-            ([?\C-f] . [right])
-            ([?\M-f] . [C-right])
-            ([?\C-p] . [up])
-            ([?\C-n] . [down])
-            ([?\C-a] . [home])
-            ([?\C-e] . [end])
-            ([?\M-v] . [prior])
-            ([?\C-v] . [next])
-            ([?\C-d] . [delete])
-            ([?\C-k] . [S-end delete])
-            ;; cut/paste.
-            ([?\C-w] . [?\C-x])
-            ([?\M-w] . [?\C-c])
-            ([?\C-y] . [?\C-v])
-            ;; search
-            ([?\C-s] . [?\C-f])))
-    ;; You can hide the minibuffer and echo area when they're not used, by
-    ;; uncommenting the following line.
-                                          ; (setq exwm-workspace-minibuffer-position 'bottom)
-
-    ;; You can hide the minibuffer and echo area when they're not used, by
-    ;; uncommenting the following line
-    ;; (setq exwm-workspace-minibuffer-position 'bottom)
-
-    (use-package exwm-randr
-      :init
-      (setq exwm-randr-workspace-output-plist '(0 "DVI-I-1" 1 "DVI-I-2"))
-      :config
-      (exwm-randr-enable)
-      :hook
-      (exwm-randr-screen-change-hook . (lambda () (start-process-shell-command
-                                                   "xrandr" nil "xrandr --output DVI-I-1 --output DVI-I-2 --auto"))))
-
-    ;; (use-package exwm-config
-    ;; :config
-    ;; (exwm-config-ido))
-
-    (use-package helm-exwm
+    (use-package exwm
       :ensure t
-      )
-    ;; Do not forget to enable EXWM. It will start by itself when things are ready.
-    (exwm-enable)
+      :if (string= (getenv "XDG_SESSION_DESKTOP") "exwm")
+      :init
+      (fringe-mode 1)
+      (menu-bar-mode -1)
+      (display-time-mode t)
+      (server-start)
+      (setq display-time-default-load-average nil)
+      :hook
+      (after-init . my-daemon-start)
 
-    (defun my/volume-up ()
-      (interactive)
-      (start-process "" nil "pamixer" "--allow-boost -i 5")))
+      :config
+      (setq exwm-workspace-number 4)
+      (add-hook 'exwm-update-class-hook
+                (lambda ()
+                  (unless (or (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                              (string= "gimp" exwm-instance-name))
+                    (exwm-workspace-rename-buffer exwm-class-name))))
+      (add-hook 'exwm-update-title-hook
+                (lambda ()
+                  (when (or (not exwm-instance-name)
+                            (string-prefix-p "sun-awt-X11-" exwm-instance-name)
+                            (string= "gimp" exwm-instance-name))
+                    (exwm-workspace-rename-buffer exwm-title))))
+
+      ;; Global keybindings can be defined with `exwm-input-global-keys'.
+      ;; Here are a few examples:
+      (setq exwm-input-global-keys
+            `(
+              ;; Bind "s-r" to exit char-mode and fullscreen mode.
+              ([?\s-r] . exwm-reset)
+              ;; Bind "s-w" to switch workspace interactively.
+              ([?\s-w] . exwm-workspace-switch)
+              ;; Bind "s-0" to "s-9" to switch to a workspace by its index.
+              ,@(mapcar (lambda (i)
+                          `(,(kbd (format "s-%d" i)) .
+                            (lambda ()
+                              (interactive)
+                              (exwm-workspace-switch-create ,i))))
+                        (number-sequence 0 9))
+              ;; Bind "s-&" to launch applications ('M-&' also works if the output
+              ;; buffer does not bother you).
+              ([?\s-&] . (lambda (command)
+                           (interactive (list (read-shell-command "$ ")))
+                           (start-process-shell-command command nil command)))
+              ;; Bind "s-<f2>" to "slock", a simple X display locker.
+              ([s-f2] . (lambda ()
+                          (interactive)
+                          (start-process "" nil "~/bin/lock")))))
+
+      ;; To add a key binding only available in line-mode, simply define it in
+      ;; `exwm-mode-map'.  The following example shortens 'C-c q' to 'C-q'.
+      (define-key exwm-mode-map [?\C-q] #'exwm-input-send-next-key)
+
+      (setq exwm-input-simulation-keys
+            '(
+              ;; movement
+              ([?\C-b] . [left])
+              ([?\M-b] . [C-left])
+              ([?\C-f] . [right])
+              ([?\M-f] . [C-right])
+              ([?\C-p] . [up])
+              ([?\C-n] . [down])
+              ([?\C-a] . [home])
+              ([?\C-e] . [end])
+              ([?\M-v] . [prior])
+              ([?\C-v] . [next])
+              ([?\C-d] . [delete])
+              ([?\C-k] . [S-end delete])
+              ;; cut/paste.
+              ([?\C-w] . [?\C-x])
+              ([?\M-w] . [?\C-c])
+              ([?\C-y] . [?\C-v])
+              ;; search
+              ([?\C-s] . [?\C-f])))
+      ;; You can hide the minibuffer and echo area when they're not used, by
+      ;; uncommenting the following line.
+                                            ; (setq exwm-workspace-minibuffer-position 'bottom)
+
+      ;; You can hide the minibuffer and echo area when they're not used, by
+      ;; uncommenting the following line
+      ;; (setq exwm-workspace-minibuffer-position 'bottom)
+
+      (use-package exwm-randr
+        :init
+        (setq exwm-randr-workspace-output-plist '(0 "DVI-I-1" 1 "DVI-I-2"))
+        :config
+        (exwm-randr-enable)
+        :hook
+        (exwm-randr-screen-change-hook . (lambda () (start-process-shell-command
+                                                     "xrandr" nil "xrandr --output DVI-I-1 --output DVI-I-2 --auto"))))
+
+      ;; (use-package exwm-config
+      ;; :config
+      ;; (exwm-config-ido))
+
+      (use-package helm-exwm
+        :ensure t
+        )
+      ;; Do not forget to enable EXWM. It will start by itself when things are ready.
+
+
+      (defun my-daemon-start ()
+        (make-process
+         :name "unclutter"
+         :buffer nil
+         :command '("unclutter")
+         :noquery t)
+        (make-process
+         :name "udiskie" :buffer nil
+         :command '("udiskie --config=$HOME/.config/udiskie/config.yml") ; automount removable storage
+         :noquery t)
+
+        (make-process
+         :name "polybar" :buffer nil
+         :command '("~/bin/polybar_launch")
+         :noquery t)
+
+        ;; (make-process "" nil "dockd" "--daemon")
+        (start-process-shell-command "" nil "~/bin/theme_set.sh -R")
+        (start-process-shell-command "" nil "~/bin/mail-notify.py"))
+      (exwm-enable)
+
+      (defun my/volume-up ()
+        (interactive)
+        (start-process "" nil "pamixer" "--allow-boost" "-i" "5"))
+
+      (defun my/volume-down ()
+        (interactive)
+        (start-process "" nil "pamixer" "--allow-boost" "-d" "5"))
+
+      (defun my/mute ()
+        (interactive)
+        (start-process "" nil "pamixer" "--allow-boost" "-m"))
+      (defun my/mpc-play ()
+        (interactive)
+        (start-process "" nil "mpc" "play"))
+      (defun my/mpc-next ()
+        (interactive)
+        (start-process "" nil "mpc" "next"))
+      (defun my/mpc-prev ()
+        (interactive)
+        (start-process "" nil "mpc" "prev")))
 
 
 #+end_src
