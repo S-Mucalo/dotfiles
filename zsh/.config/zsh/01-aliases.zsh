@@ -46,7 +46,7 @@ alias tkss='tmux kill-session -t'
 # grep
 grephistory()
 {
-    grep $1 $HOME/.zsh_hist
+    grep $1 $HOME/.zsh_history
 }
 alias his='grephistory'
 

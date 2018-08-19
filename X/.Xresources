@@ -74,7 +74,8 @@ URxvt*color15: #dddddd
 
 ! Extensions
 URxvt.perl-lib:        /usr/lib/urxvt/perl/
-URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc,osc-xterm-clipboard
+URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc
+! ,osc-xterm-clipboard
 
 URxvt.url-launcher:       firefox
 URxvt.keysym.C-Delete:    perl:matcher:last
