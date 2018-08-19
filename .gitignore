@@ -15,6 +15,7 @@ __pycache__
 .config/ranger/tagged
 *.un~
 *.py[cod]
+\#*\#
 
 # C extensions
 *.so

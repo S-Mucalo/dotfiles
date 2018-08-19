@@ -586,6 +586,20 @@
 
 #+end_src
 
+* Music
+
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (require 'emms-player-mpd)
+  (emms-all)
+  (setq emms-player-mpd-server-name "localhost")
+  (setq emms-playr-mpd-server-port "6600")
+  (add-to-list 'emms-player-list 'emms-player-mpd))
+
+#+END_SRC
 * Mail
 #+begin_src emacs-lisp :tangle yes
   (use-package mu4e

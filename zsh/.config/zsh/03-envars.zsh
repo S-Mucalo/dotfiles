@@ -5,8 +5,8 @@
 
 export HISTSIZE=10000
 export SAVEHIST=10000
-export HISTFILE=~/.dotfiles/zsh/history.log
-# export DISPLAY=:0
+export HISTFILE=~/.zsh_history
+
 
 export SHELL='/bin/zsh'
 

@@ -42,7 +42,7 @@ namedir() {
 
 # {{{ Most used Commands
 mostused() {
-  sed -n 's/^\([a-z]*\) .*/\1/p' $HOME/.config/zsh/history.log |
+  sed -n 's/^\([a-z]*\) .*/\1/p' $HISTFILE |
   sort |
   uniq -c |
   sort -n -k1 |
