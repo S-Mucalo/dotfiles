@@ -1,80 +1,81 @@
-URxvt*font: xft:Inconsolata\ for\ Powerline:pixelsize=15,xft:Roboto\ Mono\ for\ Powerline:pixelsize=15
+	URxvt*font: xft:Inconsolata\ for\ Powerline:pixelsize=15,xft:Roboto\ Mono\ for\ Powerline:pixelsize=15
 
-!URxvt.perl-ext-common: tabbed,clipboard
-urxvt.urgentOnBell: True
+	!URxvt.perl-ext-common: tabbed,clipboard
+	urxvt.urgentOnBell: True
 
-! ! General
-urxvt*termName:  rxvt-256color
-urxvt*loginShell:         true
-urxvt*scrollBar:         false#
-urxvt*secondaryScroll:    true
-urxvt*saveLines:         65535
-urxvt*cursorBlink:        true
-! urxvt*override-redirect:false
-! urxvt*borderLess:       false
-! urxvt*internalBorder:       0
-! urxvt*externalBorder:       0
+	! ! General
+	urxvt*termName:  rxvt-256color
+	urxvt*loginShell:         true
+	urxvt*scrollBar:         false#
+	urxvt*secondaryScroll:    true
+	!! urxvt*saveLines:         65535
+	URxvt*saveLines:	0
+	urxvt*cursorBlink:        true
+	! urxvt*override-redirect:false
+	! urxvt*borderLess:       false
+	! urxvt*internalBorder:       0
+	! urxvt*externalBorder:       0
 
-! Appearance
-!  - cursor
-! urxvt*cursorColor: #DCDCCC
-! !  - color scheme
-URxvt*background:  #000000
-URxvt*foreground:  #EBEBFF
-!black
-URxvt*color0: #101010
-URxvt*color8: #404040
-!red
-URxvt*color1: #E84F4F
-URxvt*color9: #D23D3D
-!green
-URxvt*color2: #B8D68C
-URxvt*color10: #A0CF5D
-!yellow
-URxvt*color3: #E1AA5D
-URxvt*color11: #F39D21
-!blue
-URxvt*color4: #7DC1CF
-URxvt*color12: #4E9FB1
-!magenta
-URxvt*color5: #9B64FB
-URxvt*color13: #8542FF
-!cyan
-URxvt*color6: #6D878D
-URxvt*color14: #42717B
-!white
-URxvt*color7: #dddddd
-URxvt*color15: #dddddd
+	! Appearance
+	!  - cursor
+	! urxvt*cursorColor: #DCDCCC
+	! !  - color scheme
+	URxvt*background:  #000000
+	URxvt*foreground:  #EBEBFF
+	!black
+	URxvt*color0: #101010
+	URxvt*color8: #404040
+	!red
+	URxvt*color1: #E84F4F
+	URxvt*color9: #D23D3D
+	!green
+	URxvt*color2: #B8D68C
+	URxvt*color10: #A0CF5D
+	!yellow
+	URxvt*color3: #E1AA5D
+	URxvt*color11: #F39D21
+	!blue
+	URxvt*color4: #7DC1CF
+	URxvt*color12: #4E9FB1
+	!magenta
+	URxvt*color5: #9B64FB
+	URxvt*color13: #8542FF
+	!cyan
+	URxvt*color6: #6D878D
+	URxvt*color14: #42717B
+	!white
+	URxvt*color7: #dddddd
+	URxvt*color15: #dddddd
 
 
-! ! Black
-! URxvt*color0:           #4a4b4a
-! URxvt*color8:           #696969
-! ! Red
-! URxvt*color1:           #D7699A
-! URxvt*color9:           #F5A2B5
-! ! Green
-! URxvt*color2:           #80D468
-! URxvt*color10:          #A3F2A0
-! ! Yellow
-! URxvt*color3:           #D7A169
-! URxvt*color11:          #F5CDA2
-! ! Blue
-! URxvt*color4:           #6985D7
-! URxvt*color12:          #A2C1F5
-! ! Magenta
-! URxvt*color5:           #C86AD4
-! URxvt*color13:          #D2A2F5
-! ! Cyan
-! URxvt*color6:           #6FCCD1
-! URxvt*color14:          #A0E9F2
-! ! White
-! URxvt*color7:           #DBDCDC
-! URxvt*color15:          #FDFDFD
+	! ! Black
+	! URxvt*color0:           #4a4b4a
+	! URxvt*color8:           #696969
+	! ! Red
+	! URxvt*color1:           #D7699A
+	! URxvt*color9:           #F5A2B5
+	! ! Green
+	! URxvt*color2:           #80D468
+	! URxvt*color10:          #A3F2A0
+	! ! Yellow
+	! URxvt*color3:           #D7A169
+	! URxvt*color11:          #F5CDA2
+	! ! Blue
+	! URxvt*color4:           #6985D7
+	! URxvt*color12:          #A2C1F5
+	! ! Magenta
+	! URxvt*color5:           #C86AD4
+	! URxvt*color13:          #D2A2F5
+	! ! Cyan
+	! URxvt*color6:           #6FCCD1
+	! URxvt*color14:          #A0E9F2
+	! ! White
+	! URxvt*color7:           #DBDCDC
+	! URxvt*color15:          #FDFDFD
 
-! Extensions
-URxvt.perl-lib:        /usr/lib/urxvt/perl/
-URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc
+	! Extensions
+	URxvt.perl-lib:        /usr/lib/urxvt/perl/
+	URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc
 ! ,osc-xterm-clipboard
 
 URxvt.url-launcher:       firefox

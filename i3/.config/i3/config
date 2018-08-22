@@ -53,9 +53,6 @@ set $BROWSER chromium
 set $ALTERNATE_EDITOR emacs
 set $EDITOR emacsclient -nc -a ""
 
-# Unclutter makes the mouse invisible after a brief period
-exec --no-startup-id unclutter
-exec --no-startup-id dockd --daemon
 
 ##For mpc:
 set $music urxvt -e ncmpcpp
@@ -332,7 +329,10 @@ exec_always --no-startup-id $HOME/bin/polybar_launch
 exec_always --no-startup-id $HOME/bin/theme_set.sh -R
 exec --no-startup-id udiskie --config=$HOME/.config/udiskie/config.yml # --no-automount --notify --tray --use-udisks2
 exec --no-startup-id $HOME/bin/mail-notify.py
-
+exec --no-startup-id compton
+# Unclutter makes the mouse invisible after a brief period
+exec --no-startup-id unclutter
+exec --no-startup-id dockd --daemon
 
 ###---Extra XF86 Keys---###
 # Function row
