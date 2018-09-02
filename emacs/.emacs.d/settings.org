@@ -452,6 +452,9 @@
     (setq beacon-blink-delay 0.2)
     (setq beacon-color "red"))
 
+  (use-package academic-phrases
+    :ensure t)
+
   (use-package lua-mode
     :ensure t
     :mode ("\\.lua\\'" . lua-mode))
@@ -539,8 +542,9 @@
 
   (use-package rainbow-delimiters
     :ensure t
-    :config
+    :init
     (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
   (use-package simple-mpc
     :ensure t)
 
@@ -872,7 +876,7 @@
     :ensure t)
 
   (use-package xresources-theme
-    :disabled t
+    ;; :disabled t
     :ensure t
     :if window-system
     :init
@@ -1039,7 +1043,7 @@
   (add-hook 'TeX-after-compilation-finished-functions #'my-tex-close-TeX-buffer)
 #+end_src
 
-* Org
+* Org mode
 #+begin_src emacs-lisp :tangle yes
   (use-package org
     :mode
@@ -1058,13 +1062,14 @@
     (setq org-agenda-files (list  "~/Dropbox/org/"))
     (setq org-directory "~/Dropbox/org")
     (setq org-default-notes-file (concat org-directory "/unfiled.org"))
-    (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
+    (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
     (setq org-refile-allow-creating-parent-nodes 'confirm)
     (setq org-refile-use-outline-path 'file)
     (setq org-outline-path-complete-in-steps nil)
+    (setq org-archive-location "::* Archived Tasks")
     (setq org-export-html-preamble nil)
     (setq org-hide-leading-stars t)
-    (setq org-startup-folded (quote overview))
+    (setq org-startup-folded (quote fold))
     (setq org-startup-indented t)
     (setq org-src-fontify-natively t)
     (setq org-src-tab-acts-natively t)
@@ -1153,7 +1158,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   (setq org-todo-keywords
-    '((sequence "TODO(t)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+    '((sequence "TODO(t)" "STARTED(s)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
     ;; Capture Templates for TODO tasks
     (setq org-capture-templates
           '(
@@ -1162,6 +1167,7 @@
        ("t" "Tasks")
 
        ;; TODO     (t) Todo template
+
        ("tt" "TODO      (t) Todo" entry (file "unfiled.org")
         "* TODO %?
       :PROPERTIES:
