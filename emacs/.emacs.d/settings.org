@@ -1060,6 +1060,7 @@
     (setq org-default-notes-file (concat org-directory "/unfiled.org"))
     (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
     (setq org-refile-allow-creating-parent-nodes 'confirm)
+    (setq org-archive-location "::* Finished Tasks")
     (setq org-refile-use-outline-path 'file)
     (setq org-outline-path-complete-in-steps nil)
     (setq org-export-html-preamble nil)
@@ -1153,7 +1154,7 @@
 #+BEGIN_SRC emacs-lisp :tangle yes
 
   (setq org-todo-keywords
-    '((sequence "TODO(t)" "WAITING(w@/!)" "|" "DONE(d!)" "CANCELLED(c@)")))
+    '((sequence "TODO(t)" "WAITING(w@/!)" "|" "DONE(d!)" "POSTPONED(p@/!)" "CANCELLED(c@)")))
     ;; Capture Templates for TODO tasks
     (setq org-capture-templates
           '(
