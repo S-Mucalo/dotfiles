@@ -361,7 +361,7 @@
               (when buffer-file-name
                 (let ((dir (file-name-directory buffer-file-name)))
                   (when (and (not (file-exists-p dir))
-                             (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
+                           (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
                     (make-directory dir t))))))
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -387,6 +387,8 @@
   (add-to-list 'recentf-exclude "session\\.[a-f0-9]*$")
   (add-to-list 'recentf-exclude "\\.aux$")
   (add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
+  (add-to-list 'recentf-exclude no-littering-var-directory)
+  (add-to-list 'recentf-exclude no-littering-etc-directory)
   (recentf-cleanup)
 
   (setq completion-ignored-extensions
@@ -394,10 +396,10 @@
           ".~jv" ".rbc" ".pyc" ".beam" ".aux" ".out" ".pdf" ".hbc"))
 
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                           ("marmalade" . "http://marmalade-repo.org/packages/")
-                           ("melpa" . "http://melpa.milkbox.net/packages/")
-                           ("melpa-stable" . "https://stable.melpa.org/packages/")
-                           ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+                             ("marmalade" . "http://marmalade-repo.org/packages/")
+                             ("melpa" . "http://melpa.milkbox.net/packages/")
+                             ("melpa-stable" . "https://stable.melpa.org/packages/")
+                             ("elpy" . "https://jorgenschaefer.github.io/packages/")))
   ;; (package-refresh-contents)
 
   (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
@@ -443,150 +445,165 @@
 
 * Packages
 #+begin_src emacs-lisp :tangle yes
+    (use-package no-littering
+      :ensure t
+      :config)
 
+    (use-package beacon                     ; Flash the line when point moves
+      :ensure t
+      :config
+      (beacon-mode 1)
+      (setq beacon-blink-delay 0.2)
+      (setq beacon-color "red"))
 
-  (use-package beacon                     ; Flash the line when point moves
-    :ensure t
-    :config
-    (beacon-mode 1)
-    (setq beacon-blink-delay 0.2)
-    (setq beacon-color "red"))
-
-  (use-package academic-phrases
-    :ensure t)
-
-  (use-package lua-mode
-    :ensure t
-    :mode ("\\.lua\\'" . lua-mode))
-
-  (use-package async
-    :ensure t
-    :init (dired-async-mode 1))
-
-  (use-package pretty-mode
-    :ensure t
-    :if window-system
-    :config
-    (global-pretty-mode t))
-
-  (use-package yasnippet
-    :defer 10
-    :ensure t
-    :init
-    (yas-global-mode)
-    :config
-    (use-package yasnippet-snippets
+    (use-package academic-phrases
       :ensure t)
-    (yas-reload-all))
 
-  (use-package free-keys
-    :ensure t
-    :bind ("C-h C-k" . free-keys))
+    (use-package lua-mode
+      :ensure t
+      :mode ("\\.lua\\'" . lua-mode))
 
-  (use-package multi-term
-    :ensure t
-    :config
-    (setq multi-term-program "/bin/bash"))
+    (use-package async
+      :ensure t
+      :init (dired-async-mode 1))
 
-  (use-package magit
-    :ensure t
-    :defer t
-    :bind ("C-x g" . magit-status))
+    (use-package pretty-mode
+      :ensure t
+      :if window-system
+      :config
+      (global-pretty-mode t))
 
-  (use-package which-key
-    :config
-    (which-key-mode t)
-    :ensure t)
+    (use-package yasnippet
+      :defer 10
+      :ensure t
+      :init
+      (yas-global-mode)
+      :config
+      (use-package yasnippet-snippets
+        :ensure t)
+      (yas-reload-all))
 
-                                          ; deletes all the whitespace when you hit backspace or delete
-  (use-package hungry-delete
-    :ensure t
-    :config
-    (global-hungry-delete-mode))
+    (use-package free-keys
+      :ensure t
+      :bind ("C-h C-k" . free-keys))
 
-  (use-package expand-region
-    :ensure t
-    :bind
-    ("C-=" . er/expand-region))
+    (use-package multi-term
+      :ensure t
+      :config
+      (setq multi-term-program "/bin/bash"))
 
-                                          ; mark and edit all copies of the marked region simultaniously.
-  (use-package iedit
-    :defer t
-    :ensure t)
+    (use-package magit
+      :ensure t
+      :defer t
+      :bind ("C-x g" . magit-status))
 
+    (use-package which-key
+      :config
+      (which-key-mode t)
+      :ensure t)
 
-  (use-package ace-jump-mode
-    :ensure t
-    :bind
-    ("C-." . ace-jump-mode))
+                                            ; deletes all the whitespace when you hit backspace or delete
+    (use-package hungry-delete
+      :ensure t
+      :config
+      (global-hungry-delete-mode))
 
-  (use-package smartparens
-    :ensure t
-    :config
-    (use-package smartparens-config)
-    (use-package smartparens-html)
-    (use-package smartparens-python)
-    (use-package smartparens-latex)
-    (smartparens-global-mode t)
-    (show-smartparens-global-mode t)
+    (use-package expand-region
+      :ensure t
+      :bind
+      ("C-=" . er/expand-region))
 
-    :bind
-    (("C-<down>" . sp-down-sexp)
-     ("C-<up>"   . sp-up-sexp)
-     ("M-<down>" . sp-backward-down-sexp)
-     ("M-<up>"   . sp-backward-up-sexp)
-     ("C-M-a" . sp-beginning-of-sexp)
-     ("C-M-e" . sp-end-of-sexp))
-    :hook
-    ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
-
-  (use-package rainbow-delimiters
-    :ensure t
-    :init
-    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
-
-  (use-package simple-mpc
-    :ensure t)
+                                            ; mark and edit all copies of the marked region simultaniously.
+    (use-package iedit
+      :defer t
+      :ensure t)
 
 
-  (use-package visual-regexp
-    :ensure t
-    :bind
-    ("M-%" . vr/query-replace))
+    (use-package ace-jump-mode
+      :ensure t
+      :bind
+      ("C-." . ace-jump-mode))
 
-  (use-package smex
-    :disabled t                           ; Use Counsel or helm M-x
-    :ensure t
-    :init
-    (smex-initialize)
-    :bind
-    ("M-x" . smex)
-    ("M-X" . smex-major-mode-commands)
-    ("C-c C-c M-x" . execute-extended-command))
+    (use-package smartparens
+      :ensure t
+      :config
+      (use-package smartparens-config)
+      (use-package smartparens-html)
+      (use-package smartparens-python)
+      (use-package smartparens-latex)
+      (smartparens-global-mode t)
+      (show-smartparens-global-mode t)
 
-  (use-package window-number
-    :ensure t
-    :config
-    (window-number-mode 1)
-    (window-number-meta-mode 1))
+      :bind
+      (("C-<down>" . sp-down-sexp)
+       ("C-<up>"   . sp-up-sexp)
+       ("M-<down>" . sp-backward-down-sexp)
+       ("M-<up>"   . sp-backward-up-sexp)
+       ("C-M-a" . sp-beginning-of-sexp)
+       ("C-M-e" . sp-end-of-sexp)
+       ("C-M-f" . sp-forward-sexp)
+       ("C-M-b" . sp-backward-sexp)
+       ("C-M-n" . sp-next-sexp)
+       ("C-M-p" . sp-previous-sexp)
+       ("C-S-f" . sp-forward-symbol)
+       ("C-S-b" . sp-backward-symbol)
+       ("C-<right>" . sp-forward-slurp-sexp)
+       ("M-<right>" . sp-forward-barf-sexp)
+       ("C-<left>" . sp-backward-slurp-sexp)
+       ("M-<left>" . sp-backward-barf-sexp)
+       ("M-[" . sp-backward-unwrap-sexp)
+       ("M-]" . sp-unwrap-sexp))
+      :hook
+      ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
 
-  (use-package comint
-    :config
-    (setq ansi-color-for-comint-mode 'filter)
-    (setq comint-scroll-to-bottom-on-input t)
-    (setq comint-scroll-to-bottom-on-output t)
-    (setq comint-move-point-for-output t)
-    :bind (:map comint-mode-map
-                ("<up>" . comint-previous-matching-input-from-input)
-                ("<down>" . comint-next-matching-input-from-input)
-                ("M-p" . comint-previous-matching-input-from-input)
-                ("M-n" . comint-next-matching-input-from-input)
-                ("C-<up>" . comint-previous-matching-input-from-input)
-                ("C-<down>" . comint-next-matching-input-from-input)))
+    (use-package rainbow-delimiters
+      :ensure t
+      :init
+      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-  (use-package saveplace
-    :config
-    (setq save-place-file "~/.emacs.d/places"))
+    (use-package simple-mpc
+      :ensure t)
+
+
+    (use-package visual-regexp
+      :ensure t
+      :bind
+      ("M-%" . vr/query-replace))
+
+    (use-package smex
+      :disabled t                           ; Use Counsel or helm M-x
+      :ensure t
+      :init
+      (smex-initialize)
+      :bind
+      ("M-x" . smex)
+      ("M-X" . smex-major-mode-commands)
+      ("C-c C-c M-x" . execute-extended-command))
+
+    (use-package window-number
+      :ensure t
+      :config
+      (window-number-mode 1)
+      (window-number-meta-mode 1))
+
+    (use-package comint
+      :config
+      (setq ansi-color-for-comint-mode 'filter)
+      (setq comint-scroll-to-bottom-on-input t)
+      (setq comint-scroll-to-bottom-on-output t)
+      (setq comint-move-point-for-output t)
+      :bind (:map comint-mode-map
+                  ("<up>" . comint-previous-matching-input-from-input)
+                  ("<down>" . comint-next-matching-input-from-input)
+                  ("M-p" . comint-previous-matching-input-from-input)
+                  ("M-n" . comint-next-matching-input-from-input)
+                  ("C-<up>" . comint-previous-matching-input-from-input)
+                  ("C-<down>" . comint-next-matching-input-from-input)))
+
+    (use-package saveplace
+      :config
+      ;; (setq save-place-file "~/.emacs.d/places")
+      )
 
 #+end_src
 
@@ -1350,6 +1367,70 @@
 
 #+END_SRC
 
+* Calendar
+#+BEGIN_SRC emacs-lisp :tangle yes
+  (use-package org-caldav
+  :init
+  ;; This is the sync on close function; it also prompts for save after syncing so
+  ;; no late changes get lost
+  ;; (defun org-caldav-sync-at-close ()
+  ;;   (org-caldav-sync)
+  ;;   (save-some-buffers))
+
+  ;; ;; This is the delayed sync function; it waits until emacs has been idle for
+  ;; ;; "secs" seconds before syncing.  The delay is important because the caldav-sync
+  ;; ;; can take five or ten seconds, which would be painful if it did that right at save.
+  ;; ;; This way it just waits until you've been idle for a while to avoid disturbing
+  ;; ;; the user.
+  ;; (defvar org-caldav-sync-timer nil
+  ;;   "Timer that `org-caldav-push-timer' used to reschedule itself, or nil.")
+  ;; (defun org-caldav-sync-with-delay (secs)
+  ;;   (when org-caldav-sync-timer
+  ;;     (cancel-timer org-caldav-sync-timer))
+  ;;   (setq org-caldav-sync-timer
+  ;;         (run-with-idle-timer
+  ;;          (* 1 secs) nil 'org-caldav-sync)))
+
+  :ensure t
+  :config
+  (setq org-icalendar-alarm-time 1)
+  ;; ;; This makes sure to-do items as a category can show up on the calendar
+  ;; (setq org-icalendar-include-todo t)
+  ;; ;; This ensures all org "deadlines" show up, and show up as due dates
+  ;; (setq org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due))
+  ;; ;; This ensures "scheduled" org items show up, and show up as start times
+  ;; (setq org-icalendar-use-scheduled '(todo-start event-if-todo event-if-not-todo))
+  ;; ;; Add the delayed save hook with a five minute idle timer
+  ;; (add-hook 'after-save-hook
+  ;;           (lambda ()
+  ;;             (when (eq major-mode 'org-mode)
+  ;;               (org-caldav-sync-with-delay 300))))
+  ;; ;; Add the close emacs hook
+  ;; (add-hook 'kill-emacs-hook 'org-caldav-sync-at-close)
+  (setq org-caldav-uuid-extension ".EML")
+  (setq org-icalendar-timezone "New Zealand Standard Time")
+  (setq org-caldav-calendars '((:calendar-id "Calendar"
+                                             :files ("~/Dropbox/org/work.org")
+                                             :inbox "~/Dropbox/org/calendar.org"
+                                             :url "http://localhost:1080/users/shaun.mucalo@canterbury.ac.nz"))))
+
+
+    ;; (use-package calfw
+    ;;   :ensure t)
+
+    ;; (use-package calfw-cal
+    ;;   :ensure t)
+    ;; (use-package calfw-org
+    ;;   :ensure t)
+    ;; (use-package calfw-ical
+    ;;   :ensure t)
+
+    ;; (defun my-open-calendar()
+    ;;   (interactive)
+    ;;   (cfw:open-calendar-buffer
+    ;;    :contents-sources
+    ;;    (list(cfw:ical-create-source ""))))
+#+END_SRC
 
 * exwm
 #+begin_src emacs-lisp :tangle yes

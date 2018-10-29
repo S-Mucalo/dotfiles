@@ -1,0 +1,6 @@
+[submodule "emacs/.emacs.d/wiki-packages/bookmark-plus"]
+	path = emacs/.emacs.d/wiki-packages/bookmark-plus
+	url = https://github.com/emacsmirror/bookmark-plus
+[submodule "emacs/.emacs.d/wiki-packages/dired-plus"]
+	path = emacs/.emacs.d/wiki-packages/dired-plus
+	url = https://github.com/emacsmirror/dired-plus

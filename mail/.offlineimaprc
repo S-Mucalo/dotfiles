@@ -50,6 +50,7 @@ nametrans = lambda foldername: re.sub('Spam', "[Gmail]/Spam",
 type = Gmail
 remoteusereval = get_username("gmail")
 remotepasseval = get_password("gmail")
+ssl_version=tls1_2
 auth_mechanisms = LOGIN
 # createfolders = False
 

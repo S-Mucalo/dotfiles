@@ -11,8 +11,12 @@ history
 *.sql
 tags
 __pycache__
-.config/ranger/bookmarks
-.config/ranger/tagged
+bookmarks
+tagged
+history.sqlite
+startup
+elpa
+custom.el
 *.un~
 *.py[cod]
 \#*\#
