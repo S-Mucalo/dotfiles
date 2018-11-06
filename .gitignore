@@ -20,7 +20,8 @@ custom.el
 *.un~
 *.py[cod]
 \#*\#
-
+emms
+backups
 # C extensions
 *.so
 

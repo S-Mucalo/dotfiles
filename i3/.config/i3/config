@@ -337,9 +337,10 @@ bindsym $mod+semicolon mode "resize"
 
 exec_always --no-startup-id $HOME/bin/polybar_launch
 exec_always --no-startup-id $HOME/bin/theme_set.sh -R
-exec --no-startup-id udiskie --config=$HOME/.config/udiskie/config.yml # --no-automount --notify --tray --use-udisks2
+exec --no-startup-id udiskie --no-automount --notify --tray --use-udisks2 --file-manager=$HOME/bin/ranger.fm
+# --config=$HOME/.config/udiskie/config.yml # --no-automount --notify --tray --use-udisks2
 exec --no-startup-id $HOME/bin/mail-notify.py
-exec --no-startup-id compton
+exec --no-startup-id compton -b
 # Unclutter makes the mouse invisible after a brief period
 exec --no-startup-id unclutter
 exec --no-startup-id dockd --daemon

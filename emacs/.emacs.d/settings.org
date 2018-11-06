@@ -87,7 +87,7 @@
 
   ;; Open init file with C-x r j e
   (set-register ?e (cons 'file "~/.emacs.d/settings.org"))
-  (set-register ?o (cons 'file "~/Dropbox/org/notes.org"))
+  (set-register ?o (cons 'file "~/Nextcloud/org/notes.org"))
 #+end_src
 
 * Functions
@@ -1077,8 +1077,8 @@
     (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
     (setq org-log-done t)
     (setq org-startup-indented t)
-    (setq org-agenda-files (list  "~/Dropbox/org/"))
-    (setq org-directory "~/Dropbox/org")
+    (setq org-agenda-files (list  "~/Nextcloud/org/"))
+    (setq org-directory "~/Nextcloud/org")
     (setq org-default-notes-file (concat org-directory "/unfiled.org"))
     (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
     (setq org-refile-allow-creating-parent-nodes 'confirm)
@@ -1370,6 +1370,7 @@
 * Calendar
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package org-caldav
+  :disabled t
   :init
   ;; This is the sync on close function; it also prompts for save after syncing so
   ;; no late changes get lost
@@ -1410,8 +1411,8 @@
   (setq org-caldav-uuid-extension ".EML")
   (setq org-icalendar-timezone "New Zealand Standard Time")
   (setq org-caldav-calendars '((:calendar-id "Calendar"
-                                             :files ("~/Dropbox/org/work.org")
-                                             :inbox "~/Dropbox/org/calendar.org"
+                                             :files ("~/Nextcloud/org/work.org")
+                                             :inbox "~/Nextcloud/org/calendar.org"
                                              :url "http://localhost:1080/users/shaun.mucalo@canterbury.ac.nz"))))
 
 
