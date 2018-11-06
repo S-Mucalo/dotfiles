@@ -611,14 +611,15 @@
 
 #+BEGIN_SRC emacs-lisp :tangle yes
   (use-package emms
-  :ensure t
-  :config
-  (require 'emms-setup)
-  (require 'emms-player-mpd)
-  (emms-all)
-  (setq emms-player-mpd-server-name "localhost")
-  (setq emms-playr-mpd-server-port "6600")
-  (add-to-list 'emms-player-list 'emms-player-mpd))
+    :ensure t
+    :config
+    (require 'emms-setup)
+    (require 'emms-player-mpd)
+    (emms-all)
+    (setq emms-player-mpd-server-name "localhost")
+    (setq emms-playr-mpd-server-port "6600")
+    (add-to-list 'emms-player-list 'emms-player-mpd)
+    (add-to-list 'emms-info-functions 'emms-info-mpd))
 
 #+END_SRC
 * Mail
