@@ -85,7 +85,7 @@ eval $( dircolors -b $HOME/.config/zsh/ls_colors )
 export LS_COLORS
 
 (cat $HOME/.cache/wal/sequences &)
-source $HOME/.cache/wal/colors-tty.sh
+source $HOME/.cache/wal/colors.sh
 
 #=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 # Import seperate config files

@@ -34,7 +34,8 @@ alias rsync-copy="rsync -avz --progress -h"
 alias rsync-move="rsync -avz --progress -h --remove-source-files"
 alias rsync-update="rsync -avzu --progress -h"
 alias rsync-synchronize="rsync -avzu --delete --progress -h"
-
+alias cpr="rsync --archive -hh --partial --info=stats1 --info=progress2 --modify-windows=1"
+alias mvr="rsync --archive -hh --partial --info=stats1 --info=progress2 --modify-windows=1 --remove-source-file"
 # tmux
 alias ta='tmux attach -t'
 alias tad='tmux attach -d -t'
