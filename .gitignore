@@ -24,7 +24,8 @@ emms
 backups
 # C extensions
 *.so
-
+auto-save-list
+tramp
 # Packages
 *.egg
 *.egg-info

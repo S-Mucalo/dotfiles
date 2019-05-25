@@ -136,6 +136,7 @@ ark() {
 lessr() { cat $1 | less -R }
 # }}}
 
+
 # {{{ Quick Link saving for fast saves/recalls
 addfile() {echo $2 >> /media/data/Filez/$1}
 searchfile() {ls /media/data/Filez | grep $1}

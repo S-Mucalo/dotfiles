@@ -21,9 +21,9 @@ alias search='aurman -Ss'
 alias clean='sudo pacman -Rns $(pkg-list_true_orphans)'
 alias pss='ps -a -c -o pid,command -x'
 alias gen_ctags='find . -name "*.[chCH]" -print | etags -'
-
+alias ssh='$HOME/.ssh-ident/ssh-ident'
 alias cless="less --no-lessopen"
-alias cat="colorize_via_pygmentize.sh"
+alias cat="/bin/ccat" # "colorize_via_pygmentize.sh"
 alias ccat="/usr/bin/env cat"
 
 # ranger
@@ -61,7 +61,7 @@ alias m="cd ~/Music && ls -a"
 alias b="cd ~/Books && ls -a"
 alias c="cd ~/dotfiles/ && ls -a"
 alias r="cd / && ls -a"
-alias M="cd /run/media/spm119 && ls -a"
+alias M="cd /run/media/shaun && ls -a"
 alias cf="cd ~/.config && ls -a"
 alias cfz="emacsclient -nc -a emacs ~/.zshrc"
 alias cfe="emacsclient -nc -a emacs ~/.emacs.d/config.org"

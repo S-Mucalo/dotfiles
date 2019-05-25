@@ -1,4 +1,4 @@
-*  Bootstrapping package and use-package
+ *  Bootstrapping package and use-package
 
 #+begin_src emacs-lisp :tangle no
   (defun debug-on-load-obsolete (filename)
@@ -894,7 +894,7 @@
     :ensure t)
 
   (use-package xresources-theme
-    ;; :disabled t
+    :disabled t
     :ensure t
     :if window-system
     :init
