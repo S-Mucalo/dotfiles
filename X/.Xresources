@@ -7,7 +7,9 @@
 	urxvt*termName:  rxvt-256color
 	urxvt*loginShell:         true
 	urxvt*scrollBar:         false#
-	urxvt*secondaryScroll:    true
+	urxvt*secondaryScreen: 	 true
+	urxvt*secondaryScroll:    false
+	urxvt*secondaryWheel:	true
 	!! urxvt*saveLines:         65535
 	URxvt*saveLines:	0
 	urxvt*cursorBlink:        true
@@ -78,14 +80,14 @@
 	URxvt.perl-ext-common: default,matcher,searchable-scrollback,clipboard-osc
 ! ,osc-xterm-clipboard
 
-URxvt.url-launcher:       firefox
+URxvt.url-launcher:       /usr/bin/xdg-open
 URxvt.keysym.C-Delete:    perl:matcher:last
 URxvt.keysym.M-Delete:    perl:matcher:list
 URxvt.matcher.button:     1
 URxvt.matcher.pattern.1:  \\bwww\\.[\\w-]+\\.[\\w./?&@#-]*[\\w/-]
 URxvt.matcher.pattern.2:  \\B(/\\S+?):(\\d+)(?=:|$)
 URxvt.matcher.launcher.2: emacs +$2 $1
-
+URxvt.matcher.rend.0: Uline Bold fg5
 ! Turn off insert picture mode; potentially useful for inserting unicode chars
 URxvt.iso14755:           false
 URxvt.iso14755_52:        false

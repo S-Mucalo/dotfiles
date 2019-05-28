@@ -445,165 +445,165 @@
 
 * Packages
 #+begin_src emacs-lisp :tangle yes
-    (use-package no-littering
-      :ensure t
-      :config)
+  (use-package no-littering
+    :ensure t
+    :config)
 
-    (use-package beacon                     ; Flash the line when point moves
-      :ensure t
-      :config
-      (beacon-mode 1)
-      (setq beacon-blink-delay 0.2)
-      (setq beacon-color "red"))
+  (use-package beacon                     ; Flash the line when point moves
+    :ensure t
+    :config
+    (beacon-mode 1)
+    (setq beacon-blink-delay 0.2)
+    (setq beacon-color "red"))
 
-    (use-package academic-phrases
+  (use-package academic-phrases
+    :ensure t)
+
+  (use-package lua-mode
+    :ensure t
+    :mode ("\\.lua\\'" . lua-mode))
+
+  (use-package async
+    :ensure t
+    :init (dired-async-mode 1))
+
+  (use-package pretty-mode
+    :ensure t
+    :if window-system
+    :config
+    (global-pretty-mode t))
+
+  (use-package yasnippet
+    :defer 10
+    :ensure t
+    :init
+    (yas-global-mode)
+    :config
+    (use-package yasnippet-snippets
       :ensure t)
+    (yas-reload-all))
 
-    (use-package lua-mode
-      :ensure t
-      :mode ("\\.lua\\'" . lua-mode))
+  (use-package free-keys
+    :ensure t
+    :bind ("C-h C-k" . free-keys))
 
-    (use-package async
-      :ensure t
-      :init (dired-async-mode 1))
+  (use-package multi-term
+    :ensure t
+    :config
+    (setq multi-term-program "/bin/bash"))
 
-    (use-package pretty-mode
-      :ensure t
-      :if window-system
-      :config
-      (global-pretty-mode t))
+  (use-package magit
+    :ensure t
+    :defer t
+    :bind ("C-x g" . magit-status))
 
-    (use-package yasnippet
-      :defer 10
-      :ensure t
-      :init
-      (yas-global-mode)
-      :config
-      (use-package yasnippet-snippets
-        :ensure t)
-      (yas-reload-all))
+  (use-package which-key
+    :config
+    (which-key-mode t)
+    :ensure t)
 
-    (use-package free-keys
-      :ensure t
-      :bind ("C-h C-k" . free-keys))
+                                          ; deletes all the whitespace when you hit backspace or delete
+  (use-package hungry-delete
+    :ensure t
+    :config
+    (global-hungry-delete-mode))
 
-    (use-package multi-term
-      :ensure t
-      :config
-      (setq multi-term-program "/bin/bash"))
+  (use-package expand-region
+    :ensure t
+    :bind
+    ("C-=" . er/expand-region))
 
-    (use-package magit
-      :ensure t
-      :defer t
-      :bind ("C-x g" . magit-status))
-
-    (use-package which-key
-      :config
-      (which-key-mode t)
-      :ensure t)
-
-                                            ; deletes all the whitespace when you hit backspace or delete
-    (use-package hungry-delete
-      :ensure t
-      :config
-      (global-hungry-delete-mode))
-
-    (use-package expand-region
-      :ensure t
-      :bind
-      ("C-=" . er/expand-region))
-
-                                            ; mark and edit all copies of the marked region simultaniously.
-    (use-package iedit
-      :defer t
-      :ensure t)
+                                          ; mark and edit all copies of the marked region simultaniously.
+  (use-package iedit
+    :defer t
+    :ensure t)
 
 
-    (use-package ace-jump-mode
-      :ensure t
-      :bind
-      ("C-." . ace-jump-mode))
+  (use-package ace-jump-mode
+    :ensure t
+    :bind
+    ("C-." . ace-jump-mode))
 
-    (use-package smartparens
-      :ensure t
-      :config
-      (use-package smartparens-config)
-      (use-package smartparens-html)
-      (use-package smartparens-python)
-      (use-package smartparens-latex)
-      (smartparens-global-mode t)
-      (show-smartparens-global-mode t)
+  (use-package smartparens
+    :ensure t
+    :config
+    (use-package smartparens-config)
+    ;; (use-package smartparens-html)
+    ;; (use-package smartparens-python)
+    ;; (use-package smartparens-latex)
+    (smartparens-global-mode t)
+    (show-smartparens-global-mode t)
 
-      :bind
-      (("C-<down>" . sp-down-sexp)
-       ("C-<up>"   . sp-up-sexp)
-       ("M-<down>" . sp-backward-down-sexp)
-       ("M-<up>"   . sp-backward-up-sexp)
-       ("C-M-a" . sp-beginning-of-sexp)
-       ("C-M-e" . sp-end-of-sexp)
-       ("C-M-f" . sp-forward-sexp)
-       ("C-M-b" . sp-backward-sexp)
-       ("C-M-n" . sp-next-sexp)
-       ("C-M-p" . sp-previous-sexp)
-       ("C-S-f" . sp-forward-symbol)
-       ("C-S-b" . sp-backward-symbol)
-       ("C-<right>" . sp-forward-slurp-sexp)
-       ("M-<right>" . sp-forward-barf-sexp)
-       ("C-<left>" . sp-backward-slurp-sexp)
-       ("M-<left>" . sp-backward-barf-sexp)
-       ("M-[" . sp-backward-unwrap-sexp)
-       ("M-]" . sp-unwrap-sexp))
-      :hook
-      ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
+    :bind
+    (("C-M-d" . sp-down-sexp)
+     ("C-M-e" . sp-up-sexp)
+     ("C-M-a" . sp-backward-down-sexp)
+     ("C-M-u" . sp-backward-up-sexp)
+     ("C-S-d" . sp-beginning-of-sexp)
+     ("C-S-a" . sp-end-of-sexp)
+     ("C-M-f" . sp-forward-sexp)
+     ("C-M-b" . sp-backward-sexp)
+     ("C-M-n" . sp-next-sexp)
+     ("C-M-p" . sp-previous-sexp)
+     ("M-F" . sp-forward-symbol)
+     ("M-B" . sp-backward-symbol)
+     ("C-)" . sp-forward-slurp-sexp)
+     ("C-}" . sp-forward-barf-sexp)
+     ("C-(" . sp-backward-slurp-sexp)
+     ("C-{" . sp-backward-barf-sexp)
+     ("M-[" . sp-backward-unwrap-sexp)
+     ("M-]" . sp-unwrap-sexp))
+    :hook
+    ((prog-mode markdown-mode) . turn-on-smartparens-strict-mode))
 
-    (use-package rainbow-delimiters
-      :ensure t
-      :init
-      (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :ensure t
+    :init
+    (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
-    (use-package simple-mpc
-      :ensure t)
+  (use-package simple-mpc
+    :ensure t)
 
 
-    (use-package visual-regexp
-      :ensure t
-      :bind
-      ("M-%" . vr/query-replace))
+  (use-package visual-regexp
+    :ensure t
+    :bind
+    ("M-%" . vr/query-replace))
 
-    (use-package smex
-      :disabled t                           ; Use Counsel or helm M-x
-      :ensure t
-      :init
-      (smex-initialize)
-      :bind
-      ("M-x" . smex)
-      ("M-X" . smex-major-mode-commands)
-      ("C-c C-c M-x" . execute-extended-command))
+  (use-package smex
+    :disabled t                           ; Use Counsel or helm M-x
+    :ensure t
+    :init
+    (smex-initialize)
+    :bind
+    ("M-x" . smex)
+    ("M-X" . smex-major-mode-commands)
+    ("C-c C-c M-x" . execute-extended-command))
 
-    (use-package window-number
-      :ensure t
-      :config
-      (window-number-mode 1)
-      (window-number-meta-mode 1))
+  (use-package window-number
+    :ensure t
+    :config
+    (window-number-mode 1)
+    (window-number-meta-mode 1))
 
-    (use-package comint
-      :config
-      (setq ansi-color-for-comint-mode 'filter)
-      (setq comint-scroll-to-bottom-on-input t)
-      (setq comint-scroll-to-bottom-on-output t)
-      (setq comint-move-point-for-output t)
-      :bind (:map comint-mode-map
-                  ("<up>" . comint-previous-matching-input-from-input)
-                  ("<down>" . comint-next-matching-input-from-input)
-                  ("M-p" . comint-previous-matching-input-from-input)
-                  ("M-n" . comint-next-matching-input-from-input)
-                  ("C-<up>" . comint-previous-matching-input-from-input)
-                  ("C-<down>" . comint-next-matching-input-from-input)))
+  (use-package comint
+    :config
+    (setq ansi-color-for-comint-mode 'filter)
+    (setq comint-scroll-to-bottom-on-input t)
+    (setq comint-scroll-to-bottom-on-output t)
+    (setq comint-move-point-for-output t)
+    :bind (:map comint-mode-map
+                ("<up>" . comint-previous-matching-input-from-input)
+                ("<down>" . comint-next-matching-input-from-input)
+                ("M-p" . comint-previous-matching-input-from-input)
+                ("M-n" . comint-next-matching-input-from-input)
+                ("C-<up>" . comint-previous-matching-input-from-input)
+                ("C-<down>" . comint-next-matching-input-from-input)))
 
-    (use-package saveplace
-      :config
-      ;; (setq save-place-file "~/.emacs.d/places")
-      )
+  (use-package saveplace
+    :config
+    ;; (setq save-place-file "~/.emacs.d/places")
+    )
 
 #+end_src
 
@@ -890,7 +890,6 @@
     :ensure t)
 
   (use-package cyberpunk-theme
-    :disabled f
     :ensure t)
 
   (use-package xresources-theme
@@ -907,15 +906,16 @@
 
 
   (use-package smart-mode-line
+    :disabled t
     :ensure t
-    :init
-    (setq sml/theme 'powerline)
-    ;; (setq sml/theme 'respectful)
-    ;; (setq sml/theme 'dark)
-    (sml/setup))
+    :config
 
-  (use-package smart-mode-line-powerline-theme
-    :ensure t)
+    (use-package smart-mode-line-powerline-theme
+      :ensure t
+      :config
+      (sml/setup)
+      (sml/apply-theme 'powerline)))
+
 
 #+end_src
 
