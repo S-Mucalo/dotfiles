@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TriggerCollection xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+        <Triggers>
+                <Trigger>
+                        <Guid>gBH/MZ7ynUCRjBBVAZxEbw==</Guid>
+                        <Name>On KeePass start:  Auto Save buttons, initialize</Name>
+                        <Events>
+                                <Event>
+                                        <TypeGuid>1M7NtUuYT/KmqeJVJh7I6A==</TypeGuid>
+                                        <Parameters />
+                                </Event>
+                        </Events>
+                        <Conditions />
+                        <Actions>
+                                <Action>
+                                        <TypeGuid>lYGPRZlmSYirPoboGpZoNg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                                <Parameter>Auto Save OFF</Parameter>
+                                                <Parameter />
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>On db changed:  delayed save - To change delay, set the interval in seconds in the Time Periodic Event</Parameter>
+                                                <Parameter>1</Parameter>
+                                        </Parameters>
+                                </Action>
+                        </Actions>
+                </Trigger>
+                <Trigger>
+                        <Guid>mfzSS4gfeUyi1ERz1Vh7uQ==</Guid>
+                        <Name>On db opened: Auto Save On - KeePass 2.39.1 or later</Name>
+                        <Events>
+                                <Event>
+                                        <TypeGuid>5f8TBoW4QYm5BvaeKztApw==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>0</Parameter>
+                                                <Parameter />
+                                        </Parameters>
+                                </Event>
+                        </Events>
+                        <Conditions />
+                        <Actions>
+                                <Action>
+                                        <TypeGuid>1m1BomyyRLqkSApB+glIeQ==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>1m1BomyyRLqkSApB+glIeQ==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_ON</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>lYGPRZlmSYirPoboGpZoNg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                                <Parameter>Auto Save OFF</Parameter>
+                                                <Parameter />
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>On db changed:  delayed save - To change delay, set the interval in seconds in the Time Periodic Event</Parameter>
+                                                <Parameter>1</Parameter>
+                                        </Parameters>
+                                </Action>
+                        </Actions>
+                </Trigger>
+                <Trigger>
+                        <Guid>dzatldc/jkOKLpkWmxGtCg==</Guid>
+                        <Name>On db changed:  delayed save - To change delay, set the interval in seconds in the Time Periodic Event</Name>
+                        <Events>
+                                <Event>
+                                        <TypeGuid>bES7XfGLTA2IzmXm6a0pig==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>120</Parameter>
+                                                <Parameter>True</Parameter>
+                                        </Parameters>
+                                </Event>
+                        </Events>
+                        <Conditions>
+                                <Condition>
+                                        <TypeGuid>08r67ygqRkqZkNhl/OAW7Q==</TypeGuid>
+                                        <Parameters />
+                                        <Negate>false</Negate>
+                                </Condition>
+                        </Conditions>
+                        <Actions>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter />
+                                                <Parameter>0</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>9VdhS/hMQV2pE3o5zRDwvQ==</TypeGuid>
+                                        <Parameters />
+                                </Action>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter />
+                                                <Parameter>1</Parameter>
+                                        </Parameters>
+                                </Action>
+                        </Actions>
+                </Trigger>
+                <Trigger>
+                        <Guid>dy/Jd4wZA02w5yj/l2U//A==</Guid>
+                        <Name>Auto Save OFF Action</Name>
+                        <Events>
+                                <Event>
+                                        <TypeGuid>R0dZkpenQ6K5aB8fwvebkg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                        </Parameters>
+                                </Event>
+                        </Events>
+                        <Conditions />
+                        <Actions>
+                                <Action>
+                                        <TypeGuid>1m1BomyyRLqkSApB+glIeQ==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>On db changed:  delayed save - To change delay, set the interval in seconds in the Time Periodic Event</Parameter>
+                                                <Parameter>0</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>lYGPRZlmSYirPoboGpZoNg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_ON</Parameter>
+                                                <Parameter>Auto Save ON</Parameter>
+                                                <Parameter />
+                                        </Parameters>
+                                </Action>
+                        </Actions>
+                </Trigger>
+                <Trigger>
+                        <Guid>igyBmu926U6efCRtjBlJBQ==</Guid>
+                        <Name>Auto Save ON Action</Name>
+                        <Events>
+                                <Event>
+                                        <TypeGuid>R0dZkpenQ6K5aB8fwvebkg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_ON</Parameter>
+                                        </Parameters>
+                                </Event>
+                        </Events>
+                        <Conditions />
+                        <Actions>
+                                <Action>
+                                        <TypeGuid>1m1BomyyRLqkSApB+glIeQ==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_ON</Parameter>
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>lYGPRZlmSYirPoboGpZoNg==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>btn_Auto_Save_OFF</Parameter>
+                                                <Parameter>Auto Save OFF</Parameter>
+                                                <Parameter />
+                                        </Parameters>
+                                </Action>
+                                <Action>
+                                        <TypeGuid>tkamn96US7mbrjykfswQ6g==</TypeGuid>
+                                        <Parameters>
+                                                <Parameter>On db changed:  delayed save - To change delay, set the interval in seconds in the Time Periodic Event</Parameter>
+                                                <Parameter>1</Parameter>
+                                        </Parameters>
+                                </Action>
+                        </Actions>
+                </Trigger>
+        </Triggers>
+</TriggerCollection>
