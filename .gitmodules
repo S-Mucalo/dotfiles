@@ -4,3 +4,6 @@
 [submodule "emacs/.emacs.d/wiki-packages/dired-plus"]
 	path = emacs/.emacs.d/wiki-packages/dired-plus
 	url = https://github.com/emacsmirror/dired-plus
+[submodule "texmf/texmf/tex/latex/Awesome-CV"]
+	path = texmf/texmf/tex/latex/Awesome-CV
+	url = https://github.com/posquit0/Awesome-CV

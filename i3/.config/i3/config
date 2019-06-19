@@ -49,7 +49,7 @@ gaps outer 5
 
 # Definitions
 set $term urxvt
-set $BROWSER chromium
+set $BROWSER firefox
 set $ALTERNATE_EDITOR emacs
 set $EDITOR emacsclient -nc -a ""
 
@@ -343,6 +343,7 @@ exec --no-startup-id $HOME/bin/mail-notify.py
 exec --no-startup-id dockd --daemon
 exec --no-startup-id xrandr --output DP-1 --right-of DVI-I-1
 # exec --no-startup-id davmail
+exec --no-startup-id nextcloud
 
 ###---Extra XF86 Keys---###
 # Function row

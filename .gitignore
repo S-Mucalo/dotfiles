@@ -26,6 +26,8 @@ backups
 *.so
 auto-save-list
 tramp
+keepass.kdbx
+phosts
 # Packages
 *.egg
 *.egg-info
