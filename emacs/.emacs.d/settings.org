@@ -361,7 +361,7 @@
               (when buffer-file-name
                 (let ((dir (file-name-directory buffer-file-name)))
                   (when (and (not (file-exists-p dir))
-                           (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
+                             (y-or-n-p (format "Directory %s does not exist. Create it? " dir)))
                     (make-directory dir t))))))
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
@@ -381,9 +381,9 @@
   (add-to-list 'recentf-exclude "/el-get/.*\\")           ; package files
   (add-to-list 'recentf-exclude "/auto-save-list/.*\\")   ; auto-save junk
   (add-to-list 'recentf-exclude "TAGS")
-  (add-to-list 'recentf-exclude ".*-autoloads\\.el\\'")
+  (add-to-list 'recentf-exclude ".*-autoloads\\.el$")
   (add-to-list 'recentf-exclude ".*\\.gz\\'")
-  (add-to-list 'recentf-exclude "ido.last")
+  (add-to-list 'recentf-exclude "ido\\.last")
   (add-to-list 'recentf-exclude "session\\.[a-f0-9]*$")
   (add-to-list 'recentf-exclude "\\.aux$")
   (add-to-list 'recentf-exclude "/COMMIT_EDITMSG$")
@@ -396,13 +396,15 @@
           ".~jv" ".rbc" ".pyc" ".beam" ".aux" ".out" ".pdf" ".hbc"))
 
   (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                             ("marmalade" . "http://marmalade-repo.org/packages/")
-                             ("melpa" . "http://melpa.milkbox.net/packages/")
-                             ("melpa-stable" . "https://stable.melpa.org/packages/")
-                             ("elpy" . "https://jorgenschaefer.github.io/packages/")))
+                           ("marmalade" . "http://marmalade-repo.org/packages/")
+                           ("melpa" . "http://melpa.milkbox.net/packages/")
+                           ("melpa-stable" . "https://stable.melpa.org/packages/")
+                           ("elpy" . "https://jorgenschaefer.github.io/packages/")))
   ;; (package-refresh-contents)
 
-  (add-to-list 'auto-mode-alist '("\\.*rc$" . conf-unix-mode))
+
+  (add-to-list 'auto-mode-alist '("^/etc/" . conf-mode ) t)
+  (add-to-list 'auto-mode-alist '(".*/\\.?.*rc\\'" . conf-mode) t)
 #+end_src
 
 * Global key bindings
@@ -502,6 +504,8 @@
     (which-key-mode t)
     :ensure t)
 
+(use-package systemd
+:ensure t)
                                           ; deletes all the whitespace when you hit backspace or delete
   (use-package hungry-delete
     :ensure t
@@ -627,6 +631,9 @@
   (use-package mu4e
     ;; :defer 5
     :config
+
+
+
     (setq message-kill-buffer-on-exit t)
     (setq mail-envelope-from (quote header))
     (setq mail-specify-envelope-from t)
@@ -648,6 +655,13 @@
     (setq mu4e-view-show-images t)
 
     (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
+    (setq mu4e-get-mail-command "mbsync -a")
+    ;; (setq mu4e-get-mail-command "offlineimap -o")
+
+    ;; Show full address in view message
+    (setq mu4e-view-show-addresses 't)
+    ;; every new email composition gets its own frame!
+    (setq mu4e-compose-in-new-frame t)
 
     ;; enable inline images
     (setq mu4e-view-show-images t)
@@ -659,74 +673,74 @@
     (setq mu4e-confirm-quit nil)
     (setq mu4e-maildir "~/.mail")
     (setq mu4e-contexts
-     `( ,(make-mu4e-context
-       :name "UC-mail"
-       :enter-func (lambda () (mu4e-message "Entering UC-mail context"))
-           :leave-func (lambda () (mu4e-message "Leaving UC-mail context"))
-       ;; we match based on the contact-fields of the message
-       :match-func (lambda (msg)
-             (when msg
-               (mu4e-message-contact-field-matches msg
-                 :to "shaun.mucalo@canterbury.ac.nz")))
-       :vars '( ( user-mail-address      . "shaun.mucalo@canterbury.ac.nz"  )
-                ( mu4e-sent-folder       . "/UC_mail/Sent Items")
-                ( mu4e-drafts-folder     . "/UC_mail/Drafts")
-                ( mu4e-trash-folder      . "/UC_mail/Deleted Items")
-                ( user-full-name         . "Shaun Mucalo" )
-                ( mu4e-maildir-shortcuts . ( ("/UC_mail/INBOX"        . ?i)
-                                             ("/UC_mail/Sent Items"   . ?s)
-                                             ("/UC_mail/Deleted Items". ?t)
-                                             ("/UC_mail/Drafts"       . ?d)))
-                ( mu4e-compose-signature .
-                                         (concat
-                                          "Shaun Mucalo\n"
-                                          "University of Canterbury, New Zealand\n"))))
-        ,(make-mu4e-context
-       :name "gmail"
-       :enter-func (lambda () (mu4e-message "Switch to the gmail context"))
-       ;; no leave-func
-       ;; we match based on the contact-fields of the message
-       :match-func (lambda (msg)
-             (when msg
-               (mu4e-message-contact-field-matches msg
-                 :to "shaunmucalo@gmail.com")))
-       :vars '( ( user-mail-address       . "shaunmucalo@gmail.com" )
-                ( user-full-name          . "Shaun Mucalo" )
-                ( mu4e-compose-signature  .
-                                          (concat
-                                           "Shaun Mucalo\n"
-                                           "Christchurch, New Zealand\n"))
-                ( mu4e-sent-folder        . "/gmail_mail/Sent" )
-                ( mu4e-trash-folder       . "/gmail_mail/Trash" )
-                ( mu4e-drafts-folder      . "/gmail_mail/Drafts" )
-                (mu4e-maildir-shortcuts   . ( ("/gmail_mail/INBOX"  . ?i)
-                                              ("/gmail_mail/Sent"   . ?s)
-                                              ("/gmail_mail/Trash"  . ?t)
-                                              ("/gmail_mail/Drafts" . ?d)))))
-        ,(make-mu4e-context
-       :name "yahoo"
-       :enter-func (lambda () (mu4e-message "Switch to the yahoo context"))
-       ;; no leave-func
-       ;; we match based on the maildir of the message; assume all
-       ;; cycling-related messages go into the /cycling maildir
-       :match-func (lambda (msg)
-             (when msg
-               (mu4e-message-field msg :maildir) "/yahoo"))
-       :vars '( ( user-mail-address   . "s_mucalo@yahoo.co.nz" )
-                ( user-full-name      . "Shaun Mucalo" )
-                ( mu4e-sent-folder    . "/yahoo_mail/Sent" )
-                ( mu4e-drafts-folder  . "/yahoo_mail/Drafts" )
-                ( mu4e-trash-folder   . "/yahoo_mail/Trash" )
-                ( mu4e-maildir-shortcuts . ( ("/yahoo_mail/Inbox"  . ?i)
-                                             ("/yahoo_mail/Sent"   . ?s)
-                                             ("/yahoo_mail/Trash"  . ?t)))
-                ( mu4e-compose-signature  . nil)))))
+          `( ,(make-mu4e-context
+               :name "UC-mail"
+               :enter-func (lambda () (mu4e-message "Entering UC-mail context"))
+               :leave-func (lambda () (mu4e-message "Leaving UC-mail context"))
+               ;; we match based on the contact-fields of the message
+               :match-func (lambda (msg)
+                             (when msg
+                               (mu4e-message-contact-field-matches msg
+                                                                   :to "shaun.mucalo@canterbury.ac.nz")))
+               :vars '( ( user-mail-address      . "shaun.mucalo@canterbury.ac.nz"  )
+                        ( mu4e-sent-folder       . "/UC_mail/Sent Items")
+                        ( mu4e-drafts-folder     . "/UC_mail/Drafts")
+                        ( mu4e-trash-folder      . "/UC_mail/Deleted Items")
+                        ( user-full-name         . "Shaun Mucalo" )
+                        ( mu4e-maildir-shortcuts . ( ("/UC_mail/INBOX"        . ?i)
+                                                     ("/UC_mail/Sent Items"   . ?s)
+                                                     ("/UC_mail/Deleted Items". ?t)
+                                                     ("/UC_mail/Drafts"       . ?d)))
+                        ( mu4e-compose-signature .
+                                                 (concat
+                                                  "Shaun Mucalo\n"
+                                                  "University of Canterbury, New Zealand\n"))))
+             ,(make-mu4e-context
+               :name "gmail"
+               :enter-func (lambda () (mu4e-message "Switch to the gmail context"))
+               ;; no leave-func
+               ;; we match based on the contact-fields of the message
+               :match-func (lambda (msg)
+                             (when msg
+                               (mu4e-message-contact-field-matches msg
+                                                                   :to "shaunmucalo@gmail.com")))
+               :vars '( ( user-mail-address       . "shaunmucalo@gmail.com" )
+                        ( user-full-name          . "Shaun Mucalo" )
+                        ( mu4e-compose-signature  .
+                                                  (concat
+                                                   "Shaun Mucalo\n"
+                                                   "Christchurch, New Zealand\n"))
+                        ( mu4e-sent-folder        . "/gmail_mail/Sent" )
+                        ( mu4e-trash-folder       . "/gmail_mail/Trash" )
+                        ( mu4e-drafts-folder      . "/gmail_mail/Drafts" )
+                        (mu4e-maildir-shortcuts   . ( ("/gmail_mail/INBOX"  . ?i)
+                                                      ("/gmail_mail/Sent"   . ?s)
+                                                      ("/gmail_mail/Trash"  . ?t)
+                                                      ("/gmail_mail/Drafts" . ?d)))))
+             ,(make-mu4e-context
+               :name "yahoo"
+               :enter-func (lambda () (mu4e-message "Switch to the yahoo context"))
+               ;; no leave-func
+               ;; we match based on the maildir of the message; assume all
+               ;; cycling-related messages go into the /cycling maildir
+               :match-func (lambda (msg)
+                             (when msg
+                               (mu4e-message-field msg :maildir) "/yahoo"))
+               :vars '( ( user-mail-address   . "s_mucalo@yahoo.co.nz" )
+                        ( user-full-name      . "Shaun Mucalo" )
+                        ( mu4e-sent-folder    . "/yahoo_mail/Sent" )
+                        ( mu4e-drafts-folder  . "/yahoo_mail/Drafts" )
+                        ( mu4e-trash-folder   . "/yahoo_mail/Trash" )
+                        ( mu4e-maildir-shortcuts . ( ("/yahoo_mail/Inbox"  . ?i)
+                                                     ("/yahoo_mail/Sent"   . ?s)
+                                                     ("/yahoo_mail/Trash"  . ?t)))
+                        ( mu4e-compose-signature  . nil)))))
     (setq mu4e-user-mail-address-list
-     (delq nil
-           (mapcar (lambda (context)
-                     (when (mu4e-context-vars context)
-                       (cdr (assq 'user-mail-address (mu4e-context-vars context)))))
-                   mu4e-contexts))))
+          (delq nil
+                (mapcar (lambda (context)
+                          (when (mu4e-context-vars context)
+                            (cdr (assq 'user-mail-address (mu4e-context-vars context)))))
+                        mu4e-contexts))))
 
   (require 'gnus-dired)
   ;; make the `gnus-dired-mail-buffers' function also work on
@@ -748,14 +762,17 @@
 
   ;; Allow org-mode stuff in mu4e
   (use-package org-mu4e
-    :after mu4e)
+    :after mu4e
+    :config
+    ;;store link to message if in header view, not to header query
+    (setq org-mu4e-link-query-in-headers-mode nil))
+
   (use-package mu4e-alert
     :disabled t
     :ensure t
     :config
     (mu4e-alert-set-default-style 'libnotify)
     (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
-
 #+end_src
 
 * Python
@@ -1671,7 +1688,7 @@ Use one of the following
      ("C-x c" . nil)
      ("C-x C-f" . helm-find-files)
      ("M-x" . helm-M-x)
-     ("C-." . helm-dabbrev)
+     ;; "C-." . helm-dabbrev) conflicts ace jump
      ("C-x b" . helm-mini)
      ;; ("C-x b" . helm-buffers-list)
      ("C-x C-r" . helm-recentf)

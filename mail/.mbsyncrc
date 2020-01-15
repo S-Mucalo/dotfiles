@@ -1,0 +1,122 @@
+IMAPAccount gmail
+# Address to connect to
+Host imap.gmail.com
+User shaunmucalo@gmail.com
+PassCmd "gpg2 --for-your-eyes-only --no-tty -qd ~/.authinfo.gpg | grep imap.gmail.com | grep shaunmucalo@gmail.com | awk '{ for (i=1; i<NF; i++) { if ($i == \"password\") print $(i+1) } }'"
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore gmail-remote
+Account gmail
+
+MaildirStore gmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/gmail_mail/
+Inbox ~/.mail/gmail_mail/INBOX
+
+Channel sync-gmail-default
+Master :gmail-remote:
+Slave :gmail-local:
+# Select some mailboxes to sync
+Patterns "INBOX"
+
+Channel sync-gmail-spam
+Master :gmail-remote:"[Gmail]/Spam"
+Slave :gmail-local:spam
+Create Slave
+
+Channel sync-gmail-drafts
+Master :gmail-remote:"[Gmail]/Drafts"
+Slave :gmail-local:drafts
+Create Slave
+
+Channel sync-gmail-sent
+Master :gmail-remote:"[Gmail]/Sent Mail"
+Slave :gmail-local:sent
+Create Slave
+
+Channel sync-gmail-trash
+Master :gmail-remote:"[Gmail]/Trash"
+Slave :gmail-local:trash
+Create Slave
+
+# Automatically create missing mailboxes, both locally and on the server
+Create Both
+# Automatically delete messages on either side if they are found deleted on the other.
+Expunge Both
+# Save the synchronization state files in the relevant directory
+SyncState *
+
+# Get all the channels together into a group.
+Group gmail
+Channel sync-gmail-default
+Channel sync-gmail-spam
+Channel sync-gmail-sent
+Channel sync-gmail-drafts
+Channel sync-gmail-trash
+
+IMAPAccount ucmail
+# Address to connect to
+Host exchange.canterbury.ac.nz
+User spm119
+PassCmd "gpg2 --for-your-eyes-only --no-tty -qd ~/.authinfo.gpg | grep exchange.canterbury.ac.nz | awk '{ for (i=1; i<NF; i++) { if ($i == \"password\") print $(i+1) } }'"
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore ucmail-remote
+Account ucmail
+
+MaildirStore ucmail-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/UC_mail/
+Inbox ~/.mail/UC_mail/INBOX
+
+Channel ucmail
+Master :ucmail-remote:
+Slave :ucmail-local:
+Patterns *
+# # Automatically create missing mailboxes, both locally and on the server
+Create Both
+# # Save the synchronization state files in the relevant directory
+SyncState *
+
+
+IMAPAccount yahoo
+# Address to connect to
+Host imap.mail.yahoo.com
+User s_mucalo@yahoo.co.nz
+PassCmd "gpg2 --for-your-eyes-only --no-tty -qd ~/.authinfo.gpg | grep imap.mail.yahoo.com | awk '{ for (i=1; i<NF; i++) { if ($i == \"password\") print $(i+1) } }'"
+# Use SSL
+SSLType IMAPS
+# The following line should work. If get certificate errors, uncomment the two following lines and read the "Troubleshooting" section.
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+#CertificateFile ~/.cert/imap.gmail.com.pem
+#CertificateFile ~/.cert/Equifax_Secure_CA.pem
+
+IMAPStore yahoo-remote
+Account yahoo
+
+MaildirStore yahoo-local
+Subfolders Verbatim
+# The trailing "/" is important
+Path ~/.mail/yahoo_mail/
+Inbox ~/.mail/yahoo_mail/Inbox
+
+Channel yahoo
+Master :yahoo-remote:
+Slave :yahoo-local:
+Patterns *
+# # Automatically create missing mailboxes, both locally and on the server
+Create Both
+# # Save the synchronization state files in the relevant directory
+SyncState *
