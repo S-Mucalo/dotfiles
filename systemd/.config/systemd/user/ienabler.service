@@ -1,0 +1,6 @@
+[Unit]
+Description=Run ienabler
+
+
+[Service]
+ExecStart=%h/bin/pingtest

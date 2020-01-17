@@ -1,0 +1,7 @@
+[Unit]
+Description=Mailbox synchronisation service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/mbsync -Va
+ExecStartPost=/usr/bin/mu index --maildir=%h/.mail

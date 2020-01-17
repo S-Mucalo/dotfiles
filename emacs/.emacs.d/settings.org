@@ -662,7 +662,8 @@
     (setq mu4e-view-show-addresses 't)
     ;; every new email composition gets its own frame!
     (setq mu4e-compose-in-new-frame t)
-
+    ;; For isync the MUA must rename files when moving them between Maildir folders, mu4e needs to be configure to do it
+    (setq mu4e-change-filenames-when-moving t)
     ;; enable inline images
     (setq mu4e-view-show-images t)
     ;; use imagemagick, if available
@@ -1704,7 +1705,9 @@ Use one of the following
     :config
     (projectile-global-mode)
     (setq projectile-completion-system 'helm)
-    (helm-projectile-on))
+    (helm-projectile-on)
+    :bind
+    (("C-c p" . projectile-command-map)))
 
   (use-package helm-projectile
     :after helm

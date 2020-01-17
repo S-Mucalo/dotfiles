@@ -1,0 +1,10 @@
+[Unit]
+Description=Pings UC firewall and runs ienabler if firewall has reset
+
+[Timer]
+OnBootSec=10
+OnUnitActiveSec=1min
+
+[Install]
+WantedBy=timers.target
+WantedBy=network.target

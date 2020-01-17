@@ -71,6 +71,7 @@ SSLType IMAPS
 CertificateFile /etc/ssl/certs/ca-certificates.crt
 #CertificateFile ~/.cert/imap.gmail.com.pem
 #CertificateFile ~/.cert/Equifax_Secure_CA.pem
+AuthMechs ntlm
 
 IMAPStore ucmail-remote
 Account ucmail
@@ -89,7 +90,8 @@ Patterns *
 Create Both
 # # Save the synchronization state files in the relevant directory
 SyncState *
-
+Expunge Slave
+Remove Slave
 
 IMAPAccount yahoo
 # Address to connect to
@@ -110,7 +112,7 @@ MaildirStore yahoo-local
 Subfolders Verbatim
 # The trailing "/" is important
 Path ~/.mail/yahoo_mail/
-Inbox ~/.mail/yahoo_mail/Inbox
+Inbox ~/.mail/yahoo_mail/INBOX
 
 Channel yahoo
 Master :yahoo-remote:

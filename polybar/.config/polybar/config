@@ -70,7 +70,7 @@ font-4 = FontAwesome:pixelsize=16;4
 modules-left = i3 powerline-suffix mpd
 ; xwindow
 modules-center = date
-modules-right = volume memory cpu wlan battery temperature powerline-prefix
+modules-right = volume memory cpu wlan eth battery temperature powerline-prefix
 ; filesystem volume memory cpu wlan eth battery temperature date powermenu
 
 tray-position = right

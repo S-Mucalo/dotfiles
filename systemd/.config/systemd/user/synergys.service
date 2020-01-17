@@ -1,0 +1,10 @@
+[Unit]
+Description=Synergy Server Daemon
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/synergys --no-daemon --enable-crypto --config /etc/synergy.conf --serial-key 7B76313B70726F3B736861756E206D7563616C6F3B313B736861756E6D7563616C6F40676D61696C2E636F6D3B3B303B307D
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
