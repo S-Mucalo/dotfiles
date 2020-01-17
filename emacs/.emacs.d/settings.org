@@ -445,7 +445,7 @@
   (define-key spm-map (kbd "m") 'mu4e)
 #+end_src
 
-* Packages
+* COMMENT Packages
 #+begin_src emacs-lisp :tangle yes
   (use-package no-littering
     :ensure t
@@ -504,8 +504,8 @@
     (which-key-mode t)
     :ensure t)
 
-(use-package systemd
-:ensure t)
+  (use-package systemd
+    :ensure t)
                                           ; deletes all the whitespace when you hit backspace or delete
   (use-package hungry-delete
     :ensure t
@@ -614,23 +614,23 @@
 * Music
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (use-package emms
-    :ensure t
-    :config
-    (require 'emms-setup)
-    (require 'emms-player-mpd)
-    (emms-all)
-    (setq emms-player-mpd-server-name "localhost")
-    (setq emms-playr-mpd-server-port "6600")
-    (add-to-list 'emms-player-list 'emms-player-mpd)
-    (add-to-list 'emms-info-functions 'emms-info-mpd))
+(use-package emms
+  :ensure t
+  :config
+  (require 'emms-setup)
+  (require 'emms-player-mpd)
+  (emms-all)
+  (setq emms-player-mpd-server-name "localhost")
+  (setq emms-playr-mpd-server-port "6600")
+  (add-to-list 'emms-player-list 'emms-player-mpd)
+  (add-to-list 'emms-info-functions 'emms-info-mpd))
 
 #+END_SRC
 * Mail
 #+begin_src emacs-lisp :tangle yes
-  (use-package mu4e
-    ;; :defer 5
-    :config
+(use-package mu4e
+  ;; :defer 5
+  :config
 
 
 
@@ -768,426 +768,427 @@
     ;;store link to message if in header view, not to header query
     (setq org-mu4e-link-query-in-headers-mode nil))
 
-  (use-package mu4e-alert
-    :disabled t
-    :ensure t
-    :config
-    (mu4e-alert-set-default-style 'libnotify)
-    (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
+(use-package mu4e-alert
+  :disabled t
+  :ensure t
+  :config
+  (mu4e-alert-set-default-style 'libnotify)
+  (add-hook 'after-init-hook #'mu4e-alert-enable-notifications))
 #+end_src
 
 * Python
 #+begin_src emacs-lisp :tangle yes
-  (use-package python
-    :defer t
-    :mode ("\\.py\\'" . python-mode)
-    :init
-    (setq indent-tabs-mode nil)
-    (setq default-tab-width 4)
-    (setq python-shell-interpreter "ipython3"
-          python-shell-interpreter-args "--simple-prompt -i")
-    (setq python-shell-prompt-detect-failure-warning nil))
+(use-package python
+  :defer t
+  :mode ("\\.py\\'" . python-mode)
+  :init
+  (setq indent-tabs-mode nil)
+  (setq default-tab-width 4)
+  (setq python-shell-interpreter "ipython3"
+        python-shell-interpreter-args "--simple-prompt -i")
+  (setq python-shell-prompt-detect-failure-warning nil))
 
-  ;;  py-electric-colon-active t
-  ;;  py-smart-indentation t)
+;;  py-electric-colon-active t
+;;  py-smart-indentation t)
 
 
-  (use-package cython-mode
-    :defer t
-    :ensure t
-    :mode (("\\.pyx\\'"  . cython-mode)
-           ("\\.spyx\\'" . cython-mode)
-           ("\\.pxd\\'"  . cython-mode)
-           ("\\.pxi\\'"  . cython-mode)))
+(use-package cython-mode
+  :defer t
+  :ensure t
+  :mode (("\\.pyx\\'"  . cython-mode)
+         ("\\.spyx\\'" . cython-mode)
+         ("\\.pxd\\'"  . cython-mode)
+         ("\\.pxi\\'"  . cython-mode)))
 
-  ;; # Either of these
-  ;; pip install rope
-  ;; pip install jedi
-  ;; # flake8 for code checks
-  ;; pip install flake8
-  ;; # and autopep8 for automatic PEP8 formatting
-  ;; pip install autopep8
-  ;; # and yapf for code formatting
-  ;; pip install yapf
-  (use-package elpy
-    :defer t
-    :ensure t
-    ;; :init (with-eval-after-load 'python (elpy-enable))
-    :after python
-    :init
-    (elpy-enable)
-    :config
-    (setq elpy-rpc-backend "jedi"))
+;; # Either of these
+;; pip install rope
+;; pip install jedi
+;; # flake8 for code checks
+;; pip install flake8
+;; # and autopep8 for automatic PEP8 formatting
+;; pip install autopep8
+;; # and yapf for code formatting
+;; pip install yapf
+(use-package elpy
+  :defer t
+  :ensure t
+  ;; :init (with-eval-after-load 'python (elpy-enable))
+  :after python
+  :init
+  (elpy-enable)
+  :config
+  (setq elpy-rpc-backend "jedi"))
 
-  (setq gud-pdb-command-name "python -m pdb")
+(setq gud-pdb-command-name "python -m pdb")
 
 #+end_src
 
 * R
 
 #+begin_src emacs-lisp :tangle yes
-  (defun my-ess-start-R ()
-    (interactive)
-    (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
-        (progn
-          (delete-other-windows)
-          (setq w1 (selected-window))
-          (setq w1name (buffer-name))
-          (setq w2 (split-window w1 nil t))
-          (R)
-          (set-window-buffer w2 "*R*")
-          (set-window-buffer w1 w1name))))
-  (defun my-ess-eval ()
-    (interactive)
-    (my-ess-start-R)
-    (if (and transient-mark-mode mark-active)
-        (call-interactively 'ess-eval-region)
-      (call-interactively 'ess-eval-line-and-step)))
-  (add-hook 'ess-mode-hook
-            '(lambda()
-               (local-set-key [(shift return)] 'my-ess-eval)))
-  (add-hook 'inferior-ess-mode-hook
-            '(lambda()
-               (local-set-key [C-up] 'comint-previous-input)
-               (local-set-key [C-down] 'comint-next-input)))
-  (add-hook 'Rnw-mode-hook
-            '(lambda()
-               (local-set-key [(shift return)] 'my-ess-eval)))
+(defun my-ess-start-R ()
+  (interactive)
+  (if (not (member "*R*" (mapcar (function buffer-name) (buffer-list))))
+      (progn
+        (delete-other-windows)
+        (setq w1 (selected-window))
+        (setq w1name (buffer-name))
+        (setq w2 (split-window w1 nil t))
+        (R)
+        (set-window-buffer w2 "*R*")
+        (set-window-buffer w1 w1name))))
+(defun my-ess-eval ()
+  (interactive)
+  (my-ess-start-R)
+  (if (and transient-mark-mode mark-active)
+      (call-interactively 'ess-eval-region)
+    (call-interactively 'ess-eval-line-and-step)))
+(add-hook 'ess-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
+(add-hook 'inferior-ess-mode-hook
+          '(lambda()
+             (local-set-key [C-up] 'comint-previous-input)
+             (local-set-key [C-down] 'comint-next-input)))
+(add-hook 'Rnw-mode-hook
+          '(lambda()
+             (local-set-key [(shift return)] 'my-ess-eval)))
 
-  ;; (use-package ess-site
-  ;;   :defer t)
+;; (use-package ess-site
+;;   :defer t)
 
-  (use-package ess
-    :defer t
-    :ensure t
-    :init (use-package ess-site)
-    :bind (:map ess-mode-map
-                ([(shift return)] . my-ess-eval))
-    :config
-    (setq ess-local-process-name "R")
-    (setq ess-ask-for-ess-directory nil))
+(use-package ess
+  :defer t
+  :ensure t
+  :init (use-package ess-site)
+  :bind (:map ess-mode-map
+              ([(shift return)] . my-ess-eval))
+  :config
+  (setq ess-local-process-name "R")
+  (setq ess-ask-for-ess-directory nil))
 #+end_src
 
 * c
 #+begin_src emacs-lisp :tangle yes
-    (use-package cc-mode
-      :config
-      (setq c-default-style "ellemtel")
-      (setq c-basic-offset 4)
-      ;; (setq c-toggle-hungry-state)
-      )
+(use-package cc-mode
+    :config
+    (setq c-default-style "ellemtel")
+    (setq c-basic-offset 4)
+    ;; (setq c-toggle-hungry-state)
+    )
 
-    (use-package flycheck
-      :ensure t
-      :config
-      (global-flycheck-mode t)
-      (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+  (use-package flycheck
+    :ensure t
+    :config
+    (global-flycheck-mode t)
+    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 
-  (use-package dumb-jump
-    :defer t
-    :bind (("M-g o" . dumb-jump-go-other-window)
-           ("M-g j" . dumb-jump-go)
-           ("M-g i" . dumb-jump-go-prompt)
-           ("M-g x" . dumb-jump-go-prefer-external)
-           ("M-g z" . dumb-jump-go-prefer-external-other-window))
-    :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'ivy)
-    :ensure)
+(use-package dumb-jump
+  :defer t
+  :bind (("M-g o" . dumb-jump-go-other-window)
+         ("M-g j" . dumb-jump-go)
+         ("M-g i" . dumb-jump-go-prompt)
+         ("M-g x" . dumb-jump-go-prefer-external)
+         ("M-g z" . dumb-jump-go-prefer-external-other-window))
+  :config (setq dumb-jump-selector 'helm) ;; (setq dumb-jump-selector 'ivy)
+  :ensure)
 
 #+end_src
 
 * Theme
 
 #+begin_src emacs-lisp :tangle yes
-  (use-package monokai-theme
-    :disabled t
-    :ensure t)
+(use-package monokai-theme
+  :disabled t
+  :ensure t)
 
-  (use-package grandshell-theme
-    :disabled t
-    :ensure t)
+(use-package grandshell-theme
+  :disabled t
+  :ensure t)
 
-  (use-package cyberpunk-theme
-    :ensure t)
+(use-package cyberpunk-theme
+  :ensure t)
 
-  (use-package xresources-theme
-    :disabled t
-    :ensure t
-    :if window-system
-    :init
-    (if (daemonp)
-        (add-hook 'after-make-frame-functions
-                  '(lambda (f)
-                     (with-selected-frame f
-                       (when (window-system f) (load-theme 'xresources)))))
-      (load-theme 'xresources)))
+(use-package xresources-theme
+  :disabled t
+  :ensure t
+  :if window-system
+  :init
+  (if (daemonp)
+      (add-hook 'after-make-frame-functions
+                '(lambda (f)
+                   (with-selected-frame f
+                     (when (window-system f) (load-theme 'xresources)))))
+    (load-theme 'xresources)))
 
 
-  (use-package smart-mode-line
-    :disabled t
+(use-package smart-mode-line
+  :disabled t
+  :ensure t
+  :config
+
+  (use-package smart-mode-line-powerline-theme
     :ensure t
     :config
-
-    (use-package smart-mode-line-powerline-theme
-      :ensure t
-      :config
-      (sml/setup)
-      (sml/apply-theme 'powerline)))
+    (sml/setup)
+    (sml/apply-theme 'powerline)))
 
 
 #+end_src
 
 * Dired
 #+begin_src emacs-lisp :tangle yes
-    ;; Go to first real file in dired M-<
-    (defun dired-back-to-top ()
-      (interactive)
-      (beginning-of-buffer)
-      (dired-next-line 3))
+;; Go to first real file in dired M-<
+(defun dired-back-to-top ()
+  (interactive)
+  (beginning-of-buffer)
+  (dired-next-line 3))
 
-    (define-key dired-mode-map
-      (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+(define-key dired-mode-map
+  (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
 
-    ;; Go to last real file in dired M->
-    (defun dired-jump-to-bottom ()
-      (interactive)
-      (end-of-buffer)
-      (dired-next-line -1))
+;; Go to last real file in dired M->
+(defun dired-jump-to-bottom ()
+  (interactive)
+  (end-of-buffer)
+  (dired-next-line -1))
 
-    (define-key dired-mode-map
-      (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
+(define-key dired-mode-map
+  (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 
-    (use-package bookmark+
-      :load-path "wiki-packages/bookmark-plus")
+(use-package bookmark+
+  :load-path "wiki-packages/bookmark-plus")
 
-    (use-package dired+
-      :load-path "wiki-packages/dired-plus/"
-      :config
-      (setq diredp-hide-details-initially-flag t))
+(use-package dired+
+  :load-path "wiki-packages/dired-plus/"
+  :config
+  (setq diredp-hide-details-initially-flag t))
 #+end_src
 
 * LaTeX
 #+begin_src emacs-lisp :tangle yes
-  (use-package latex
-    :defer t
-    :ensure auctex
-    :mode ("\\.tex\\'" . latex-mode)
-    :commands (latex-mode LaTeX-mode plain-tex-mode)
-    :bind (:map LaTeX-mode-map
-                ("C-c C-r" . reftex-query-replace-document)
-                ("C-c C-g" . reftex-grep-document))
-    :config
-    :hook
-    ((LaTeX-mode . LaTeX-math-mode)
-     (LaTeX-mode . flyspell-mode)
-     (LaTeX-mode . turn-on-reftex)
-     (LaTeX-mode . TeX-source-correlate-mode)
-     (text-mode . turn-on-auto-fill))
-    :init
-    (setq TeX-auto-save t
-          TeX-save-query nil
-          TeX-show-compilation t
-          TeX-parse-self t
-          TeX-source-correlate-start-server t
-          TeX-save-query nil
-          TeX-PDF-mode t
-          TeX-error-overview-open-after-TeX-run t)
-    (setq-default TeX-master nil))
+(use-package latex
+  :defer t
+  :ensure auctex
+  :mode ("\\.tex\\'" . latex-mode)
+  :commands (latex-mode LaTeX-mode plain-tex-mode)
+  :bind (:map LaTeX-mode-map
+              ("C-c C-r" . reftex-query-replace-document)
+              ("C-c C-g" . reftex-grep-document))
+  :config
+  :hook
+  ((LaTeX-mode . LaTeX-math-mode)
+   (LaTeX-mode . flyspell-mode)
+   (LaTeX-mode . turn-on-reftex)
+   (LaTeX-mode . TeX-source-correlate-mode)
+   (text-mode . turn-on-auto-fill))
+  :init
+  (setq TeX-auto-save t
+        TeX-save-query nil
+        TeX-show-compilation t
+        TeX-parse-self t
+        TeX-source-correlate-start-server t
+        TeX-save-query nil
+        TeX-PDF-mode t
+        TeX-error-overview-open-after-TeX-run t)
+  (setq-default TeX-master nil))
 
-  (use-package preview
-    :commands LaTeX-preview-setup
-    :init
-    (progn
-      (setq-default preview-scale 1.4
-                    preview-scale-function '(lambda (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+(use-package preview
+  :commands LaTeX-preview-setup
+  :init
+  (progn
+    (setq-default preview-scale 1.4
+                  preview-scale-function '(lambda (* (/ 10.0 (preview-document-pt)) preview-scale)))))
 
-  (use-package reftex
-    :defer t
-    :commands turn-on-reftex
-    :init
-    (progn
-      (setq reftex-plug-into-AUCTeX t
-            reftex-extra-bindings t)))
+(use-package reftex
+  :defer t
+  :commands turn-on-reftex
+  :init
+  (progn
+    (setq reftex-plug-into-AUCTeX t
+          reftex-extra-bindings t)))
 
-  (use-package bibtex
-    :defer t
-    :mode ("\\.bib" . bibtex-mode)
-    :init
-    (progn
-      (setq bibtex-align-at-equal-sign t)
-      (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+(use-package bibtex
+  :defer t
+  :mode ("\\.bib" . bibtex-mode)
+  :init
+  (progn
+    (setq bibtex-align-at-equal-sign t)
+    (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
 
 
-  (eval-after-load "tex"
-    '(setq TeX-command-list
-           (append TeX-command-list
-                   (list
-                    (list "XeLaTeX" "%`xelatex%(mode)%' %t"
-                          'TeX-run-TeX nil t :help "Run XeLaTeX")
-                    (list "Sage" "sage %s.sagetex.sage"
-                          'TeX-run-command nil t :help "Run SAGE.")
-                    (list "Wordcount" "texcount %t"
-                          'TeX-run-shell nil t :help "Run texcount.")
-                    (list "Pythontex"
-                          "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
-                          'TeX-run-shell nil t :help "Run pythontex.")
-                    (list "Depythontex"
-                          "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
-                          'TeX-run-shell nil t :help "Run depythontex.")
-                    (list "Latexmk" "latexmk -pdf %s"
-                          'TeX-run-TeX nil t :help "Run Latexmk on file")))))
+(eval-after-load "tex"
+  '(setq TeX-command-list
+         (append TeX-command-list
+                 (list
+                  (list "XeLaTeX" "%`xelatex%(mode)%' %t"
+                        'TeX-run-TeX nil t :help "Run XeLaTeX")
+                  (list "Sage" "sage %s.sagetex.sage"
+                        'TeX-run-command nil t :help "Run SAGE.")
+                  (list "Wordcount" "texcount %t"
+                        'TeX-run-shell nil t :help "Run texcount.")
+                  (list "Pythontex"
+                        "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
+                        'TeX-run-shell nil t :help "Run pythontex.")
+                  (list "Depythontex"
+                        "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
+                        'TeX-run-shell nil t :help "Run depythontex.")
+                  (list "Latexmk" "latexmk -pdf %s"
+                        'TeX-run-TeX nil t :help "Run Latexmk on file")))))
 
-  (defun TeX-error-delete-window ()
-    "Delete TeX error window when there are no errors to show."
-    (let ((w (get-buffer-window))
-          (b (get-buffer "*TeX Help*")))
+(defun TeX-error-delete-window ()
+  "Delete TeX error window when there are no errors to show."
+  (let ((w (get-buffer-window))
+        (b (get-buffer "*TeX Help*")))
+    (when w
+      (delete-window w))
+    (when b
+      (setq w (get-buffer-window b))
       (when w
-        (delete-window w))
-      (when b
-        (setq w (get-buffer-window b))
-        (when w
-          (delete-window w)))))
+        (delete-window w)))))
 
-  (defun TeX-error-install-delete-window-hook ()
-    "Install `TeX-error-delete-window' in buffer-local `kill-buffer-hook'."
-    (add-hook 'kill-buffer-hook #'TeX-error-delete-window nil t))
+(defun TeX-error-install-delete-window-hook ()
+  "Install `TeX-error-delete-window' in buffer-local `kill-buffer-hook'."
+  (add-hook 'kill-buffer-hook #'TeX-error-delete-window nil t))
 
-  (add-hook 'TeX-error-overview-mode-hook #'TeX-error-install-delete-window-hook)
+(add-hook 'TeX-error-overview-mode-hook #'TeX-error-install-delete-window-hook)
 
 
 
-  (defcustom TeX-buf-close-at-warnings-only t
-    "Close TeX buffer if there are only warnings."
-    :group 'TeX-output
-    :type 'boolean)
+(defcustom TeX-buf-close-at-warnings-only t
+  "Close TeX buffer if there are only warnings."
+  :group 'TeX-output
+  :type 'boolean)
 
-  (defun my-tex-close-TeX-buffer (_output)
-    "Close compilation buffer if there are no errors.
-  Hook this function into `TeX-after-compilation-finished-functions'."
-    (let ((buf (TeX-active-buffer)))
-      (when (buffer-live-p buf)
-        (with-current-buffer buf
-          (when (progn (TeX-parse-all-errors)
-                       (or
-                        (and TeX-buf-close-at-warnings-only
-                             (null (cl-assoc 'error TeX-error-list)))
-                        (null TeX-error-list)))
-            (cl-loop for win in (window-list)
-                     if (eq (window-buffer win) (current-buffer))
-                     do (delete-window win)))))))
+(defun my-tex-close-TeX-buffer (_output)
+  "Close compilation buffer if there are no errors.
+Hook this function into `TeX-after-compilation-finished-functions'."
+  (let ((buf (TeX-active-buffer)))
+    (when (buffer-live-p buf)
+      (with-current-buffer buf
+        (when (progn (TeX-parse-all-errors)
+                     (or
+                      (and TeX-buf-close-at-warnings-only
+                           (null (cl-assoc 'error TeX-error-list)))
+                      (null TeX-error-list)))
+          (cl-loop for win in (window-list)
+                   if (eq (window-buffer win) (current-buffer))
+                   do (delete-window win)))))))
 
-  (add-hook 'TeX-after-compilation-finished-functions #'my-tex-close-TeX-buffer)
+(add-hook 'TeX-after-compilation-finished-functions #'my-tex-close-TeX-buffer)
 #+end_src
 
 * Org mode
 #+begin_src emacs-lisp :tangle yes
-  (use-package org
-    :mode
-    ("\\.org$" . org-mode)
-    :init
-    (add-hook 'org-mode-hook 'turn-on-auto-fill)
-    (add-hook 'auto-save-hook 'org-save-all-org-buffers)
-    :config
-    (org-babel-do-load-languages 'org-babel-load-languages
-                                          '((python     . t)
-                                            (latex      . t)
-                                            (emacs-lisp . t)
-                                            (R          . t)))
-    (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
-    (setq org-log-done t)
-    (setq org-startup-indented t)
-    (setq org-agenda-files (list  "~/Nextcloud/org/"))
-    (setq org-directory "~/Nextcloud/org")
-    (setq org-default-notes-file (concat org-directory "/unfiled.org"))
-    (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
-    (setq org-refile-allow-creating-parent-nodes 'confirm)
-    (setq org-refile-use-outline-path 'file)
-    (setq org-outline-path-complete-in-steps nil)
-    (setq org-archive-location "::* Archived Tasks")
-    (setq org-export-html-preamble nil)
-    (setq org-hide-leading-stars t)
-    (setq org-startup-folded (quote fold))
-    (setq org-startup-indented t)
-    (setq org-src-fontify-natively t)
-    (setq org-src-tab-acts-natively t)
-    (setq org-cycle-separator-lines 1)
-    :bind
-    ("C-c l" . org-store-link)
-    ("C-c a" . org-agenda)
-    ("C-c c" . org-capture)
-    ("C-c b" . org-switchb))
+(use-package org
+  :mode
+  ("\\.org$" . org-mode)
+  :init
+  (add-hook 'org-mode-hook 'turn-on-auto-fill)
+  (add-hook 'auto-save-hook 'org-save-all-org-buffers)
+  :config
+  (org-babel-do-load-languages 'org-babel-load-languages
+                                        '((python     . t)
+                                          (latex      . t)
+                                          (emacs-lisp . t)
+                                          (R          . t)))
+  (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
+  (setq org-log-done t)
+  (setq org-startup-indented t)
+  (setq org-agenda-files (list  "~/Nextcloud/org/"))
+  (setq org-directory "~/Nextcloud/org")
+  (setq org-default-notes-file (concat org-directory "/unfiled.org"))
+  (setq org-refile-targets '((org-agenda-files :maxlevel . 1)))
+  (setq org-refile-allow-creating-parent-nodes 'confirm)
+  (setq org-refile-use-outline-path 'file)
+  (setq org-outline-path-complete-in-steps nil)
+  (setq org-archive-location "::* Archived Tasks")
+  (setq org-export-html-preamble nil)
+  (setq org-hide-leading-stars t)
+  (setq org-startup-folded (quote fold))
+  (setq org-startup-indented t)
+  (setq org-src-fontify-natively t)
+  (setq org-src-tab-acts-natively t)
+  (setq org-edit-src-content-indentation 0)
+  (setq org-cycle-separator-lines 1)
+  :bind
+  ("C-c l" . org-store-link)
+  ("C-c a" . org-agenda)
+  ("C-c c" . org-capture)
+  ("C-c b" . org-switchb))
 
-  (use-package org-bullets
-    :ensure t
-    :hook
-    (org-mode . (lambda() (org-bullets-mode 1))))
+(use-package org-bullets
+  :ensure t
+  :hook
+  (org-mode . (lambda() (org-bullets-mode 1))))
 
-  (use-package ox-pandoc
-    :ensure t)
+(use-package ox-pandoc
+  :ensure t)
 #+end_src
 
 ** Org Agenda
 #+BEGIN_SRC emacs-lisp :tangle yes
-  ;; Default agenda preferences
+;; Default agenda preferences
 
-  (setq org-deadline-warning-days 5)
-  (setq org-agenda-timegrid-use-ampm t)
-  (setq org-agenda-span 14)
+(setq org-deadline-warning-days 5)
+(setq org-agenda-timegrid-use-ampm t)
+(setq org-agenda-span 14)
 
-  ;; Set max level to 9
-  (setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 9))
+;; Set max level to 9
+(setq org-agenda-clockreport-parameter-plist '(:link t :maxlevel 9))
 
-  ;; Include currently clocked task
-  (setq org-clock-report-include-clocking-task t)
-  ;; Show agenda in current window
-  (setq org-agenda-window-setup 'current-window)
+;; Include currently clocked task
+(setq org-clock-report-include-clocking-task t)
+;; Show agenda in current window
+(setq org-agenda-window-setup 'current-window)
 
 
-  ;; File specific agendas
-  ;; Only works in the following configuration
-  ;;
-  ;; | Call       | Current    |
-  ;; | from       | Org-mode   |
-  ;; | this       | Agenda     |
-  ;; | window     |            |
-  ;; |------------+------------|
-  ;; | Dired or other buffer   |
-  ;; |                         |
+;; File specific agendas
+;; Only works in the following configuration
+;;
+;; | Call       | Current    |
+;; | from       | Org-mode   |
+;; | this       | Agenda     |
+;; | window     |            |
+;; |------------+------------|
+;; | Dired or other buffer   |
+;; |                         |
 
-  ;; notes.org agenda
-  (global-set-key (kbd "C-c <f1>")
-                  (lambda ()
-                    (interactive)
-                    (switch-to-buffer "notes.org")
-                    (execute-kbd-macro (kbd "C-c a < a"))))
+;; notes.org agenda
+(global-set-key (kbd "C-c <f1>")
+                (lambda ()
+                  (interactive)
+                  (switch-to-buffer "notes.org")
+                  (execute-kbd-macro (kbd "C-c a < a"))))
 
-  ;; work.org agenda
-  (global-set-key (kbd "C-c <f2>")
-                  (lambda ()
-                    (interactive)
-                    (switch-to-buffer "work.org")
-                    (execute-kbd-macro (kbd "C-c a < a"))))
+;; work.org agenda
+(global-set-key (kbd "C-c <f2>")
+                (lambda ()
+                  (interactive)
+                  (switch-to-buffer "work.org")
+                  (execute-kbd-macro (kbd "C-c a < a"))))
 
-  ;; home.org agenda
-  (global-set-key (kbd "C-c <f3>")
-                  (lambda ()
-                    (interactive)
-                    (switch-to-buffer "home.org")
-                    (execute-kbd-macro (kbd "C-c a < a"))))
+;; home.org agenda
+(global-set-key (kbd "C-c <f3>")
+                (lambda ()
+                  (interactive)
+                  (switch-to-buffer "home.org")
+                  (execute-kbd-macro (kbd "C-c a < a"))))
 
-  ;; finance.org agenda
-  (global-set-key (kbd "C-c <f4>")
-                  (lambda ()
-                    (interactive)
-                    (switch-to-buffer "finance.org")
-                    (execute-kbd-macro (kbd "C-c a < a"))))
+;; finance.org agenda
+(global-set-key (kbd "C-c <f4>")
+                (lambda ()
+                  (interactive)
+                  (switch-to-buffer "finance.org")
+                  (execute-kbd-macro (kbd "C-c a < a"))))
 
-  ;; hobbies.org agenda
-  (global-set-key (kbd "C-c <f5>")
-                  (lambda ()
-                    (interactive)
-                    (switch-to-buffer "hobbies.org")
-                    (execute-kbd-macro (kbd "C-c a < a"))))
+;; hobbies.org agenda
+(global-set-key (kbd "C-c <f5>")
+                (lambda ()
+                  (interactive)
+                  (switch-to-buffer "hobbies.org")
+                  (execute-kbd-macro (kbd "C-c a < a"))))
 #+END_SRC
 
 ** Org Capture
