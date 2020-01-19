@@ -1,0 +1,15 @@
+# ~/.local/share/systemd/user/intel-virtual-output.service
+[Unit]
+Description=intel-virtual-output for external displays
+Requisite=docked.target
+After=docked.target
+PartOf=docked.target
+Conflicts=sleep.target
+Before=sleep.target
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/intel-virtual-output -d :0
+
+[Install]
+WantedBy=docked.target

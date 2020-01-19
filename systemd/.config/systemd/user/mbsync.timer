@@ -1,5 +1,5 @@
 [Unit]
-Description=Mailbox synchronization timer
+Description=Mailbox syncronisation timer
 
 [Timer]
 OnBootSec=2m

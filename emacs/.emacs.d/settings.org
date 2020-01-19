@@ -39,56 +39,61 @@
 
 * Global settings
 #+begin_src emacs-lisp :tangle yes
-  (setq inhibit-startup-screen t)         ; Stop the splash screen
-  (setq mouse-yank-at-point t)            ; When copying with the mouse, paste at point
-  (setq ispell-list-command "--list")     ; Required for aspell backend
-  (setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
-  (setq ispell-local-dictionary "en_GB")
-  (setq global-visual-line-mode t)        ; Move to the next row even if it's wrapped
-  (setq column-number-mode t)             ; Display column position in modeline
-  (setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
-  (setq delete-old-versions t)            ; Delete old backups
-  (setq kept-new-versions 6)
-  (setq kept-old-versions 2)
-  (setq version-control t)                ; Control version numbers for old files
-  (setq mouse-autoselect-window t)        ; Move window focus with mouse move
-  (setq focus-follows-mouse t)
-  (setq show-paren-delay 0)               ; Show parens immediately
-  (setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
-  (setq select-enable-clipboard t)             ; Cut/paste from clipboard
-  (setq x-select-enable-primary t)             ; And from selection buffer
-  (setq auto-revert-verbose nil)               ; Don't warn when file changes
-  (setq vc-follow-symlinks t)                  ; Just do it
-  (setq global-auto-revert-non-file-buffers t) ; For all buffer types
-  (setq mouse-drag-copy-region t)              ; Drag stuff
-  ;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ; Really slow mouse scroll
-  (setq mouse-wheel-progressive-speed nil) ; Don't speed up
-  (setq scroll-step 1)                     ; Go slow
-  (setq scroll-conservatively 10000)       ; Don't jump when scrolling
-  (setq auto-window-vscroll nil)           ; Don't jump when scrolling
-  (setq visible-bell t)                    ; Don't beep
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq inhibit-startup-screen t)         ; Stop the splash screen
+(setq mouse-yank-at-point t)            ; When copying with the mouse, paste at point
+(setq ispell-list-command "--list")     ; Required for aspell backend
+(setq ispell-extra-args '("--sug-mode=fast")) ;; --sug-mode=fast,normal
+(setq ispell-local-dictionary "en_GB")
+(setq global-visual-line-mode t)        ; Move to the next row even if it's wrapped
+(setq column-number-mode t)             ; Display column position in modeline
+(setq backup-directory-alist '((".*" . "~/.emacs.d/backups")))
+(setq delete-old-versions t)            ; Delete old backups
+(setq kept-new-versions 6)
+(setq kept-old-versions 2)
+(setq version-control t)                ; Control version numbers for old files
+(setq mouse-autoselect-window t)        ; Move window focus with mouse move
+(setq focus-follows-mouse t)
+(setq show-paren-delay 0)               ; Show parens immediately
+(setq save-interprogram-paste-before-kill t) ; Save clipboard strings into killring before replacing them
+(setq select-enable-clipboard t)             ; Cut/paste from clipboard
+(setq x-select-enable-primary t)             ; And from selection buffer
+(setq auto-revert-verbose nil)               ; Don't warn when file changes
+(setq vc-follow-symlinks t)                  ; Just do it
+(setq global-auto-revert-non-file-buffers t) ; For all buffer types
+(setq mouse-drag-copy-region t)              ; Drag stuff
+;; (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))  ; Really slow mouse scroll
+(setq mouse-wheel-progressive-speed nil) ; Don't speed up
+(setq scroll-step 1)                     ; Go slow
+(setq scroll-conservatively 10000)       ; Don't jump when scrolling
+(setq auto-window-vscroll nil)           ; Don't jump when scrolling
+(setq visible-bell t)                    ; Don't beep
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+(setq apropos-do-all t)
+(setq mouse-yank-at-point t)
+(setq require-final-newline t)
+(setq load-prefer-newer t)
+(setq kill-whole-line t)
 
-  (setq-default ispell-program-name "aspell")
-  (setq-default save-place t)             ; Come back to the same place in buffer next visit
-  (setq-default fill-column 80)
+(setq-default ispell-program-name "aspell")
+(setq-default save-place t)             ; Come back to the same place in buffer next visit
+(setq-default fill-column 80)
 
-  ;; (show-paren-mode 1)                     ; Show matching parenthesis
-  (global-hl-line-mode t)                 ; highlight line all the time
-  (transient-mark-mode t)                 ; Allow highlighting
-  (global-auto-revert-mode 1)             ; Change buffers if they change on disk
-  (scroll-bar-mode -1)                    ; Turn off scroll
-  (tool-bar-mode -1)                      ; Turn off tool-bar
-  (when window-system (menu-bar-mode 1)); Still show the menubar
-  ;; (delete-selection-mode 1)               ; Selection is deleted
-  (semantic-mode 1)                       ; Use cedet
+;; (show-paren-mode 1)                     ; Show matching parenthesis
+(global-hl-line-mode t)                 ; highlight line all the time
+(transient-mark-mode t)                 ; Allow highlighting
+(global-auto-revert-mode 1)             ; Change buffers if they change on disk
+(scroll-bar-mode -1)                    ; Turn off scroll
+(tool-bar-mode -1)                      ; Turn off tool-bar
+(when (not window-system) (menu-bar-mode -1)); Still show the menubar
+;; (delete-selection-mode 1)               ; Selection is deleted
+(semantic-mode 1)                       ; Use cedet
+(save-place-mode 1)
+(setq save-place-file (concat user-emacs-directory "places"))
+(defalias 'yes-or-no-p 'y-or-n-p)       ; y
 
-
-  (defalias 'yes-or-no-p 'y-or-n-p)       ; y
-
-  ;; Open init file with C-x r j e
-  (set-register ?e (cons 'file "~/.emacs.d/settings.org"))
-  (set-register ?o (cons 'file "~/Nextcloud/org/notes.org"))
+;; Open init file with C-x r j e
+(set-register ?e (cons 'file (concat user-emacs-directory "settings.org")))
+(set-register ?o (cons 'file "~/Nextcloud/org/notes.org"))
 #+end_src
 
 * Functions
@@ -266,88 +271,103 @@
         (move-beginning-of-line nil))))
 
 
+(defun client-save-kill-emacs(&optional display)
+  " This is a function that can bu used to shutdown save buffers and
+shutdown the emacs daemon. It should be called using
+emacsclient -e '(client-save-kill-emacs)'.  This function will
+check to see if there are any modified buffers or active clients
+or frame.  If so an x window will be opened and the user will
+be prompted."
+
+  (let (new-frame modified-buffers active-clients-or-frames)
+
+    ; Check if there are modified buffers or active clients or frames.
+    (setq modified-buffers (modified-buffers-exist))
+    (setq active-clients-or-frames ( or (> (length server-clients) 1)
+                                        (> (length (frame-list)) 1)
+                                       ))
+
+    ; Create a new frame if prompts are needed.
+    (when (or modified-buffers active-clients-or-frames)
+      (when (not (eq window-system 'x))
+        (message "Initializing x windows system.")
+        (x-initialize-window-system))
+      (when (not display) (setq display (getenv "DISPLAY")))
+      (message "Opening frame on display: %s" display)
+      (select-frame (make-frame-on-display display '((window-system . x)))))
+
+    ; Save the current frame.
+    (setq new-frame (selected-frame))
 
 
-  (defun client-save-kill-emacs(&optional display)
-    " This is a function that can bu used to shutdown save buffers and
-      shutdown the emacs daemon. It should be called using
-      emacsclient -e '(client-save-kill-emacs)'.  This function will
-      check to see if there are any modified buffers or active clients
-      or frame.  If so an x window will be opened and the user will
-      be prompted."
+    ; When displaying the number of clients and frames:
+    ; subtract 1 from the clients for this client.
+    ; subtract 2 from the frames this frame (that we just created) and the default frame.
+    (when ( or (not active-clients-or-frames)
+               (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2))))
 
-    (let (new-frame modified-buffers active-clients-or-frames)
+      ; If the user quits during the save dialog then don't exit emacs.
+      ; Still close the terminal though.
+      (let((inhibit-quit t))
+             ; Save buffers
+        (with-local-quit
+          (save-some-buffers))
 
-                                          ; Check if there are modified buffers or active clients or frames.
-      (setq modified-buffers (modified-buffers-exist))
-      (setq active-clients-or-frames ( or (> (length server-clients) 1)
-                                          (> (length (frame-list)) 1)
-                                          ))
+        (if quit-flag
+          (setq quit-flag nil)
+          ; Kill all remaining clients
+          (progn
+            (dolist (client server-clients)
+              (server-delete-client client))
+                 ; Exit emacs
+            (kill-emacs)))
+        ))
 
-                                          ; Create a new frame if prompts are needed.
-      (when (or modified-buffers active-clients-or-frames)
-        (when (not (eq window-system 'x))
-          (message "Initializing x windows system.")
-          (x-initialize-window-system))
-        (when (not display) (setq display (getenv "DISPLAY")))
-        (message "Opening frame on display: %s" display)
-        (select-frame (make-frame-on-display display '((window-system . x)))))
-
-                                          ; Save the current frame.
-      (setq new-frame (selected-frame))
-
-
-                                          ; When displaying the number of clients and frames:
-                                          ; subtract 1 from the clients for this client.
-                                          ; subtract 2 from the frames this frame (that we just created) and the default frame.
-      (when ( or (not active-clients-or-frames)
-                 (yes-or-no-p (format "There are currently %d clients and %d frames. Exit anyway?" (- (length server-clients) 1) (- (length (frame-list)) 2))))
-
-                                          ; If the user quits during the save dialog then don't exit emacs.
-                                          ; Still close the terminal though.
-        (let((inhibit-quit t))
-                                          ; Save buffers
-          (with-local-quit
-            (save-some-buffers))
-
-          (if quit-flag
-              (setq quit-flag nil)
-                                          ; Kill all remaining clients
-            (progn
-              (dolist (client server-clients)
-                (server-delete-client client))
-                                          ; Exit emacs
-              (kill-emacs)))
-          ))
-
-                                          ; If we made a frame then kill it.
-      (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))
-      )
+    ; If we made a frame then kill it.
+    (when (or modified-buffers active-clients-or-frames) (delete-frame new-frame))
     )
+  )
 
 
-  (defun modified-buffers-exist()
-    "This function will check to see if there are any buffers
-      that have been modified.  It will return true if there are
-      and nil otherwise. Buffers that have buffer-offer-save set to
-      nil are ignored."
-    (let (modified-found)
-      (dolist (buffer (buffer-list))
-        (when (and (buffer-live-p buffer)
-                   (buffer-modified-p buffer)
-                   (not (buffer-base-buffer buffer))
-                   (or
-                    (buffer-file-name buffer)
-                    (progn
-                      (set-buffer buffer)
-                      (and buffer-offer-save (> (buffer-size) 0))))
-                   )
-          (setq modified-found t)
-          )
+(defun modified-buffers-exist()
+  "This function will check to see if there are any buffers
+that have been modified.  It will return true if there are
+and nil otherwise. Buffers that have buffer-offer-save set to
+nil are ignored."
+  (let (modified-found)
+    (dolist (buffer (buffer-list))
+      (when (and (buffer-live-p buffer)
+                 (buffer-modified-p buffer)
+                 (not (buffer-base-buffer buffer))
+                 (or
+                  (buffer-file-name buffer)
+                  (progn
+                    (set-buffer buffer)
+                    (and buffer-offer-save (> (buffer-size) 0))))
+                 )
+        (setq modified-found t)
         )
-      modified-found
       )
+    modified-found
     )
+  )
+
+(defun slick-cut (beg end)
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (list (line-beginning-position) (line-beginning-position 2)))))
+
+(advice-add 'kill-region :before #'slick-cut)
+
+(defun slick-copy (beg end)
+  (interactive
+   (if mark-active
+       (list (region-beginning) (region-end))
+     (message "Copied line")
+     (list (line-beginning-position) (line-beginning-position 2)))))
+
+(advice-add 'kill-ring-save :before #'slick-copy)
 #+end_src
 
 * More settings
@@ -442,38 +462,44 @@ The corresponding mode is `%s'."
 
 #+begin_src emacs-lisp :tangle yes
 
-  ;; Stop doing bad things
-  (define-key global-map [(insert)] nil)
-  (define-key global-map [(control insert)] 'overwrite-mode)
-  (put 'overwrite-mode 'disabled t)
-  (global-unset-key (kbd "C-z"))
-  (global-unset-key (kbd "<prior>"))
-  (global-unset-key (kbd "<next>"))
+;; Stop doing bad things
+(define-key global-map [(insert)] nil)
+(define-key global-map [(control insert)] 'overwrite-mode)
+(put 'overwrite-mode 'disabled t)
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "<prior>"))
+(global-unset-key (kbd "<next>"))
+
+;; Reload init file
+(global-set-key (kbd "C-x C-l") (lambda () (interactive) (load-file user-init-file)))
+;; (global-set-key (kbd "C-x C-l") (lambda() (interactive) (org-babel-load-file user-init-file)))
+;; (global-set-key (kbd "C-x C-r") 'recentf-open-files)  ; use helm-recentf
+(global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
+(global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
+(global-set-key (kbd "<f5>") 'revert-buffer)
+(global-set-key (kbd "C-x 5") 'toggle-window-split)
+(global-set-key (kbd "C-x 6") 'rotate-windows)
+(global-set-key (kbd "C-x 7") 'delete-frame)
+(global-set-key (kbd "<C-S-down>") 'move-line-down)
+(global-set-key (kbd "<C-S-up>") 'move-line-up)
+(global-set-key (kbd "<C-return>") 'open-line-below)
+(global-set-key (kbd "<C-S-return>") 'open-line-above)
+(global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
+(global-set-key (kbd "C-c n") 'cleanup-buffer)
+(global-set-key "\M-l" 'goto-line)
+(global-set-key [remap goto-line] 'goto-line-with-feedback)
+(global-set-key (kbd "C-a") 'beginning-of-line-dwim)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+
+(define-key ctl-x-map "n" #'narrow-or-widen-dwim)
 
 
-  (global-set-key (kbd "C-x C-l") (lambda () (interactive) (load-file user-init-file)))
-  ;; (global-set-key (kbd "C-x C-r") 'recentf-open-files)  ; use helm-recentf
-  (global-set-key (kbd "C-x C-b") 'ibuffer-other-window)
-  (global-set-key (kbd "M-j") (lambda () (interactive) (join-line -1)))
-  (global-set-key (kbd "<f5>") 'revert-buffer)
-  (global-set-key (kbd "C-x 5") 'toggle-window-split)
-  (global-set-key (kbd "C-x 6") 'rotate-windows)
-  (global-set-key (kbd "C-x 7") 'delete-frame)
-  (global-set-key (kbd "<C-S-down>") 'move-line-down)
-  (global-set-key (kbd "<C-S-up>") 'move-line-up)
-  (global-set-key (kbd "<C-return>") 'open-line-below)
-  (global-set-key (kbd "<C-S-return>") 'open-line-above)
-  (global-set-key (kbd "C-x C-k") 'delete-current-buffer-file)
-  (global-set-key (kbd "C-c n") 'cleanup-buffer)
-  (global-set-key "\M-l" 'goto-line)
-  (global-set-key [remap goto-line] 'goto-line-with-feedback)
-  (global-set-key (kbd "C-a") 'beginning-of-line-dwim)
-  (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
-
-
-  (define-prefix-command 'spm-map)
-  (global-set-key (kbd "C-c s") 'spm-map)
-  (define-key spm-map (kbd "m") 'mu4e)
+(define-prefix-command 'spm-map)
+(global-set-key (kbd "C-c s") 'spm-map)
+(define-key spm-map (kbd "m") 'mu4e)
 #+end_src
 
 * Packages
@@ -601,6 +627,12 @@ The corresponding mode is `%s'."
 (use-package simple-mpc
   :ensure t)
 
+;; (use-package excorporate
+;;   :ensure t
+;;   :config
+;;   (setq-default excorporate-configuration nil))
+;;    (excorporate-configuration
+;;     ("shaun.mucalo@canterbury.ac.nz" . "https://exchange.canterbury.ac.nz/owa"))
 
 (use-package visual-regexp
   :ensure t
@@ -636,11 +668,6 @@ The corresponding mode is `%s'."
               ("M-n" . comint-next-matching-input-from-input)
               ("C-<up>" . comint-previous-matching-input-from-input)
               ("C-<down>" . comint-next-matching-input-from-input)))
-
-(use-package saveplace
-  :config
-  ;; (setq save-place-file "~/.emacs.d/places")
-  )
 
 #+end_src
 
@@ -744,13 +771,13 @@ The corresponding mode is `%s'."
                                                   (concat
                                                    "Shaun Mucalo\n"
                                                    "Christchurch, New Zealand\n"))
-                        ( mu4e-sent-folder        . "/gmail_mail/Sent" )
-                        ( mu4e-trash-folder       . "/gmail_mail/Trash" )
-                        ( mu4e-drafts-folder      . "/gmail_mail/Drafts" )
+                        ( mu4e-sent-folder        . "/gmail_mail/sent" )
+                        ( mu4e-trash-folder       . "/gmail_mail/trash" )
+                        ( mu4e-drafts-folder      . "/gmail_mail/drafts" )
                         (mu4e-maildir-shortcuts   . ( ("/gmail_mail/INBOX"  . ?i)
-                                                      ("/gmail_mail/Sent"   . ?s)
-                                                      ("/gmail_mail/Trash"  . ?t)
-                                                      ("/gmail_mail/Drafts" . ?d)))))
+                                                      ("/gmail_mail/sent"   . ?s)
+                                                      ("/gmail_mail/trash"  . ?t)
+                                                      ("/gmail_mail/drafts" . ?d)))))
              ,(make-mu4e-context
                :name "yahoo"
                :enter-func (lambda () (mu4e-message "Switch to the yahoo context"))

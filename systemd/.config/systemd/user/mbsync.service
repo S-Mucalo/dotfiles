@@ -1,5 +1,5 @@
 [Unit]
-Description=Mailbox synchronisation service
+Description=Mailbox synchronization service
 
 [Service]
 Type=oneshot
