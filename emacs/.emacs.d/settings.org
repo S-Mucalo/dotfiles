@@ -2,37 +2,37 @@
 *  Bootstrapping package and use-package
 
 #+begin_src emacs-lisp :tangle no
-  (defun debug-on-load-obsolete (filename)
-    (when (equal (car (last (split-string filename "[/\\]") 2))
-                 "obsolete")
-      (debug)))
-  (add-to-list 'after-load-functions #'debug-on-load-obsolete)
+(defun debug-on-load-obsolete (filename)
+  (when (equal (car (last (split-string filename "[/\\]") 2))
+               "obsolete")
+    (debug)))
+(add-to-list 'after-load-functions #'debug-on-load-obsolete)
 
 #+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp :tangle yes
-  (require 'package)
+(require 'package)
 
-  (setq package-enable-at-startup nil)
-  (add-to-list 'package-archives
-               '("melpa" . "https://melpa.org/packages/"))
+(setq package-enable-at-startup nil)
+(add-to-list 'package-archives
+             '("melpa" . "https://melpa.org/packages/"))
 
-  (package-initialize)
+(package-initialize)
 
-  ;; Bootstrap `use-package'
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
+;; Bootstrap `use-package'
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
-  (use-package benchmark-init
-    :ensure t
-    :config
-    ;; To disable collection of benchmark data after init is done.
-    (add-hook 'after-init-hook 'benchmark-init/deactivate))
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-    (setq custom-file "~/.emacs.d/custom.el")
-    (load custom-file 'noerror)
+  (setq custom-file "~/.emacs.d/custom.el")
+  (load custom-file 'noerror)
 
 
 #+end_src
@@ -86,14 +86,20 @@
 (tool-bar-mode -1)                      ; Turn off tool-bar
 (when (not window-system) (menu-bar-mode -1)); Still show the menubar
 ;; (delete-selection-mode 1)               ; Selection is deleted
-(semantic-mode 1)                       ; Use cedet
+
 (save-place-mode 1)
 (setq save-place-file (concat user-emacs-directory "places"))
 (defalias 'yes-or-no-p 'y-or-n-p)       ; y
 
+(setq org-directory "~/Nextcloud/org/")
+
 ;; Open init file with C-x r j e
 (set-register ?e (cons 'file (concat user-emacs-directory "settings.org")))
-(set-register ?o (cons 'file "~/Nextcloud/org/notes.org"))
+(set-register ?i (cons 'file (concat user-emacs-directory "init.el")))
+(set-register ?w (cons 'file (concat org-directory "work.org")))
+(set-register ?n (cons 'file (concat org-directory "notes.org")))
+(set-register ?s (cons 'file (concat org-directory "school.org")))
+
 #+end_src
 
 * Functions
@@ -412,10 +418,10 @@ nil are ignored."
       '(".o" ".elc" "~" ".bin" ".class" ".exe" ".ps" ".abs" ".mx"
         ".~jv" ".rbc" ".pyc" ".beam" ".aux" ".out" ".pdf" ".hbc"))
 
-(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
+(setq package-archives '(;; ("gnu" . "http://elpa.gnu.org/packages/")
+                         ;; ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa" . "http://melpa.milkbox.net/packages/")
-                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ;; ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("elpy" . "https://jorgenschaefer.github.io/packages/")))
 ;; (package-refresh-contents)
 
@@ -496,10 +502,11 @@ The corresponding mode is `%s'."
 
 (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
 
-
 (define-prefix-command 'spm-map)
 (global-set-key (kbd "C-c s") 'spm-map)
-(define-key spm-map (kbd "m") 'mu4e)
+;; (define-key spm-map (kbd "m") 'mu4e)
+(define-key spm-map (kbd "b") 'benchmark-init/show-durations-tree)
+(define-key spm-map (kbd "B") 'benchmark-init/show-durations-tabulated)
 #+end_src
 
 * Packages
@@ -510,6 +517,10 @@ The corresponding mode is `%s'."
   (add-to-list 'recentf-exclude no-littering-var-directory)
   (add-to-list 'recentf-exclude no-littering-etc-directory))
 
+;; (semantic-mode 1)                       ; Use cedet
+(use-package semantic
+  :defer t)
+
 (use-package beacon                     ; Flash the line when point moves
   :ensure t
   :config
@@ -518,7 +529,8 @@ The corresponding mode is `%s'."
   (setq beacon-color "red"))
 
 (use-package academic-phrases
-  :ensure t)
+  :ensure t
+  :commands academic-phrases)
 
 (use-package lua-mode
   :ensure t
@@ -526,7 +538,10 @@ The corresponding mode is `%s'."
 
 (use-package async
   :ensure t
-  :init (dired-async-mode 1))
+  :after dired
+  :config
+  (dired-async-mode 1)
+  (async-bytecomp-package-mode 1))
 
 (use-package pretty-mode
   :ensure t
@@ -550,8 +565,9 @@ The corresponding mode is `%s'."
 
 (use-package multi-term
   :ensure t
+  :defer t
   :config
-  (setq multi-term-program "/bin/bash"))
+  (setq multi-term-program "/bin/zsh"))
 
 (use-package magit
   :ensure t
@@ -564,7 +580,8 @@ The corresponding mode is `%s'."
   :ensure t)
 
 (use-package systemd
-  :ensure t)
+  :ensure t
+  :defer t)
                                         ; deletes all the whitespace when you hit backspace or delete
 (use-package hungry-delete
   :ensure t
@@ -589,6 +606,7 @@ The corresponding mode is `%s'."
 
 (use-package smartparens
   :ensure t
+  :defer t
   :config
   (use-package smartparens-config)
   ;; (use-package smartparens-html)
@@ -625,6 +643,7 @@ The corresponding mode is `%s'."
   (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
 
 (use-package simple-mpc
+  :defer t
   :ensure t)
 
 ;; (use-package excorporate
@@ -656,6 +675,7 @@ The corresponding mode is `%s'."
   (window-number-meta-mode 1))
 
 (use-package comint
+  :defer t
   :config
   (setq ansi-color-for-comint-mode 'filter)
   (setq comint-scroll-to-bottom-on-input t)
@@ -676,6 +696,7 @@ The corresponding mode is `%s'."
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package emms
   :ensure t
+  :defer t
   :config
   (require 'emms-setup)
   (require 'emms-player-mpd)
@@ -689,144 +710,147 @@ The corresponding mode is `%s'."
 * Mail
 #+begin_src emacs-lisp :tangle yes
 (use-package mu4e
-  ;; :defer 5
+  :defer t
+  :bind (:map spm-map
+              ("m" . mu4e))
+  :commands mu4e
   :config
+  (add-hook 'mu4e-compose-mode-hook #'(lambda () (auto-save-mode -1)))
+  (setq message-kill-buffer-on-exit t)
+  (setq mail-envelope-from (quote header))
+  (setq mail-specify-envelope-from t)
+  (setq message-sendmail-envelope-from (quote header))
+  (setq send-mail-function (quote sendmail-send-it))
+  ;; (setq mu4e-get-mail-command "offlineimap -o")
+  ;; use 'fancy' non-ascii characters in various places in mu4e
+  (setq mu4e-use-fancy-chars t)
 
+  ;; save attachment to my desktop (this can also be a function)
+  (setq mu4e-attachment-dir "~/Downloads")
 
+  ;; attempt to show images when viewing messages
+  ;; (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
 
-    (setq message-kill-buffer-on-exit t)
-    (setq mail-envelope-from (quote header))
-    (setq mail-specify-envelope-from t)
-    (setq message-sendmail-envelope-from (quote header))
-    (setq send-mail-function (quote sendmail-send-it))
-    (setq mu4e-get-mail-command "offlineimap -o")
-    ;; use 'fancy' non-ascii characters in various places in mu4e
-    (setq mu4e-use-fancy-chars t)
+  ;; (setq mu4e-html2text-command "w3m -dump -T text/html")
+  (setq mu4e-view-prefer-html t)
+  (setq shr-color-visible-luminance-min 80)
+  (setq mu4e-view-show-images t)
 
-    ;; save attachment to my desktop (this can also be a function)
-    (setq mu4e-attachment-dir "~/Downloads")
+  (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
+  (setq mu4e-get-mail-command "mbsync -a")
 
-    ;; attempt to show images when viewing messages
-    ;; (setq mu4e-html2text-command "html2text -utf8 -nobs -width 72")
+  ;; Show full address in view message
+  (setq mu4e-view-show-addresses 't)
+  ;; every new email composition gets its own frame!
+  (setq mu4e-compose-in-new-frame t)
+  ;; For isync the MUA must rename files when moving them between Maildir folders, mu4e needs to be configure to do it
+  (setq mu4e-change-filenames-when-moving t)
+  ;; enable inline images
+  (setq mu4e-view-show-images t)
+  ;; use imagemagick, if available
+  (when (fboundp 'imagemagick-register-types)
+    (imagemagick-register-types))
+  (setq mu4e-context-policy 'pick-first)
+  ;; Don't ask to quit... why is this the default?
+  (setq mu4e-confirm-quit nil)
+  (setq mu4e-maildir "~/.mail")
+  (setq mu4e-contexts
+        `( ,(make-mu4e-context
+             :name "UC-mail"
+             :enter-func (lambda () (mu4e-message "Entering UC-mail context"))
+             :leave-func (lambda () (mu4e-message "Leaving UC-mail context"))
+             ;; we match based on the contact-fields of the message
+             :match-func (lambda (msg)
+                           (when msg
+                             (mu4e-message-contact-field-matches msg
+                                                                 :to "shaun.mucalo@canterbury.ac.nz")))
+             :vars '( ( user-mail-address      . "shaun.mucalo@canterbury.ac.nz"  )
+                      ( mu4e-sent-folder       . "/UC_mail/Sent Items")
+                      ( mu4e-drafts-folder     . "/UC_mail/Drafts")
+                      ( mu4e-trash-folder      . "/UC_mail/Deleted Items")
+                      ( user-full-name         . "Shaun Mucalo" )
+                      ( mu4e-maildir-shortcuts . ( ("/UC_mail/INBOX"        . ?i)
+                                                   ("/UC_mail/Sent Items"   . ?s)
+                                                   ("/UC_mail/Deleted Items". ?t)
+                                                   ("/UC_mail/Drafts"       . ?d)))
+                      ( mu4e-compose-signature .
+                                               (concat
+                                                "Shaun Mucalo\n"
+                                                "University of Canterbury, New Zealand\n"))))
+           ,(make-mu4e-context
+             :name "gmail"
+             :enter-func (lambda () (mu4e-message "Switch to the gmail context"))
+             ;; no leave-func
+             ;; we match based on the contact-fields of the message
+             :match-func (lambda (msg)
+                           (when msg
+                             (mu4e-message-contact-field-matches msg
+                                                                 :to "shaunmucalo@gmail.com")))
+             :vars '( ( user-mail-address       . "shaunmucalo@gmail.com" )
+                      ( user-full-name          . "Shaun Mucalo" )
+                      ( mu4e-compose-signature  .
+                                                (concat
+                                                 "Shaun Mucalo\n"
+                                                 "Christchurch, New Zealand\n"))
+                      ( mu4e-sent-folder        . "/gmail_mail/sent" )
+                      ( mu4e-trash-folder       . "/gmail_mail/trash" )
+                      ( mu4e-drafts-folder      . "/gmail_mail/drafts" )
+                      (mu4e-maildir-shortcuts   . ( ("/gmail_mail/INBOX"  . ?i)
+                                                    ("/gmail_mail/sent"   . ?s)
+                                                    ("/gmail_mail/trash"  . ?t)
+                                                    ("/gmail_mail/drafts" . ?d)))))
+           ,(make-mu4e-context
+             :name "yahoo"
+             :enter-func (lambda () (mu4e-message "Switch to the yahoo context"))
+             ;; no leave-func
+             ;; we match based on the maildir of the message; assume all
+             ;; cycling-related messages go into the /cycling maildir
+             :match-func (lambda (msg)
+                           (when msg
+                             (mu4e-message-field msg :maildir) "/yahoo"))
+             :vars '( ( user-mail-address   . "s_mucalo@yahoo.co.nz" )
+                      ( user-full-name      . "Shaun Mucalo" )
+                      ( mu4e-sent-folder    . "/yahoo_mail/Sent" )
+                      ( mu4e-drafts-folder  . "/yahoo_mail/Drafts" )
+                      ( mu4e-trash-folder   . "/yahoo_mail/Trash" )
+                      ( mu4e-maildir-shortcuts . ( ("/yahoo_mail/Inbox"  . ?i)
+                                                   ("/yahoo_mail/Sent"   . ?s)
+                                                   ("/yahoo_mail/Trash"  . ?t)))
+                      ( mu4e-compose-signature  . nil)))))
+  (setq mu4e-user-mail-address-list
+        (delq nil
+              (mapcar (lambda (context)
+                        (when (mu4e-context-vars context)
+                          (cdr (assq 'user-mail-address (mu4e-context-vars context)))))
+                      mu4e-contexts))))
 
-    ;; (setq mu4e-html2text-command "w3m -dump -T text/html")
-    (setq mu4e-view-prefer-html t)
-    (setq shr-color-visible-luminance-min 80)
-    (setq mu4e-view-show-images t)
+;; make the `gnus-dired-mail-buffers' function also work on
+;; message-mode derived modes, such as mu4e-compose-mode
+;; (require 'gnus-dired)
+(use-package gnus-dired
+  :after dired+)
 
-    (setq mu4e-headers-date-format "%d-%m-%Y %H:%M")
-    (setq mu4e-get-mail-command "mbsync -a")
-    ;; (setq mu4e-get-mail-command "offlineimap -o")
-
-    ;; Show full address in view message
-    (setq mu4e-view-show-addresses 't)
-    ;; every new email composition gets its own frame!
-    (setq mu4e-compose-in-new-frame t)
-    ;; For isync the MUA must rename files when moving them between Maildir folders, mu4e needs to be configure to do it
-    (setq mu4e-change-filenames-when-moving t)
-    ;; enable inline images
-    (setq mu4e-view-show-images t)
-    ;; use imagemagick, if available
-    (when (fboundp 'imagemagick-register-types)
-      (imagemagick-register-types))
-    (setq mu4e-context-policy 'pick-first)
-    ;; Don't ask to quit... why is this the default?
-    (setq mu4e-confirm-quit nil)
-    (setq mu4e-maildir "~/.mail")
-    (setq mu4e-contexts
-          `( ,(make-mu4e-context
-               :name "UC-mail"
-               :enter-func (lambda () (mu4e-message "Entering UC-mail context"))
-               :leave-func (lambda () (mu4e-message "Leaving UC-mail context"))
-               ;; we match based on the contact-fields of the message
-               :match-func (lambda (msg)
-                             (when msg
-                               (mu4e-message-contact-field-matches msg
-                                                                   :to "shaun.mucalo@canterbury.ac.nz")))
-               :vars '( ( user-mail-address      . "shaun.mucalo@canterbury.ac.nz"  )
-                        ( mu4e-sent-folder       . "/UC_mail/Sent Items")
-                        ( mu4e-drafts-folder     . "/UC_mail/Drafts")
-                        ( mu4e-trash-folder      . "/UC_mail/Deleted Items")
-                        ( user-full-name         . "Shaun Mucalo" )
-                        ( mu4e-maildir-shortcuts . ( ("/UC_mail/INBOX"        . ?i)
-                                                     ("/UC_mail/Sent Items"   . ?s)
-                                                     ("/UC_mail/Deleted Items". ?t)
-                                                     ("/UC_mail/Drafts"       . ?d)))
-                        ( mu4e-compose-signature .
-                                                 (concat
-                                                  "Shaun Mucalo\n"
-                                                  "University of Canterbury, New Zealand\n"))))
-             ,(make-mu4e-context
-               :name "gmail"
-               :enter-func (lambda () (mu4e-message "Switch to the gmail context"))
-               ;; no leave-func
-               ;; we match based on the contact-fields of the message
-               :match-func (lambda (msg)
-                             (when msg
-                               (mu4e-message-contact-field-matches msg
-                                                                   :to "shaunmucalo@gmail.com")))
-               :vars '( ( user-mail-address       . "shaunmucalo@gmail.com" )
-                        ( user-full-name          . "Shaun Mucalo" )
-                        ( mu4e-compose-signature  .
-                                                  (concat
-                                                   "Shaun Mucalo\n"
-                                                   "Christchurch, New Zealand\n"))
-                        ( mu4e-sent-folder        . "/gmail_mail/sent" )
-                        ( mu4e-trash-folder       . "/gmail_mail/trash" )
-                        ( mu4e-drafts-folder      . "/gmail_mail/drafts" )
-                        (mu4e-maildir-shortcuts   . ( ("/gmail_mail/INBOX"  . ?i)
-                                                      ("/gmail_mail/sent"   . ?s)
-                                                      ("/gmail_mail/trash"  . ?t)
-                                                      ("/gmail_mail/drafts" . ?d)))))
-             ,(make-mu4e-context
-               :name "yahoo"
-               :enter-func (lambda () (mu4e-message "Switch to the yahoo context"))
-               ;; no leave-func
-               ;; we match based on the maildir of the message; assume all
-               ;; cycling-related messages go into the /cycling maildir
-               :match-func (lambda (msg)
-                             (when msg
-                               (mu4e-message-field msg :maildir) "/yahoo"))
-               :vars '( ( user-mail-address   . "s_mucalo@yahoo.co.nz" )
-                        ( user-full-name      . "Shaun Mucalo" )
-                        ( mu4e-sent-folder    . "/yahoo_mail/Sent" )
-                        ( mu4e-drafts-folder  . "/yahoo_mail/Drafts" )
-                        ( mu4e-trash-folder   . "/yahoo_mail/Trash" )
-                        ( mu4e-maildir-shortcuts . ( ("/yahoo_mail/Inbox"  . ?i)
-                                                     ("/yahoo_mail/Sent"   . ?s)
-                                                     ("/yahoo_mail/Trash"  . ?t)))
-                        ( mu4e-compose-signature  . nil)))))
-    (setq mu4e-user-mail-address-list
-          (delq nil
-                (mapcar (lambda (context)
-                          (when (mu4e-context-vars context)
-                            (cdr (assq 'user-mail-address (mu4e-context-vars context)))))
-                        mu4e-contexts))))
-
-  (require 'gnus-dired)
-  ;; make the `gnus-dired-mail-buffers' function also work on
-  ;; message-mode derived modes, such as mu4e-compose-mode
-  (defun gnus-dired-mail-buffers ()
-    "Return a list of active message buffers."
-    (let (buffers)
-      (save-current-buffer
-        (dolist (buffer (buffer-list t))
-          (set-buffer buffer)
-          (when (and (derived-mode-p 'message-mode)
-                     (null message-sent-message-via))
-            (push (buffer-name buffer) buffers))))
-      (nreverse buffers)))
-
+(defun gnus-dired-mail-buffers ()
+  "Return a list of active message buffers."
+  (let (buffers)
+    (save-current-buffer
+      (dolist (buffer (buffer-list t))
+        (set-buffer buffer)
+        (when (and (derived-mode-p 'message-mode)
+                   (null message-sent-message-via))
+          (push (buffer-name buffer) buffers))))
+    (nreverse buffers)))
   (setq gnus-dired-mail-mode 'mu4e-user-agent)
   (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
+;; Attach files to messages using dired. mark the files in dired to attach, press C-c Ret C-a and you'll be asked whether to attach them to an existing message or create a new one
+;; Currently only works for attaching files to open drafts, not to new files
 
-
-  ;; Allow org-mode stuff in mu4e
-  (use-package org-mu4e
-    :after mu4e
-    :config
-    ;;store link to message if in header view, not to header query
-    (setq org-mu4e-link-query-in-headers-mode nil))
+;; Allow org-mode stuff in mu4e
+(use-package org-mu4e
+  :after mu4e
+  :config
+  ;;store link to message if in header view, not to header query
+  (setq org-mu4e-link-query-in-headers-mode nil))
 
 (use-package mu4e-alert
   :disabled t
@@ -920,7 +944,10 @@ The corresponding mode is `%s'."
 (use-package ess
   :defer t
   :ensure t
-  :init (use-package ess-site)
+  :init
+  (use-package ess-site
+    :defer t)
+
   :bind (:map ess-mode-map
               ([(shift return)] . my-ess-eval))
   :config
@@ -931,17 +958,19 @@ The corresponding mode is `%s'."
 * c
 #+begin_src emacs-lisp :tangle yes
 (use-package cc-mode
-    :config
-    (setq c-default-style "ellemtel")
-    (setq c-basic-offset 4)
-    ;; (setq c-toggle-hungry-state)
-    )
+  :defer t
+  :config
+  (setq c-default-style "ellemtel")
+  (setq c-basic-offset 4)
+  ;; (setq c-toggle-hungry-state)
+  )
 
-  (use-package flycheck
-    :ensure t
-    :config
-    (global-flycheck-mode t)
-    (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+(use-package flycheck
+  :ensure t
+  :defer t
+  :config
+  (global-flycheck-mode t)
+  (setq-default flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 
 (use-package dumb-jump
@@ -1017,13 +1046,18 @@ The corresponding mode is `%s'."
 (define-key dired-mode-map
   (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)
 
+
 (use-package bookmark+
-  :load-path "wiki-packages/bookmark-plus")
+  :load-path "wiki-packages/bookmark-plus"
+  :defer 5)
 
 (use-package dired+
   :load-path "wiki-packages/dired-plus/"
+  :defer 5
+  ;; :after dired
   :config
   (setq diredp-hide-details-initially-flag t))
+
 #+end_src
 
 * LaTeX
@@ -1037,6 +1071,48 @@ The corresponding mode is `%s'."
               ("C-c C-r" . reftex-query-replace-document)
               ("C-c C-g" . reftex-grep-document))
   :config
+  (use-package preview
+    :defer t
+    :commands LaTeX-preview-setup
+    :init
+    (progn
+      (setq-default preview-scale 1.4
+                    preview-scale-function '(lambda (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+
+  (use-package reftex
+    :defer t
+    :commands turn-on-reftex
+    :init
+    (progn
+      (setq reftex-plug-into-AUCTeX t
+            reftex-extra-bindings t)))
+
+  (use-package bibtex
+    :defer t
+    :mode ("\\.bib" . bibtex-mode)
+    :init
+    (progn
+      (setq bibtex-align-at-equal-sign t)
+      (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
+
+  (setq TeX-command-list
+        (append TeX-command-list
+                (list
+                 (list "XeLaTeX" "%`xelatex%(mode)%' %t"
+                       'TeX-run-TeX nil t :help "Run XeLaTeX")
+                 (list "Sage" "sage %s.sagetex.sage"
+                       'TeX-run-command nil t :help "Run SAGE.")
+                 (list "Wordcount" "texcount %t"
+                       'TeX-run-shell nil t :help "Run texcount.")
+                 (list "Pythontex"
+                       "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
+                       'TeX-run-shell nil t :help "Run pythontex.")
+                 (list "Depythontex"
+                       "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
+                       'TeX-run-shell nil t :help "Run depythontex.")
+                 (list "Latexmk" "latexmk -pdf %s"
+                       'TeX-run-TeX nil t :help "Run Latexmk on file"))))
+
   :hook
   ((LaTeX-mode . LaTeX-math-mode)
    (LaTeX-mode . flyspell-mode)
@@ -1054,48 +1130,6 @@ The corresponding mode is `%s'."
         TeX-error-overview-open-after-TeX-run t)
   (setq-default TeX-master nil))
 
-(use-package preview
-  :commands LaTeX-preview-setup
-  :init
-  (progn
-    (setq-default preview-scale 1.4
-                  preview-scale-function '(lambda (* (/ 10.0 (preview-document-pt)) preview-scale)))))
-
-(use-package reftex
-  :defer t
-  :commands turn-on-reftex
-  :init
-  (progn
-    (setq reftex-plug-into-AUCTeX t
-          reftex-extra-bindings t)))
-
-(use-package bibtex
-  :defer t
-  :mode ("\\.bib" . bibtex-mode)
-  :init
-  (progn
-    (setq bibtex-align-at-equal-sign t)
-    (add-hook 'bibtex-mode-hook (lambda () (set-fill-column 120)))))
-
-
-(eval-after-load "tex"
-  '(setq TeX-command-list
-         (append TeX-command-list
-                 (list
-                  (list "XeLaTeX" "%`xelatex%(mode)%' %t"
-                        'TeX-run-TeX nil t :help "Run XeLaTeX")
-                  (list "Sage" "sage %s.sagetex.sage"
-                        'TeX-run-command nil t :help "Run SAGE.")
-                  (list "Wordcount" "texcount %t"
-                        'TeX-run-shell nil t :help "Run texcount.")
-                  (list "Pythontex"
-                        "python /usr/share/texmf-dist/scripts/pythontex/pythontex.py %t"
-                        'TeX-run-shell nil t :help "Run pythontex.")
-                  (list "Depythontex"
-                        "python /usr/share/texmf-dist/scripts/pythontex/depythontex.py %t"
-                        'TeX-run-shell nil t :help "Run depythontex.")
-                  (list "Latexmk" "latexmk -pdf %s"
-                        'TeX-run-TeX nil t :help "Run Latexmk on file")))))
 
 (defun TeX-error-delete-window ()
   "Delete TeX error window when there are no errors to show."
@@ -1142,17 +1176,26 @@ Hook this function into `TeX-after-compilation-finished-functions'."
 * Org mode
 #+begin_src emacs-lisp :tangle yes
 (use-package org
+  :defer t
   :mode
   ("\\.org$" . org-mode)
   :init
   (add-hook 'org-mode-hook 'turn-on-auto-fill)
   (add-hook 'auto-save-hook 'org-save-all-org-buffers)
   :config
-  (org-babel-do-load-languages 'org-babel-load-languages
-                                        '((python     . t)
-                                          (latex      . t)
-                                          (emacs-lisp . t)
-                                          (R          . t)))
+  ;; (org-babel-do-load-languages 'org-babel-load-languages
+  ;;                                       '((python     . t)
+  ;;                                         (latex      . t)
+  ;;                                         (emacs-lisp . t)
+  ;;                                         (R          . t)))
+  (use-package ob-python
+    :defer t)
+  (use-package ob-latex
+    :defer t)
+  (use-package ob-emacs-lisp
+    :defer t)
+  (use-package ob-R
+    :defer t)
   (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.4))
   (setq org-log-done t)
   (setq org-startup-indented t)
@@ -1180,11 +1223,13 @@ Hook this function into `TeX-after-compilation-finished-functions'."
 
 (use-package org-bullets
   :ensure t
+  :after org-mode
   :hook
   (org-mode . (lambda() (org-bullets-mode 1))))
 
 (use-package ox-pandoc
-  :ensure t)
+  :ensure t
+  :after org-mode)
 #+end_src
 
 ** Org Agenda
@@ -1728,78 +1773,82 @@ Use one of the following
 
 #+begin_src emacs-lisp :tangle yes
 
-  (use-package helm
-    :config
-    (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-          helm-move-to-line-cycle-in-source     nil ; move to end or beginning of source when reaching top or bottom of source.
-          helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-          helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-          helm-ff-file-name-history-use-recentf t
-          helm-echo-input-in-header-line t)
-    (setq helm-autoresize-max-height 0)
-    (setq helm-autoresize-min-height 20)
-    (setq helm-mode-fuzzy-match t)
-    (setq helm-completion-in-region-fuzzy-match t)
-    (setq helm-buffers-fuzzy-matching t)
-    (setq helm-recentf-fuzzy-matching t)
-    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-    (helm-autoresize-mode 1)
-    (helm-mode 1)
-    :bind
-    (("C-c h" . helm-command-prefix)
-     ("C-x c" . nil)
-     ("C-x C-f" . helm-find-files)
-     ("M-x" . helm-M-x)
-     ;; "C-." . helm-dabbrev) conflicts ace jump
-     ("C-x b" . helm-mini)
-     ;; ("C-x b" . helm-buffers-list)
-     ("C-x C-r" . helm-recentf)
-     ("M-y" . helm-show-kill-ring)
-     :map helm-map
-     ("<tab>" . helm-execute-persistent-action) ; rebind tab to run persistent action
-     ("C-i" . helm-execute-persistent-action) ; make TAB work in terminal
-     ("C-z" . helm-select-action)))
+(use-package helm
+  :defer t
+  :config
+  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+        helm-move-to-line-cycle-in-source     nil ; move to end or beginning of source when reaching top or bottom of source.
+        helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+        helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+        helm-ff-file-name-history-use-recentf t
+        helm-echo-input-in-header-line t)
+  (setq helm-autoresize-max-height 0)
+  (setq helm-autoresize-min-height 20)
+  (setq helm-mode-fuzzy-match t)
+  (setq helm-completion-in-region-fuzzy-match t)
+  (setq helm-buffers-fuzzy-matching t)
+  (setq helm-recentf-fuzzy-matching t)
+  (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+  (helm-autoresize-mode 1)
+  (helm-mode 1)
+  :bind
+  (("C-c h" . helm-command-prefix)
+   ("C-x c" . nil)
+   ("C-x C-f" . helm-find-files)
+   ("M-x" . helm-M-x)
+   ;; "C-." . helm-dabbrev) conflicts ace jump
+   ("C-x b" . helm-mini)
+   ;; ("C-x b" . helm-buffers-list)
+   ("C-x C-r" . helm-recentf)
+   ("M-y" . helm-show-kill-ring)
+   :map helm-map
+   ("<tab>" . helm-execute-persistent-action) ; rebind tab to run persistent action
+   ("C-i" . helm-execute-persistent-action) ; make TAB work in terminal
+   ("C-z" . helm-select-action)))
 
-  ;; (use-package helm-config
-  ;;  :after helm)
-  (use-package projectile
-    :config
-    (projectile-global-mode)
-    (setq projectile-completion-system 'helm)
-    (helm-projectile-on)
-    :bind
-    (("C-c p" . projectile-command-map)))
+;; (use-package helm-config
+;;  :after helm)
+(use-package projectile
+  :defer t
+  :config
+  (projectile-global-mode)
+  (setq projectile-completion-system 'helm)
+  (helm-projectile-on)
+  :bind
+  (("C-c p" . projectile-command-map)))
 
-  (use-package helm-projectile
-    :after helm
-    :ensure t)
+(use-package helm-projectile
+  :after (:all helm projectile)
+  :defer t
+  :ensure t)
 
-  (use-package helm-ag
-    :after helm
-    :init
-    (setq helm-follow-mode-persistent t)
-    (setq helm-ag-insert-at-point 'symbol)
-    :commands
-    (helm-ag helm-projectile-ag)
-    :bind
-    ("M-p" . helm-projectile-ag))
+(use-package helm-ag
+  :after helm
+  :init
+  (setq helm-follow-mode-persistent t)
+  (setq helm-ag-insert-at-point 'symbol)
+  :commands
+  (helm-ag helm-projectile-ag)
+  :bind
+  ("M-p" . helm-projectile-ag))
 
-  (use-package helm-descbinds
-    :after helm
-    :ensure t
-    :bind ("C-h b" . helm-descbinds))
+(use-package helm-descbinds
+  :after helm
+  :ensure t
+  :bind ("C-h b" . helm-descbinds))
 
-  (use-package helm-files)
+(use-package helm-files
+  :after helm)
 
 
-  (use-package helm-swoop
-    :after helm
-    :ensure t
-    :bind
-    (("M-m" . helm-swoop)
-     ("M-M" . helm-swoop-back-to-last-point))
-    :init
-    (bind-key "M-m" 'helm-swoop-from-isearch isearch-mode-map))
+(use-package helm-swoop
+  :after helm
+  :ensure t
+  :bind
+  (("M-m" . helm-swoop)
+   ("M-M" . helm-swoop-back-to-last-point))
+  :init
+  (bind-key "M-m" 'helm-swoop-from-isearch isearch-mode-map))
 
 #+end_src
 ** Ido
@@ -1851,71 +1900,73 @@ Use one of the following
 ** Company
 #+begin_src emacs-lisp :tangle yes
 
-  (use-package company
-    :ensure t
-    ;; :diminish ""
-    :init
-    ;; (add-hook 'prog-mode-hook 'company-mode)
-    ;; (add-hook 'comint-mode-hook 'company-mode)
-    :bind (:map company-active-map
-                ("M-n" . nil)
-                ("M-p" . nil)
-                ("C-n" . company-select-next)
-                ("C-p" . company-select-previous)
-                ("TAB" . company-complete-common-or-cycle)
-                ("<tab>" . company-complete-common-or-cycle)
-                ("S-TAB" . company-select-previous)
-                ("<backtab>" . company-select-previous))
-    :config
-    (global-company-mode)
-    (setq company-tooltip-limit 10)
-    (setq company-idle-delay 0.2)
-    (setq company-echo-delay 0)
-    (setq company-minimum-prefix-length 3)
-    (setq company-require-match nil)
-    (setq company-selection-wrap-around t)
-    (setq company-tooltip-align-annotations t)
-    ;; (setq company-tooltip-flip-when-above t)
-    (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
+(use-package company
+  :ensure t
+  ;; :diminish ""
+  :init
+  ;; (add-hook 'prog-mode-hook 'company-mode)
+  ;; (add-hook 'comint-mode-hook 'company-mode)
+  :bind (:map company-active-map
+              ("M-n" . nil)
+              ("M-p" . nil)
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("TAB" . company-complete-common-or-cycle)
+              ("<tab>" . company-complete-common-or-cycle)
+              ("S-TAB" . company-select-previous)
+              ("<backtab>" . company-select-previous))
+  :config
+  (global-company-mode)
+  (setq company-tooltip-limit 10)
+  (setq company-idle-delay 0.2)
+  (setq company-echo-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (setq company-require-match nil)
+  (setq company-selection-wrap-around t)
+  (setq company-tooltip-align-annotations t)
+  ;; (setq company-tooltip-flip-when-above t)
+  (setq company-transformers '(company-sort-by-occurrence))) ; weight by frequency
 
 
-  (defun company-yasnippet-or-completion ()
-    "Solve company yasnippet conflicts."
-    (interactive)
-    (let ((yas-fallback-behavior
-           (apply 'company-complete-common nil)))
-      (yas-expand)))
+(defun company-yasnippet-or-completion ()
+  "Solve company yasnippet conflicts."
+  (interactive)
+  (let ((yas-fallback-behavior
+         (apply 'company-complete-common nil)))
+    (yas-expand)))
 
-  (add-hook 'company-mode-hook
-   (lambda ()
-     (substitute-key-definition
-      'company-complete-common
-      'company-yasnippet-or-completion
-      company-active-map)))
+(add-hook 'company-mode-hook
+ (lambda ()
+   (substitute-key-definition
+    'company-complete-common
+    'company-yasnippet-or-completion
+    company-active-map)))
 
-  (use-package company-irony
-    :ensure t
-    :config
-    (require 'company)
-    (add-to-list 'company-backends 'company-irony))
+(use-package company-irony
+  :ensure t
+  :after (:all company irony)
+  :config
+  (require 'company)
+  (add-to-list 'company-backends 'company-irony))
 
-  (use-package irony
-    :ensure t
-    :config
-    (add-hook 'c++-mode-hook 'irony-mode)
-    (add-hook 'c-mode-hoom 'irony-mode)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+(use-package irony
+  :ensure t
+  :defer t
+  :config
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hoom 'irony-mode)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
 
-  (use-package company-jedi
-    :defer t
-    :init
-    (setq company-jedi-python-bin "python3")
-    :config
-    (add-to-list 'company-backends 'company-jedi))
+(use-package company-jedi
+  :defer t
+  :init
+  (setq company-jedi-python-bin "python3")
+  :config
+  (add-to-list 'company-backends 'company-jedi))
 
-  ;; (with-eval-after-load 'company
-  ;;   (add-hook 'c++-mode-hook 'company-mode)
-  ;;   (add-hook 'c-mode-hook 'company-mode))
+;; (with-eval-after-load 'company
+;;   (add-hook 'c++-mode-hook 'company-mode)
+;;   (add-hook 'c-mode-hook 'company-mode))
 #+end_src
 
 * Debug
@@ -1929,17 +1980,18 @@ Use one of the following
 
 * Abbrev mode
 #+begin_src emacs-lisp :tangle yes
-  (use-package abbrev
-    :diminish
-    :hook
-    ((text-mode prog-mode erc-mode LaTeX-mode) . abbrev-mode)
-    (expand-load
-     . (lambda ()
-         (add-hook 'expand-expand-hook 'indent-according-to-mode)
-         (add-hook 'expand-jump-hook 'indent-according-to-mode)))
-    :config
-    (if (file-exists-p abbrev-file-name)
-        (quietly-read-abbrev-file)))
+(use-package abbrev
+  :defer t
+  :diminish
+  :hook
+  ((text-mode prog-mode erc-mode LaTeX-mode) . abbrev-mode)
+  (expand-load
+   . (lambda ()
+       (add-hook 'expand-expand-hook 'indent-according-to-mode)
+       (add-hook 'expand-jump-hook 'indent-according-to-mode)))
+  :config
+  (if (file-exists-p abbrev-file-name)
+      (quietly-read-abbrev-file)))
 #+end_src
 
 * Evil mode

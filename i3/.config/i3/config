@@ -337,7 +337,8 @@ bindsym $mod+semicolon mode "resize"
 
 exec_always --no-startup-id $HOME/bin/polybar_launch
 exec_always --no-startup-id $HOME/bin/theme_set.sh -R
-exec --no-startup-id udiskie --no-automount --notify --tray --use-udisks2 --file-manager=$HOME/bin/ranger.fm
+exec --no-startup-id udiskie --no-automount --notify --tray 
+#--use-udisks2 --file-manager=$HOME/bin/ranger.fm
 exec --no-startup-id $HOME/bin/mail-notify.py
 # exec --no-startup-id compton -b # buggy at the moment
 exec --no-startup-id dockd --daemon
